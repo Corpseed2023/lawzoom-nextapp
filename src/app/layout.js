@@ -1,6 +1,7 @@
 import localFont from "next/font/local"
 import "./globals.css"
 import { ConfigProvider } from "antd"
+import Providers from "./Providers"
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -27,16 +28,16 @@ export default function RootLayout({ children }) {
             components: {
               Input: {
                 borderRadius: 5,
-                borderRadiusLG:5
+                borderRadiusLG: 5,
               },
-              Button:{
+              Button: {
                 borderRadius: 5,
-                borderRadiusLG:5
-              }
+                borderRadiusLG: 5,
+              },
             },
           }}
         >
-          {children}
+          <Providers>{children}</Providers>
         </ConfigProvider>
       </body>
     </html>

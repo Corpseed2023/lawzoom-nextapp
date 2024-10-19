@@ -39,7 +39,7 @@ const Login = () => {
             name="password"
             rules={[{ required: true, message: "Please enter your password" }]}
           >
-            <Input
+            <Input.Password
               placeholder="password"
               prefix={
                 <Icon
