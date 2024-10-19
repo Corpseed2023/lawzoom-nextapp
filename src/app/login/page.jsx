@@ -2,7 +2,7 @@
 import React from "react"
 import "./login.css"
 import { Button, Checkbox, Flex, Form, Input, Typography } from "antd"
-import hig from "../assets/lowZoom.png"
+import logo from '../../assets/lowZoom.png'
 import Image from "next/image"
 import Link from "next/link"
 import { Icon } from "@iconify/react"
@@ -13,17 +13,18 @@ const Login = () => {
   return (
     <Flex justify="center" align="center" className="login-container">
       <Flex vertical gap={24} className="login-sub-container" align="center">
-        <Image src={hig} alt="lowzoom-logo" height={"10%"} width={"20%"} />
+        <Image src={logo} alt="lowzoom-logo" height={"10%"} width={"20%"} />
         <Title className="main-heading-text" level={1}>
           Sign in
         </Title>
-        <Form size="large" style={{ width: "70%" }} layout='vertical'>
+        <Form size="large" style={{ width: "70%" }} layout="vertical">
           <Form.Item
             label="Email"
             name="username"
             rules={[{ required: true, message: "Please enter your email id" }]}
           >
             <Input
+              placeholder="example@email.com"
               prefix={
                 <Icon
                   icon="fluent:mail-24-regular"
@@ -39,6 +40,7 @@ const Login = () => {
             rules={[{ required: true, message: "Please enter your password" }]}
           >
             <Input
+              placeholder="password"
               prefix={
                 <Icon
                   icon="fluent:lock-closed-24-regular"
