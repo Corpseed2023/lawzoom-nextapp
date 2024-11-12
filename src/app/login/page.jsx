@@ -1,23 +1,61 @@
 "use client"
 import React from "react"
 import "./login.css"
-import { Button, Checkbox, Flex, Form, Input, Typography } from "antd"
-import logo from '../../assets/lowZoom.png'
+import {
+  Button,
+  Checkbox,
+  Flex,
+  Form,
+  Input,
+  notification,
+  Typography,
+} from "antd"
+import logo from "../../assets/lowZoom.png"
 import Image from "next/image"
 import Link from "next/link"
 import { Icon } from "@iconify/react"
 import { ICON_HEIGHT, ICON_WIDTH } from "../contants"
+import { useDispatch } from "react-redux"
+import { loginUser } from "../redux-toolkit/slices/authSlice"
+import { useRouter } from "next/navigation"
 const { Title, Text } = Typography
 
 const Login = () => {
+  const dispatch = useDispatch()
+  const router=useRouter()
+
+  const handleSubmitUserDetail = (values) => {
+    dispatch(loginUser(values))
+      .then((resp) => {
+        if (resp.meta.requestStatus === "fulfilled") {
+          notification.success({ message: "User logged in successfully !." })
+          router.push("/userinfo")
+        } else {
+          notification.error({ message: "Something went wrong !." })
+        }
+      })
+      .catch(() => notification.error({ message: "Something went wrong !." }))
+  }
+
   return (
     <Flex justify="center" align="center" className="login-container">
       <Flex vertical gap={24} className="login-sub-container" align="center">
-        <Image src={logo} alt="lowzoom-logo" height={"10%"} width={"20%"} />
+        <Image
+          src={logo}
+          priority={true}
+          alt="lowzoom-logo"
+          height={"10%"}
+          width={"20%"}
+        />
         <Title className="main-heading-text" level={1}>
           Sign in
         </Title>
-        <Form size="large" style={{ width: "70%" }} layout="vertical">
+        <Form
+          size="large"
+          style={{ width: "70%" }}
+          layout="vertical"
+          onFinish={handleSubmitUserDetail}
+        >
           <Form.Item
             label="Email"
             name="username"
