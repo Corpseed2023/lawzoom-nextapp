@@ -34,6 +34,9 @@ export default function RootLayout({ children }) {
                 borderRadius: 5,
                 borderRadiusLG: 5,
               },
+              Menu:{
+                itemHeight:32,
+              }
             },
           }}
         >
