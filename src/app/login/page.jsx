@@ -1,6 +1,6 @@
-"use client"
-import React from "react"
-import "./login.css"
+"use client";
+import React, { useState } from "react";
+import "./login.css";
 import {
   Button,
   Checkbox,
@@ -9,33 +9,41 @@ import {
   Input,
   notification,
   Typography,
-} from "antd"
-import logo from "../../assets/lowZoom.png"
-import Image from "next/image"
-import Link from "next/link"
-import { Icon } from "@iconify/react"
-import { ICON_HEIGHT, ICON_WIDTH } from "../contants"
-import { useDispatch } from "react-redux"
-import { loginUser } from "../redux-toolkit/slices/authSlice"
-import { useRouter } from "next/navigation"
-const { Title, Text } = Typography
+} from "antd";
+import logo from "../../assets/lowZoom.png";
+import Image from "next/image";
+import Link from "next/link";
+import { Icon } from "@iconify/react";
+import { ICON_HEIGHT, ICON_WIDTH } from "../contants";
+import { useDispatch } from "react-redux";
+import { loginUser } from "../redux-toolkit/slices/authSlice";
+import { useRouter } from "next/navigation";
+const { Title, Text } = Typography;
 
 const Login = () => {
-  const dispatch = useDispatch()
-  const router=useRouter()
+  const dispatch = useDispatch();
+  const router = useRouter();
+
+  const [loading, setLoading] = useState("");
 
   const handleSubmitUserDetail = (values) => {
+    setLoading("pending");
     dispatch(loginUser(values))
       .then((resp) => {
         if (resp.meta.requestStatus === "fulfilled") {
-          notification.success({ message: "User logged in successfully !." })
-          router.push("/userinfo")
+          notification.success({ message: "User logged in successfully !." });
+          router.push(`/${resp?.payload?.body?.id}/company/dashboard`);
+          setLoading("success");
         } else {
-          notification.error({ message: "Something went wrong !." })
+          notification.error({ message: "Something went wrong !." });
+          setLoading("rejected");
         }
       })
-      .catch(() => notification.error({ message: "Something went wrong !." }))
-  }
+      .catch(() => {
+        notification.error({ message: "Something went wrong !." });
+        setLoading("rejected");
+      });
+  };
 
   return (
     <Flex justify="center" align="center" className="login-container">
@@ -93,14 +101,19 @@ const Login = () => {
             <Link href={"/"}>Forget Password ?</Link>
           </Form.Item>
           <Form.Item>
-            <Button type="primary" htmlType="submit" style={{ width: "100%" }}>
+            <Button
+              type="primary"
+              htmlType="submit"
+              loading={loading === "pending" ? true : false}
+              style={{ width: "100%" }}
+            >
               Submit
             </Button>
           </Form.Item>
         </Form>
       </Flex>
     </Flex>
-  )
-}
+  );
+};
 
-export default Login
+export default Login;
