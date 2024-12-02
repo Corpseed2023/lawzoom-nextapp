@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import "./login.css";
+import '../login/login.css'
 import {
   Button,
   Checkbox,
@@ -17,51 +17,32 @@ import { Icon } from "@iconify/react";
 import { ICON_HEIGHT, ICON_WIDTH } from "../contants";
 import { useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
-import { loginUser } from "../redux-toolkit/slices/authSlice";
+import { genrateOpt } from "../redux-toolkit/slices/authSlice";
 const { Title, Text } = Typography;
 
-const Login = () => {
+const SignupOtp = () => {
   const dispatch = useDispatch();
   const router = useRouter();
-  const [form] = Form.useForm();
 
   const [loading, setLoading] = useState("");
 
   const handleSubmitUserDetail = (values) => {
     setLoading("pending");
-    dispatch(loginUser(values))
+    dispatch(genrateOpt(values))
       .then((resp) => {
         if (resp.meta.requestStatus === "fulfilled") {
-          notification.success({ message: "User logged in successfully !." });
-          router.push(`/${resp?.payload?.body?.id}/company/dashboard`);
+          notification.success({
+            message: "OTP send successfully to your email id !.",
+          });
+          router.push(`/signup`);
           setLoading("success");
         } else {
           notification.error({ message: "Something went wrong !." });
-          form.setFields([
-            {
-              name: "username",
-              errors: ["Invalid email id"],
-            },
-            {
-              name: "password",
-              errors: ["Invalid password"],
-            },
-          ]);
           setLoading("rejected");
         }
       })
       .catch(() => {
         notification.error({ message: "Something went wrong !." });
-        form.setFields([
-          {
-            name: "username",
-            errors: ["Invalid email id"],
-          },
-          {
-            name: "password",
-            errors: ["Invalid password"],
-          },
-        ]);
         setLoading("rejected");
       });
   };
@@ -77,18 +58,33 @@ const Login = () => {
           width={"20%"}
         />
         <Title className="main-heading-text" level={1}>
-          Sign in
+          Sign up
         </Title>
         <Form
           size="large"
           style={{ width: "70%" }}
           layout="vertical"
           onFinish={handleSubmitUserDetail}
-          form={form}
         >
           <Form.Item
+            label="Name"
+            name="name"
+            rules={[{ required: true, message: "Please enter your email id" }]}
+          >
+            <Input
+              placeholder="example@email.com"
+              prefix={
+                <Icon
+                  icon="fluent:person-24-regular"
+                  height={ICON_HEIGHT}
+                  width={ICON_WIDTH}
+                />
+              }
+            />
+          </Form.Item>
+          <Form.Item
             label="Email"
-            name="username"
+            name="email"
             rules={[{ required: true, message: "Please enter your email id" }]}
           >
             <Input
@@ -102,30 +98,13 @@ const Login = () => {
               }
             />
           </Form.Item>
-          <Form.Item
-            label="Password (min 8 character)"
-            name="password"
-            rules={[{ required: true, message: "Please enter your password" }]}
-          >
-            <Input.Password
-              placeholder="password"
-              prefix={
-                <Icon
-                  icon="fluent:lock-closed-24-regular"
-                  height={ICON_HEIGHT}
-                  width={ICON_WIDTH}
-                />
-              }
-            />
-          </Form.Item>
+
           <Form.Item valuePropName="checked">
             <Flex gap={4}>
               <Checkbox>Remember me.</Checkbox>{" "}
-              <Link href={"/"} className="text-blue-700">
-                Forget Password ?
-              </Link>
-              <Link href={"/signup-otp"} className="text-blue-700">
-                Sign up
+              <Text>Already have an account ?</Text>
+              <Link href={"/login"} className="text-blue-700">
+                Login
               </Link>
             </Flex>
           </Form.Item>
@@ -136,7 +115,7 @@ const Login = () => {
               loading={loading === "pending" ? true : false}
               style={{ width: "100%" }}
             >
-              Submit
+              Genrate otp
             </Button>
           </Form.Item>
         </Form>
@@ -145,4 +124,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default SignupOtp;

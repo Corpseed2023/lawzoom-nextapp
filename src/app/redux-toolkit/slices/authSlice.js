@@ -1,9 +1,18 @@
 import api from "@/app/httpRequest";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
-
 export const loginUser = createAsyncThunk("loginUser", async (data) => {
   const response = await api.post(`/api/auth/token`, data);
+  return response.data;
+});
+
+export const signupUser = createAsyncThunk("", async (data) => {
+  const response = await api.post(`/api/auth/signup`, data);
+  return response.data;
+});
+
+export const genrateOpt = createAsyncThunk("genrateOpt", async (data) => {
+  const response = await api.post(`/api/auth/otp/generateOTP`, data);
   return response.data;
 });
 
@@ -12,10 +21,9 @@ const authSlice = createSlice({
   initialState: {
     userDetail: {},
     userDetailLoading: "",
+    otpResponse:{}
   },
-  reducers: {
-
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder.addCase(loginUser.pending, (state, action) => {
       state.userDetailLoading = "pending";
@@ -28,9 +36,21 @@ const authSlice = createSlice({
       state.userDetail = {};
       state.userDetailLoading = "rejected";
     });
+
+    builder.addCase(genrateOpt.pending, (state, action) => {
+      state.userDetailLoading = "pending";
+    });
+    builder.addCase(genrateOpt.fulfilled, (state, action) => {
+      state.otpResponse = action.payload;
+      state.userDetailLoading = "success";
+    });
+    builder.addCase(genrateOpt.rejected, (state, action) => {
+      state.otpResponse = {};
+      state.userDetailLoading = "rejected";
+    });
   },
 });
 
-export const {  } = authSlice.actions;
+export const {} = authSlice.actions;
 
 export default authSlice.reducer;

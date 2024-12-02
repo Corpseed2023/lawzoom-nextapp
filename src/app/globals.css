@@ -2,7 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-
 :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -13,6 +12,24 @@
     --background: #0a0a0a;
     --foreground: #ededed;
   }
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #093252;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #065a8f;
+}
+
+::-webkit-scrollbar-track {
+  background: #f0f0f0;
 }
 
 html,
@@ -44,4 +61,36 @@ a {
   html {
     color-scheme: dark;
   }
+}
+
+.enquiry-form-container {
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  padding: 42px 24px;
+  width: 75%;
+  border-radius: 5px;
+}
+
+.layout-container {
+  position: relative;
+}
+
+.layout-container-header {
+  position: sticky !important;
+  top: 0px !important;
+  z-index: 10 !important;
+  background-color: white !important;
+  width: 100%;
+}
+
+.setting-sidebar.ant-layout-sider .ant-layout-sider-trigger {
+  position: fixed;
+  bottom: 10px;
+  z-index: 1;
+  height: 38px;
+  color: #fff;
+  line-height: 35px;
+  text-align: center;
+  background: gray;
+  cursor: pointer;
+  transition: all 0.2s;
 }

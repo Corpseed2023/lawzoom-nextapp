@@ -16,6 +16,10 @@ export default function RootLayout({ children }) {
       <body >
         <ConfigProvider
           theme={{
+            token:{
+              borderRadius:6,
+              fontSize:13
+            },
             components: {
               Input: {
                 borderRadius: 5,

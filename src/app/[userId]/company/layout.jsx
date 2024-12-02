@@ -6,12 +6,18 @@ import logo from "../../../assets/lowzoom.png";
 import Link from "next/link";
 import { Icon } from "@iconify/react";
 import { ICON_HEIGHT, ICON_WIDTH } from "@/app/contants";
+// import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 const { Content, Sider } = Layout;
 
-const CompanyLayout = ({ children }) => {
+const CompanyLayout = ({ children, params }) => {
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
+
+  const { userId } = params;
+
+  console.log("sdxkcvjhasdjghal", userId);
 
   const items = [
     {
@@ -23,7 +29,7 @@ const CompanyLayout = ({ children }) => {
           width={ICON_WIDTH}
         />
       ),
-      label: <Link href={"/1/company/dashboard"}>Dashboard</Link>,
+      label: <Link href={`/${userId}/company/dashboard`}>Dashboard</Link>,
     },
     {
       key: "manageCompanies",
@@ -34,7 +40,11 @@ const CompanyLayout = ({ children }) => {
           width={ICON_WIDTH}
         />
       ),
-      label: <Link href={"/1/company/manageCompanies"}>Manage companies</Link>,
+      label: (
+        <Link href={`/${userId}/company/manageCompanies`}>
+          Manage companies
+        </Link>
+      ),
     },
     {
       key: "compliances",
@@ -50,33 +60,49 @@ const CompanyLayout = ({ children }) => {
         {
           key: "taskManagement",
           label: (
-            <Link href={"/1/company/compliances/taskManagement"}>
+            <Link href={`/${userId}/company/compliances/taskManagement`}>
               Task management
             </Link>
           ),
         },
         {
           key: "progress",
-          label: <Link href={"/1/company/compliances/progress"}>Progress</Link>,
+          label: (
+            <Link href={`/${userId}/company/compliances/progress`}>
+              Progress
+            </Link>
+          ),
         },
         {
           key: "overDue",
-          label: <Link href={"/1/company/compliances/overDue"}>Over due</Link>,
+          label: (
+            <Link href={`/${userId}/company/compliances/overDue`}>
+              Over due
+            </Link>
+          ),
         },
         {
           key: "notStarted",
           label: (
-            <Link href={"/1/company/compliances/notStarted"}>Not started</Link>
+            <Link href={`/${userId}/company/compliances/notStarted`}>
+              Not started
+            </Link>
           ),
         },
         {
           key: "critical",
-          label: <Link href={"/1/company/compliances/critical"}>Critical</Link>,
+          label: (
+            <Link href={`/${userId}/company/compliances/critical`}>
+              Critical
+            </Link>
+          ),
         },
         {
           key: "completed",
           label: (
-            <Link href={"/1/company/compliances/completed"}>Completed</Link>
+            <Link href={`/${userId}/company/compliances/completed`}>
+              Completed
+            </Link>
           ),
         },
       ],
@@ -90,7 +116,7 @@ const CompanyLayout = ({ children }) => {
           width={ICON_WIDTH}
         />
       ),
-      label: <Link href={"/1/company/vendorTask"}>Vendor task</Link>,
+      label: <Link href={`/${userId}/company/vendorTask`}>Vendor task</Link>,
     },
     {
       key: "Accounts",
@@ -101,7 +127,7 @@ const CompanyLayout = ({ children }) => {
           width={ICON_WIDTH}
         />
       ),
-      label: <Link href={"/1/company/accounts"}>Accounts</Link>,
+      label: <Link href={`/${userId}/company/accounts`}>Accounts</Link>,
     },
     {
       key: "setting",
@@ -112,17 +138,7 @@ const CompanyLayout = ({ children }) => {
           width={ICON_WIDTH}
         />
       ),
-      label: "Setting",
-      children: [
-        {
-          key: "stateManagements",
-          label: (
-            <Link href={"/1/company/settings/stateManagements"}>
-              State mangements
-            </Link>
-          ),
-        },
-      ],
+      label: <Link href={`/${userId}/company/settings/countries`}>Setting</Link>,
     },
   ];
 
@@ -180,11 +196,11 @@ const CompanyLayout = ({ children }) => {
           />
           <Content
             style={{
-              padding: 24,
+              padding: 0,
               margin: 0,
               minHeight: 280,
               background: colorBgContainer,
-              borderRadius: borderRadiusLG,
+              borderRadius: 6,
             }}
           >
             {children}
