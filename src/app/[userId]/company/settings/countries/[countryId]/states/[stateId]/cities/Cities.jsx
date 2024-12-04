@@ -1,8 +1,8 @@
 "use client";
 import CommonTable from "@/app/common/CommonTable";
 import {
-  createStatesForCountry,
-  updateStatesForCountry,
+  createCities,
+  updateCities,
 } from "@/app/redux-toolkit/slices/commonSlice";
 import { Icon } from "@iconify/react";
 import { Button, Flex, Form, Input, Modal, notification, Typography } from "antd";
@@ -11,7 +11,7 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 const { Text } = Typography;
 
-const States = ({ data, countryId, userId }) => {
+const Cities = ({ data, userId, stateId, countryId }) => {
   const dispatch = useDispatch();
   const [form] = Form.useForm();
   const [openModal, setOpenModal] = useState(false);
@@ -19,24 +19,21 @@ const States = ({ data, countryId, userId }) => {
 
   const handleEdit = (data) => {
     form.setFieldsValue({
-      stateName: data?.stateName,
+      cityName: data?.cityName,
+      cityCode:data?.cityCode
     });
     setEditData(data);
     setOpenModal(true);
   };
-
   const columns = [
     { dataIndex: "id", title: "Id", width: 80 },
     {
-      dataIndex: "stateName",
-      title: "State name",
-      render: (_, data) => (
-        <Link
-          href={`/${userId}/company/settings/countries/${countryId}/states/${data.id}/cities`}
-        >
-          {data?.stateName}
-        </Link>
-      ),
+      dataIndex: "cityName",
+      title: "City name",
+    },
+    {
+      dataIndex: "cityCode",
+      title: "City code / Zip code",
     },
     {
       dataIndex: "edit",
@@ -51,13 +48,11 @@ const States = ({ data, countryId, userId }) => {
 
   const handleFinish = (values) => {
     if (editData) {
-      dispatch(
-        updateStatesForCountry({ ...values, countryId, id: editData?.id })
-      )
+      dispatch(updateCities({ ...values, stateId, id: editData?.id }))
         .then((resp) => {
           if (resp.meta.requestStatus === "fulfilled") {
             notification.success({
-              message: "State updated successfully !",
+              message: "Cities updated successfully !",
             });
             setOpenModal(false);
             form.resetFields();
@@ -68,30 +63,28 @@ const States = ({ data, countryId, userId }) => {
         })
         .catch(() => notification.error({ message: "Something went wrong !" }));
     } else {
-      dispatch(createStatesForCountry({ ...values, countryId: countryId }))
+      dispatch(createCities({ ...values, stateId: stateId }))
         .then((resp) => {
           if (resp.meta.requestStatus === "fulfilled") {
             notification.success({
-              message: "State created successfully !",
+              message: "Cities created successfully !",
             });
             setOpenModal(false);
             form.resetFields();
             window.location.reload();
           } else {
-            notification.error({ message: "Something went wrong!" });
+            notification.error({ message: "Something went wrong !" });
           }
         })
-        .catch(() => notification.error({ message: "Something went wrong!" }));
+        .catch(() => notification.error({ message: "Something went wrong !" }));
     }
   };
 
   return (
     <>
       <Flex justify="space-between" align="center" className="p-1 pt-0">
-        <Text className="main-heading-text">States list</Text>
-        <Button type="primary" onClick={() => setOpenModal(true)}>
-          Add state
-        </Button>
+        <Text className="main-heading-text">Cities list</Text>
+        <Button type="primary" onClick={()=>setOpenModal(true)}>Add city</Button>
       </Flex>
       <CommonTable
         data={data}
@@ -100,7 +93,7 @@ const States = ({ data, countryId, userId }) => {
         scroll={{ y: 600 }}
       />
       <Modal
-        title={editData ? "Update state" : "Create state"}
+        title={editData ? "Update city" : "Create city"}
         open={openModal}
         onCancel={() => setOpenModal(false)}
         onClose={() => setOpenModal(false)}
@@ -109,8 +102,15 @@ const States = ({ data, countryId, userId }) => {
       >
         <Form layout="vertical" form={form} onFinish={handleFinish}>
           <Form.Item
-            label="State name"
-            name="stateName"
+            label="City name"
+            name="cityName"
+            rules={[{ required: true, message: "Please enter state name" }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            label="City code / Zip code"
+            name="cityCode"
             rules={[{ required: true, message: "Please enter state name" }]}
           >
             <Input />
@@ -121,4 +121,4 @@ const States = ({ data, countryId, userId }) => {
   );
 };
 
-export default States;
+export default Cities;

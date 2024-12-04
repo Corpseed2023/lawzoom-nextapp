@@ -16,10 +16,67 @@ export const getAllCountries = createAsyncThunk("getAllCountries", async () => {
   return response.data;
 });
 
-export const getStatesByCountryId=createAsyncThunk('getStatesByCountryId',async(id)=>{
-  const response=await api.get(`/api/auth/states/fetch-all-states`)
-  return response.data
-})
+export const getStatesByCountryId = createAsyncThunk(
+  "getStatesByCountryId",
+  async (id) => {
+    const response = await api.get(
+      `/api/auth/states/fetch-all-states?countryId=${id}`
+    );
+    return response.data;
+  }
+);
+
+export const getCitiesByStateId = createAsyncThunk(
+  "getCitiesByStateId",
+  async (id) => {
+    const response = await api.get(
+      `/api/auth/city/get-all-cities?stateId=${id}`
+    );
+    return response.data;
+  }
+);
+
+export const createCountry = createAsyncThunk("createCountry", async (data) => {
+  const response = await api.post(
+    `/api/auth/countries/create-country?countryName=${data?.countryName}&countryCode=${data?.countryCode}`
+  );
+  return response.data;
+});
+
+export const updateCountry = createAsyncThunk("updateCountry", async (data) => {
+  const response = await api.put(`/api/auth/countries/update-country`, data);
+  return response.data;
+});
+
+export const createStatesForCountry = createAsyncThunk(
+  "createStatesForCountry",
+  async (data) => {
+    const response = await api.post(
+      `/api/auth/states/create-state?countryId=${data?.countryId}&stateName=${data?.stateName}`
+    );
+    return response.data;
+  }
+);
+
+export const updateStatesForCountry = createAsyncThunk(
+  "updateStatesForCountry",
+  async (data) => {
+    const response = await api.put(`/api/auth/states/update-states`, data);
+    return response.data;
+  }
+);
+
+export const createCities = createAsyncThunk("createCities", async (data) => {
+  const response = await api.post(
+    `/api/auth/city/save-cities?cityName=${data?.cityName}&cityCode=${data?.cityCode}&stateId=${data?.stateId}`
+  );
+  return response.data;
+});
+
+export const updateCities = createAsyncThunk("updateCities", async (data) => {
+  const response = await api.put(`/api/auth/city/update-city`, data);
+  return response.data;
+});
 
 const commonSlice = createSlice({
   name: "common",
@@ -27,7 +84,7 @@ const commonSlice = createSlice({
     enquiryLoading: "",
     allRoles: [],
     countries: [],
-    loading:'',
+    loading: "",
   },
   extraReducers: (builder) => {
     builder.addCase(createEnquiry.pending, (state, action) => {

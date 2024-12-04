@@ -94,3 +94,12 @@ a {
   cursor: pointer;
   transition: all 0.2s;
 }
+
+a{
+  color:#1677ff
+}
+
+.main-heading-text{
+  font-size: 14px;
+  font-weight: 700;
+}

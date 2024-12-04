@@ -26,12 +26,19 @@ export default function RootLayout({ children }) {
                 borderRadiusLG: 5,
               },
               Button: {
-                borderRadius: 5,
-                borderRadiusLG: 5,
+                borderRadius: 4,
+                borderRadiusLG: 4,
+                borderRadiusSM:4
               },
               Menu: {
                 itemHeight: 32,
               },
+              Table:{
+                cellPaddingBlock:12,
+                selectionColumnWidth:24,
+                cellPaddingInline:12,
+                padding:12
+              }
             },
           }}
         >

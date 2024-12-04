@@ -1,11 +1,28 @@
-import React from 'react'
+import React from "react";
+import Cities from "./Cities";
+import store from "@/app/redux-toolkit/store";
+import { getCitiesByStateId } from "@/app/redux-toolkit/slices/commonSlice";
 
-const CitiesPage = () => {
+const CitiesPage = async ({ params }) => {
+  const { userId, countryId, stateId } = params;
+  let data = [];
+  try {
+    const response = await store.dispatch(getCitiesByStateId(stateId));
+    data = response?.payload;
+    console.log("dkcjnskldjvhsklj", response.payload);
+  } catch (err) {
+    console.log("Errrrorrrrr", err);
+  }
   return (
-    <div>
-      This is my City page
-    </div>
-  )
-}
+    <>
+      <Cities
+        userId={userId}
+        countryId={countryId}
+        stateId={stateId}
+        data={data}
+      />
+    </>
+  );
+};
 
-export default CitiesPage
+export default CitiesPage;

@@ -3,15 +3,20 @@ import Countries from "./Countries";
 import store from "@/app/redux-toolkit/store";
 import { getAllCountries } from "@/app/redux-toolkit/slices/commonSlice";
 
-const CountriesPage = async({params}) => {
+const CountriesPage = async ({ params }) => {
   const { userId } = params;
-
-   const data = await store.dispatch(getAllCountries())
-   console.log('dkcjnskldjvhsklj',data.payload)
+  let data = [];
+  try {
+    const response = await store.dispatch(getAllCountries());
+    data = response.payload;
+    console.log("jhsbajkcbkjbsjbd", data);
+  } catch (err) {
+    console.log("Error in countries", err);
+  }
 
   return (
     <>
-      <Countries data={data?.payload} userId={userId}  />
+      <Countries data={data} userId={userId} />
     </>
   );
 };
