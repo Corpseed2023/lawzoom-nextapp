@@ -78,6 +78,11 @@ export const updateCities = createAsyncThunk("updateCities", async (data) => {
   return response.data;
 });
 
+export const deleteCitiesById=createAsyncThunk('',async(id)=>{
+  const response=await api.delete(`/api/auth/city/softDeleteCity?id=${id}`)
+  return response.data
+})
+
 const commonSlice = createSlice({
   name: "common",
   initialState: {

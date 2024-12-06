@@ -1,10 +1,10 @@
 "use client";
 import CommonTable from "@/app/common/CommonTable";
 import {
-  createCities,
-  deleteCitiesById,
-  updateCities,
-} from "@/app/redux-toolkit/slices/commonSlice";
+  createSubIndustry,
+  deleteSubIndustry,
+  updateSubIndustryById,
+} from "@/app/redux-toolkit/slices/settingSlice";
 import { Icon } from "@iconify/react";
 import {
   Button,
@@ -21,7 +21,7 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 const { Text } = Typography;
 
-const Cities = ({ data, userId, stateId, countryId }) => {
+const SubIndustries = ({ data, userId, industryId }) => {
   const dispatch = useDispatch();
   const [form] = Form.useForm();
   const [openModal, setOpenModal] = useState(false);
@@ -29,18 +29,19 @@ const Cities = ({ data, userId, stateId, countryId }) => {
 
   const handleEdit = (data) => {
     form.setFieldsValue({
-      cityName: data?.cityName,
-      cityCode: data?.cityCode,
+      industrySubCategoryName: data?.industrySubCategoryName,
     });
     setEditData(data);
     setOpenModal(true);
   };
 
-  const handleDeleteCity = (data) => {
-    dispatch(deleteCitiesById(data?.id))
+  const handleDeleteSubindustry = (data) => {
+    dispatch(deleteSubIndustry(data?.id))
       .then((resp) => {
         if (resp.meta.requestStatus === "fulfilled") {
-          notification.success({ message: "City deleted successfully !." });
+          notification.success({
+            message: "Sub industry deleted successfully !.",
+          });
           window.location.reload();
         } else {
           notification.error({ message: "Something went wrong !." });
@@ -52,12 +53,15 @@ const Cities = ({ data, userId, stateId, countryId }) => {
   const columns = [
     { dataIndex: "id", title: "Id", width: 80 },
     {
-      dataIndex: "cityName",
-      title: "City name",
-    },
-    {
-      dataIndex: "cityCode",
-      title: "City code / Zip code",
+      dataIndex: "industrySubCategoryName",
+      title: "Sub Industry name",
+      render: (_, data) => (
+        <Link
+          href={`/${userId}/company/settings/industries/${industryId}/subindustries/${data?.id}/businessActivity`}
+        >
+          {data?.industrySubCategoryName}
+        </Link>
+      ),
     },
     {
       dataIndex: "edit",
@@ -73,9 +77,9 @@ const Cities = ({ data, userId, stateId, countryId }) => {
       title: "Delete",
       render: (_, data) => (
         <Popconfirm
-          title="Delete city"
-          description="Are you sure to delete the city"
-          onConfirm={() => handleDeleteCity(data)}
+          title="Delete subindustry"
+          description="Are you sure to delete the subindustry"
+          onConfirm={() => handleDeleteSubindustry(data)}
         >
           <Button type="text" danger size="small">
             <Icon icon="fluent:delete-24-regular" />
@@ -87,11 +91,18 @@ const Cities = ({ data, userId, stateId, countryId }) => {
 
   const handleFinish = (values) => {
     if (editData) {
-      dispatch(updateCities({ ...values, stateId, id: editData?.id }))
+      dispatch(
+        updateSubIndustryById({
+          ...values,
+          userId,
+          industryCategoryId: industryId,
+          id: editData?.id,
+        })
+      )
         .then((resp) => {
           if (resp.meta.requestStatus === "fulfilled") {
             notification.success({
-              message: "Cities updated successfully !",
+              message: "Industry updated successfully !",
             });
             setOpenModal(false);
             form.resetFields();
@@ -102,11 +113,13 @@ const Cities = ({ data, userId, stateId, countryId }) => {
         })
         .catch(() => notification.error({ message: "Something went wrong !" }));
     } else {
-      dispatch(createCities({ ...values, stateId: stateId }))
+      dispatch(
+        createSubIndustry({ ...values, industryCategoryId: industryId, userId })
+      )
         .then((resp) => {
           if (resp.meta.requestStatus === "fulfilled") {
             notification.success({
-              message: "City created successfully !",
+              message: "Industry created successfully !",
             });
             setOpenModal(false);
             form.resetFields();
@@ -118,13 +131,12 @@ const Cities = ({ data, userId, stateId, countryId }) => {
         .catch(() => notification.error({ message: "Something went wrong !" }));
     }
   };
-
   return (
     <>
       <Flex justify="space-between" align="center" className="p-1 pt-0">
-        <Text className="main-heading-text">Cities list</Text>
+        <Text className="main-heading-text">Subindustries list</Text>
         <Button type="primary" onClick={() => setOpenModal(true)}>
-          Add city
+          Add Subindustry
         </Button>
       </Flex>
       <CommonTable
@@ -134,7 +146,7 @@ const Cities = ({ data, userId, stateId, countryId }) => {
         scroll={{ y: 600 }}
       />
       <Modal
-        title={editData ? "Update city" : "Create city"}
+        title={editData ? "Update industry" : "Create industry"}
         open={openModal}
         onCancel={() => setOpenModal(false)}
         onClose={() => setOpenModal(false)}
@@ -143,16 +155,11 @@ const Cities = ({ data, userId, stateId, countryId }) => {
       >
         <Form layout="vertical" form={form} onFinish={handleFinish}>
           <Form.Item
-            label="City name"
-            name="cityName"
-            rules={[{ required: true, message: "Please enter state name" }]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            label="City code / Zip code"
-            name="cityCode"
-            rules={[{ required: true, message: "Please enter state name" }]}
+            label="Sub Industry name"
+            name="industrySubCategoryName"
+            rules={[
+              { required: true, message: "Please enter sub industry name" },
+            ]}
           >
             <Input />
           </Form.Item>
@@ -162,4 +169,4 @@ const Cities = ({ data, userId, stateId, countryId }) => {
   );
 };
 
-export default Cities;
+export default SubIndustries;

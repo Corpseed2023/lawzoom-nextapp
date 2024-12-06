@@ -29,13 +29,14 @@ const SettingMangements = ({ children, params }) => {
       ),
     },
     {
-      key: "statemanagement",
+      key: "industries",
       label: (
-        <Link href={`/${userId}/company/settings/stateManagements`}>
-          States management
+        <Link href={`/${userId}/company/settings/industries`}>
+          Industries
         </Link>
       ),
     },
+    
     
   ];
   return (

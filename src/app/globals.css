@@ -95,11 +95,20 @@ a {
   transition: all 0.2s;
 }
 
-a{
-  color:#1677ff
+a {
+  color: #1677ff;
 }
 
-.main-heading-text{
+.main-heading-text {
   font-size: 14px;
   font-weight: 700;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0;
 }
