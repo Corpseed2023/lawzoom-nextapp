@@ -3,7 +3,7 @@ import { Breadcrumb, Layout, Menu, theme } from "antd";
 import React from "react";
 import Link from "next/link";
 import { Icon } from "@iconify/react";
-import { ICON_HEIGHT, ICON_WIDTH } from "@/app/contants";
+import { ICON_HEIGHT, ICON_WIDTH } from "@/app/constants";
 const { Content, Sider } = Layout;
 
 const SettingMangements = ({ children, params }) => {
@@ -15,9 +15,7 @@ const SettingMangements = ({ children, params }) => {
     {
       key: "countries",
       label: (
-        <Link href={`/${userId}/company/settings/countries`}>
-          Countries
-        </Link>
+        <Link href={`/${userId}/company/settings/countries`}>Countries</Link>
       ),
     },
     {
@@ -31,13 +29,25 @@ const SettingMangements = ({ children, params }) => {
     {
       key: "industries",
       label: (
-        <Link href={`/${userId}/company/settings/industries`}>
-          Industries
+        <Link href={`/${userId}/company/settings/industries`}>Industries</Link>
+      ),
+    },
+    {
+      key: "companyType",
+      label: (
+        <Link href={`/${userId}/company/settings/companyType`}>
+          Company type
         </Link>
       ),
     },
-    
-    
+    {
+      key: "locatedAt",
+      label: (
+        <Link href={`/${userId}/company/settings/locatedAt`}>
+          Locations
+        </Link>
+      ),
+    },
   ];
   return (
     <Layout style={{ padding: "0px", height: "90vh", borderRadius: 6 }}>

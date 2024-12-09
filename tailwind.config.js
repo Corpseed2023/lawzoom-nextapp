@@ -9,7 +9,7 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        gilroy: ['"Gilroy-Heavy"', "sans-serif"],
+        gilroy: ["Gilroy-Heavy", "sans-serif"],
       },
       colors: {
         "custom-blue": "#093252",

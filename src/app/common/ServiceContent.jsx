@@ -7,7 +7,7 @@ import {
   LINK_ICON_COLOR,
   LINK_ICON_HEIGTH,
   LINK_ICON_WIDTH,
-} from "../contants";
+} from "../constants";
 
 const ServiceContent = () => {
   return (

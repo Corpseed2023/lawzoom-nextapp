@@ -10,10 +10,13 @@ const SubIndustriesPage = async({params}) => {
     try {
       const response = await store.dispatch(getSubIndustryById(industryId));
       data = response?.payload;
-      console.log("Sub Industry data", response.payload);
+      console.log("Sub Industry data", response);
     } catch (err) {
       console.log(" Sub Industry error", err);
     }
+
+
+    console.log('SubIndusty Data',data)
   return (
     <>
       <SubIndustries data={data} userId={userId}  industryId={industryId} />

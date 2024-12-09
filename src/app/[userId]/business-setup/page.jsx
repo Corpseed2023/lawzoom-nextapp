@@ -255,7 +255,7 @@ const BusinessSetup = ({ params }) => {
               7558 640 644
             </Title>
           </Flex>
-          <Text className="text-lg">(9.00 am to 6.00 PM IST, Mon-Fri)</Text>
+          <Text className="text-lg">(9.00 am to 6.00 pm IST, Mon-Fri)</Text>
         </Flex>
       </Flex>
     </>

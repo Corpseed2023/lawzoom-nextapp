@@ -7,12 +7,14 @@ import {
 import { Icon } from "@iconify/react";
 import { Button, Flex, Form, Input, Modal, notification, Typography } from "antd";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 const { Text } = Typography;
 
 const States = ({ data, countryId, userId }) => {
   const dispatch = useDispatch();
+  const router=useRouter()
   const [form] = Form.useForm();
   const [openModal, setOpenModal] = useState(false);
   const [editData, setEditData] = useState(null);
@@ -61,7 +63,7 @@ const States = ({ data, countryId, userId }) => {
             });
             setOpenModal(false);
             form.resetFields();
-            window.location.reload();
+            router.refresh()
           } else {
             notification.error({ message: "Something went wrong !" });
           }
@@ -76,7 +78,7 @@ const States = ({ data, countryId, userId }) => {
             });
             setOpenModal(false);
             form.resetFields();
-            window.location.reload();
+            router.refresh()
           } else {
             notification.error({ message: "Something went wrong!" });
           }

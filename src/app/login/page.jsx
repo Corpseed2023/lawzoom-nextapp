@@ -14,7 +14,7 @@ import logo from "../../assets/lowZoom.png";
 import Image from "next/image";
 import Link from "next/link";
 import { Icon } from "@iconify/react";
-import { ICON_HEIGHT, ICON_WIDTH } from "../contants";
+import { ICON_HEIGHT, ICON_WIDTH } from "../constants";
 import { useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
 import { loginUser } from "../redux-toolkit/slices/authSlice";

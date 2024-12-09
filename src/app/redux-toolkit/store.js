@@ -4,6 +4,7 @@ import authSlice from "../redux-toolkit/slices/authSlice";
 import commonSlice from "../redux-toolkit/slices/commonSlice";
 import settingSlice from "../redux-toolkit/slices/settingSlice";
 import companySlice from "../redux-toolkit/slices/companySlice";
+import usersSlice from "../redux-toolkit/slices/usersSlice";
 
 const store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ const store = configureStore({
     common: commonSlice,
     setting: settingSlice,
     company: companySlice,
+    users:usersSlice
   },
 });
 

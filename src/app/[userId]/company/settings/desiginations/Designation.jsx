@@ -20,11 +20,13 @@ import {
 import CommonTable from "@/app/common/CommonTable";
 import store from "@/app/redux-toolkit/store";
 import { Icon } from "@iconify/react";
+import { useRouter } from "next/navigation";
 
 const { Text } = Typography;
 
-const Designation = ({ data, userId, fetchDesiginations }) => {
+const Designation = ({ data, userId }) => {
   const dispatch = useDispatch();
+  const router = useRouter();
   const [form] = Form.useForm();
   const [openModal, setOpenModal] = useState(false);
   const [editData, setEditData] = useState(null);
@@ -35,7 +37,7 @@ const Designation = ({ data, userId, fetchDesiginations }) => {
         editDesigination({
           designationName: values?.designation,
           designationId: editData?.id,
-          userID:userId,
+          userID: userId,
         })
       )
         .then((resp) => {
@@ -45,7 +47,8 @@ const Designation = ({ data, userId, fetchDesiginations }) => {
             });
             setOpenModal(false);
             form.resetFields();
-            window.location.reload();
+            router.refresh();
+            editData(null);
           } else {
             notification.error({ message: "Something went wrong!" });
           }
@@ -60,7 +63,7 @@ const Designation = ({ data, userId, fetchDesiginations }) => {
             });
             setOpenModal(false);
             form.resetFields();
-            window.location.reload();
+            router.refresh();
           } else {
             notification.error({ message: "Something went wrong!" });
           }
@@ -76,7 +79,7 @@ const Designation = ({ data, userId, fetchDesiginations }) => {
           notification.success({
             message: "Desigination deleted successfully !.",
           });
-          window.location.reload();
+          router.refresh();
         } else {
           notification.error({ message: "Something went wrong !." });
         }
@@ -93,7 +96,7 @@ const Designation = ({ data, userId, fetchDesiginations }) => {
   };
 
   const columns = [
-    { dataIndex: "id", title: "Id", width: 80 },
+    { dataIndex: "designationId", title: "Id", width: 80 },
     { dataIndex: "designationName", title: "Designations" },
     {
       dataIndex: "edit",
@@ -125,18 +128,25 @@ const Designation = ({ data, userId, fetchDesiginations }) => {
     <>
       <Flex justify="space-between" align="center" className="p-1 pt-0">
         <Text className="main-heading-text">Designation List</Text>
-        <Button type="primary" onClick={() => setOpenModal(true)}>
+        <Button
+          type="primary"
+          onClick={() => {
+            setOpenModal(true);
+            setEditData(null);
+            form.resetFields();
+          }}
+        >
           Add Designation
         </Button>
       </Flex>
       <CommonTable
         data={data}
         columns={columns}
-        rowKey={(row) => row?.id}
+        rowKey={(row) => row?.designationId}
         scroll={{ y: 600 }}
       />
       <Modal
-        title={editData?"Edit designation":"Create designation"}
+        title={editData ? "Edit designation" : "Create designation"}
         open={openModal}
         onCancel={() => setOpenModal(false)}
         onClose={() => setOpenModal(false)}

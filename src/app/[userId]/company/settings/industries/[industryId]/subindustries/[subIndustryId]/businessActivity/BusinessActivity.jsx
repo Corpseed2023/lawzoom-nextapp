@@ -17,12 +17,14 @@ import {
   Typography,
 } from "antd";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 const { Text } = Typography;
 
 const BusinessActivity = ({ data, industryId, subIndustryId, userId }) => {
   const dispatch = useDispatch();
+  const router=useRouter()
   const [form] = Form.useForm();
   const [openModal, setOpenModal] = useState(false);
   const [editData, setEditData] = useState(null);
@@ -42,7 +44,7 @@ const BusinessActivity = ({ data, industryId, subIndustryId, userId }) => {
           notification.success({
             message: "Business activity deleted successfully !.",
           });
-          window.location.reload();
+          router.refresh()
         } else {
           notification.error({ message: "Something went wrong !." });
         }
@@ -99,7 +101,8 @@ const BusinessActivity = ({ data, industryId, subIndustryId, userId }) => {
             });
             setOpenModal(false);
             form.resetFields();
-            window.location.reload();
+            router.refresh()
+            setEditData(null)
           } else {
             notification.error({ message: "Something went wrong !" });
           }
@@ -120,7 +123,7 @@ const BusinessActivity = ({ data, industryId, subIndustryId, userId }) => {
             });
             setOpenModal(false);
             form.resetFields();
-            window.location.reload();
+            router.refresh()
           } else {
             notification.error({ message: "Something went wrong !" });
           }
@@ -132,7 +135,14 @@ const BusinessActivity = ({ data, industryId, subIndustryId, userId }) => {
     <>
       <Flex justify="space-between" align="center" className="p-1 pt-0">
         <Text className="main-heading-text">Business activity list</Text>
-        <Button type="primary" onClick={() => setOpenModal(true)}>
+        <Button
+          type="primary"
+          onClick={() => {
+            setOpenModal(true);
+            form.resetFields();
+            setEditData(null);
+          }}
+        >
           Add Business activity
         </Button>
       </Flex>

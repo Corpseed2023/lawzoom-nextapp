@@ -9,9 +9,9 @@ const BusinessActivityPage = async ({ params }) => {
   try {
     const response = await store.dispatch(getBusinessActivityBySubIndustryId(subIndustryId));
     data = response?.payload;
-    console.log("Sub Industry data", response.payload);
+    console.log("Business activity data", response.payload);
   } catch (err) {
-    console.log(" Sub Industry error", err);
+    console.log("Business activity error", err);
   }
   return (
     <>

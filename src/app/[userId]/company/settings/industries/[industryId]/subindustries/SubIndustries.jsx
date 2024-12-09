@@ -17,12 +17,14 @@ import {
   Typography,
 } from "antd";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 const { Text } = Typography;
 
 const SubIndustries = ({ data, userId, industryId }) => {
   const dispatch = useDispatch();
+  const router = useRouter();
   const [form] = Form.useForm();
   const [openModal, setOpenModal] = useState(false);
   const [editData, setEditData] = useState(null);
@@ -42,7 +44,7 @@ const SubIndustries = ({ data, userId, industryId }) => {
           notification.success({
             message: "Sub industry deleted successfully !.",
           });
-          window.location.reload();
+          router.refresh();
         } else {
           notification.error({ message: "Something went wrong !." });
         }
@@ -106,7 +108,8 @@ const SubIndustries = ({ data, userId, industryId }) => {
             });
             setOpenModal(false);
             form.resetFields();
-            window.location.reload();
+            router.refresh();
+            setEditData(null);
           } else {
             notification.error({ message: "Something went wrong !" });
           }
@@ -123,7 +126,7 @@ const SubIndustries = ({ data, userId, industryId }) => {
             });
             setOpenModal(false);
             form.resetFields();
-            window.location.reload();
+            router.refresh();
           } else {
             notification.error({ message: "Something went wrong !" });
           }
@@ -135,7 +138,14 @@ const SubIndustries = ({ data, userId, industryId }) => {
     <>
       <Flex justify="space-between" align="center" className="p-1 pt-0">
         <Text className="main-heading-text">Subindustries list</Text>
-        <Button type="primary" onClick={() => setOpenModal(true)}>
+        <Button
+          type="primary"
+          onClick={() => {
+            setOpenModal(true);
+            form.resetFields();
+            setEditData(null);
+          }}
+        >
           Add Subindustry
         </Button>
       </Flex>

@@ -3,23 +3,12 @@ import store from "@/app/redux-toolkit/store";
 import { getAllDesiginations } from "@/app/redux-toolkit/slices/settingSlice";
 import Designation from "./Designation";
 
-// export const fetchDesiginations = async () => {
-//   let data = [];
-//   try {
-//     const response = await store.dispatch(getAllDesiginations());
-//     data = response?.payload?.body;
-//     return data;
-//   } catch (err) {
-//     console.error("Error fetching desiginations:", err);
-//     return [];
-//   }
-// };
 
-export const createFetchDesiginations = () => async () => {
+export const fetchDesiginations = async () => {
   let data = [];
   try {
-    const response = await store.dispatch(getAllDesiginations()); // Using baseURL
-    data = response?.payload?.body;
+    const response = await store.dispatch(getAllDesiginations()); 
+    data = response?.payload;
     return data;
   } catch (err) {
     console.error("Error fetching desiginations:", err);
@@ -29,9 +18,8 @@ export const createFetchDesiginations = () => async () => {
 
 const DesiginationPage = async ({ params }) => {
   const { userId } = params;
-  const fetchDesiginations = createFetchDesiginations();
   const data = await fetchDesiginations();
-  console.log('Desigination =======================>',data)
+  console.log("Desigination =======================>", data);
 
   return (
     <>

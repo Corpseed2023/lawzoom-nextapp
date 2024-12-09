@@ -16,12 +16,14 @@ import {
   Typography,
 } from "antd";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 const { Text } = Typography;
 
 const Industries = ({ data, userId }) => {
   const dispatch = useDispatch();
+  const router = useRouter();
   const [form] = Form.useForm();
   const [openModal, setOpenModal] = useState(false);
   const [editData, setEditData] = useState(null);
@@ -96,7 +98,8 @@ const Industries = ({ data, userId }) => {
             });
             setOpenModal(false);
             form.resetFields();
-            window.location.reload();
+            router.refresh()
+            setEditData(null)
           } else {
             notification.error({ message: "Something went wrong !" });
           }
@@ -111,7 +114,7 @@ const Industries = ({ data, userId }) => {
             });
             setOpenModal(false);
             form.resetFields();
-            window.location.reload();
+            router.refresh()
           } else {
             notification.error({ message: "Something went wrong !" });
           }
@@ -123,7 +126,14 @@ const Industries = ({ data, userId }) => {
     <>
       <Flex justify="space-between" align="center" className="p-1 pt-0">
         <Text className="main-heading-text">Industries list</Text>
-        <Button type="primary" onClick={() => setOpenModal(true)}>
+        <Button
+          type="primary"
+          onClick={() => {
+            setOpenModal(true);
+            setEditData(null);
+            form.resetFields();
+          }}
+        >
           Add industry
         </Button>
       </Flex>

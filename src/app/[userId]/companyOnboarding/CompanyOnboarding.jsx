@@ -1,12 +1,14 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Button,
   Col,
   Flex,
   Form,
   Input,
+  InputNumber,
   message,
+  Modal,
   Row,
   Select,
   Steps,
@@ -16,32 +18,52 @@ import {
 import logo from "../../../assets/lowZoom.png";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  getAllCompanyType,
+  getAllDesiginations,
+  getAllIndustries,
+  getAllLocatedAt,
+  getBusinessActivityBySubIndustryId,
+  getSubIndustryById,
+} from "@/app/redux-toolkit/slices/settingSlice";
+import { selectFilter } from "@/app/commons";
+import {
+  getAllCountries,
+  getCitiesByStateId,
+  getStatesByCountryId,
+} from "@/app/redux-toolkit/slices/commonSlice";
 const { Title, Text } = Typography;
 
 const CompanyOnboarding = ({ userId }) => {
   const { token } = theme.useToken();
-  const [current, setCurrent] = useState(0);
+  const dispatch = useDispatch();
   const [form] = Form.useForm();
+  const [activityForm] = Form.useForm();
   const router = useRouter();
+  const designationList = useSelector(
+    (state) => state.setting.desiginationList
+  );
+  const companyTypeList = useSelector((state) => state.setting.companyTypeList);
+  const locationsList = useSelector((state) => state.setting.locatedAtList);
+  const countriesList = useSelector((state) => state.common.countries);
+  const statesList = useSelector((state) => state.common.statesList);
+  const citiesList = useSelector((state) => state.common.citiesList);
+  const industriesList = useSelector((state) => state.setting.industriesList);
+  const subIndusryList = useSelector((state) => state.setting.subIndusryList);
+  const businessActivityList = useSelector(
+    (state) => state.setting.businessActivityList
+  );
+  const [current, setCurrent] = useState(0);
+  const [openModal, setOpenModal] = useState(false);
 
-  const next = () => {
-    // .then(() => {
-    //   setCurrent(current + 1);
-    // });
-    // setCurrent(current + 1);
-    form
-      .validateFields()
-      .then(() => {
-        form.submit()
-        setCurrent(current + 1);
-      })
-      .catch((error) => {
-        console.log("Validation failed:", error);
-      });
-  };
-  const prev = () => {
-    setCurrent(current - 1);
-  };
+  useEffect(() => {
+    dispatch(getAllDesiginations());
+    dispatch(getAllCompanyType());
+    dispatch(getAllCountries());
+    dispatch(getAllLocatedAt());
+    dispatch(getAllIndustries());
+  }, [dispatch]);
 
   const steps = [
     {
@@ -53,10 +75,9 @@ const CompanyOnboarding = ({ userId }) => {
               <Form.Item
                 label="First name"
                 name="firstName"
-                rules={[
-                  { required: true, message: "please enter your first name" },
-                ]}
-                hidden={current !== 0}
+                // rules={[
+                //   { required: true, message: "please enter your first name" },
+                // ]}
               >
                 <Input />
               </Form.Item>
@@ -66,10 +87,9 @@ const CompanyOnboarding = ({ userId }) => {
               <Form.Item
                 label="Last name"
                 name="lastName"
-                rules={[
-                  { required: true, message: "please enter your first name" },
-                ]}
-                hidden={current !== 0}
+                // rules={[
+                //   { required: true, message: "please enter your first name" },
+                // ]}
               >
                 <Input />
               </Form.Item>
@@ -80,12 +100,22 @@ const CompanyOnboarding = ({ userId }) => {
               <Form.Item
                 label="Designation"
                 name="designationId"
-                hidden={current !== 0}
                 // rules={[
                 //   { required: true, message: "please select your designation" },
                 // ]}
               >
-                <Select />
+                <Select
+                  showSearch
+                  options={
+                    designationList?.length > 0
+                      ? designationList?.map((item) => ({
+                          label: item?.designationName,
+                          value: item?.id,
+                        }))
+                      : []
+                  }
+                  filterOption={selectFilter}
+                />
               </Form.Item>
             </Col>
             <Col span={2} />
@@ -93,7 +123,6 @@ const CompanyOnboarding = ({ userId }) => {
               <Form.Item
                 label="Business email id"
                 name="businessEmailId"
-                hidden={current !== 0}
                 // rules={[
                 //   {
                 //     required: true,
@@ -118,7 +147,6 @@ const CompanyOnboarding = ({ userId }) => {
               <Form.Item
                 label="Select type of company"
                 name="companyTypeId"
-                hidden={current !== 1}
                 // rules={[
                 //   {
                 //     required: true,
@@ -126,7 +154,18 @@ const CompanyOnboarding = ({ userId }) => {
                 //   },
                 // ]}
               >
-                <Select />
+                <Select
+                  showSearch
+                  options={
+                    companyTypeList?.length > 0
+                      ? companyTypeList?.map((item) => ({
+                          label: item?.designationName,
+                          value: item?.id,
+                        }))
+                      : []
+                  }
+                  filterOption={selectFilter}
+                />
               </Form.Item>
             </Col>
             <Col span={2} />
@@ -134,8 +173,9 @@ const CompanyOnboarding = ({ userId }) => {
               <Form.Item
                 label="Company name"
                 name="companyName"
-                hidden={current !== 1}
-                // rules={[{ required: true, message: "please enter company name" }]}
+                // rules={[
+                //   { required: true, message: "please enter company name" },
+                // ]}
               >
                 <Input />
               </Form.Item>
@@ -146,7 +186,6 @@ const CompanyOnboarding = ({ userId }) => {
               <Form.Item
                 label="Company pan number / CIN number"
                 name="companyPinCode"
-                hidden={current !== 1}
                 // rules={[
                 //   { required: true, message: "please select your designation" },
                 // ]}
@@ -156,11 +195,7 @@ const CompanyOnboarding = ({ userId }) => {
             </Col>
             <Col span={2} />
             <Col span={11}>
-              <Form.Item
-                label="Company pan number"
-                name="companyPanNumber"
-                hidden={current !== 1}
-              >
+              <Form.Item label="Company pan number" name="companyPanNumber">
                 <Input />
               </Form.Item>
             </Col>
@@ -170,7 +205,6 @@ const CompanyOnboarding = ({ userId }) => {
               <Form.Item
                 label="Country"
                 name="country"
-                hidden={current !== 1}
                 // rules={[
                 //   {
                 //     required: true,
@@ -178,7 +212,19 @@ const CompanyOnboarding = ({ userId }) => {
                 //   },
                 // ]}
               >
-                <Select />
+                <Select
+                  showSearch
+                  options={
+                    countriesList?.length > 0
+                      ? countriesList?.map((item) => ({
+                          label: item?.countryName,
+                          value: item?.id,
+                        }))
+                      : []
+                  }
+                  onChange={(e) => dispatch(getStatesByCountryId(e))}
+                  filterOption={selectFilter}
+                />
               </Form.Item>
             </Col>
             <Col span={2} />
@@ -186,10 +232,23 @@ const CompanyOnboarding = ({ userId }) => {
               <Form.Item
                 label="State"
                 name="companyStateId"
-                hidden={current !== 1}
-                // rules={[{ required: true, message: "please select your state" }]}
+                // rules={[
+                //   { required: true, message: "please select your state" },
+                // ]}
               >
-                <Select />
+                <Select
+                  showSearch
+                  options={
+                    statesList?.length > 0
+                      ? statesList?.map((item) => ({
+                          label: item?.stateName,
+                          value: item?.id,
+                        }))
+                      : []
+                  }
+                  filterOption={selectFilter}
+                  onChange={(e) => dispatch(getCitiesByStateId(e))}
+                />
               </Form.Item>
             </Col>
           </Row>
@@ -198,7 +257,6 @@ const CompanyOnboarding = ({ userId }) => {
               <Form.Item
                 label="City"
                 name="companyCityId"
-                hidden={current !== 1}
                 // rules={[
                 //   {
                 //     required: true,
@@ -206,7 +264,18 @@ const CompanyOnboarding = ({ userId }) => {
                 //   },
                 // ]}
               >
-                <Select />
+                <Select
+                  showSearch
+                  options={
+                    citiesList?.length > 0
+                      ? citiesList?.map((item) => ({
+                          label: item?.cityName,
+                          value: item?.id,
+                        }))
+                      : []
+                  }
+                  filterOption={selectFilter}
+                />
               </Form.Item>
             </Col>
 
@@ -215,7 +284,6 @@ const CompanyOnboarding = ({ userId }) => {
               <Form.Item
                 label="Pin code"
                 name="pinCode"
-                hidden={current !== 1}
                 // rules={[
                 //   {
                 //     required: true,
@@ -239,7 +307,6 @@ const CompanyOnboarding = ({ userId }) => {
               <Form.Item
                 label="Company turnover"
                 name="companyTurnover"
-                hidden={current !== 2}
                 // rules={[
                 //   {
                 //     required: true,
@@ -255,7 +322,6 @@ const CompanyOnboarding = ({ userId }) => {
               <Form.Item
                 label="Located at"
                 name="locatedAtId"
-                hidden={current !== 2}
                 // rules={[
                 //   {
                 //     required: true,
@@ -263,7 +329,18 @@ const CompanyOnboarding = ({ userId }) => {
                 //   },
                 // ]}
               >
-                <Select />
+                <Select
+                  showSearch
+                  options={
+                    locationsList?.length > 0
+                      ? locationsList?.map((item) => ({
+                          label: item?.locationName,
+                          value: item?.id,
+                        }))
+                      : []
+                  }
+                  filterOption={selectFilter}
+                />
               </Form.Item>
             </Col>
           </Row>
@@ -272,23 +349,24 @@ const CompanyOnboarding = ({ userId }) => {
               <Form.Item
                 label="Business activity"
                 name="businessActivityId"
-                hidden={current !== 2}
-                // rules={[
-                //   {
-                //     required: true,
-                //     message: "please select business activity",
-                //   },
-                // ]}
+                rules={[
+                  {
+                    required: true,
+                    message: "please select business activity",
+                  },
+                ]}
               >
-                <Select />
+                <Select
+                  open={false}
+                  onDropdownVisibleChange={(e) => setOpenModal(true)}
+                />
               </Form.Item>
             </Col>
             <Col span={2} />
             <Col span={11}>
               <Form.Item
-                label="Permanent employee in the company"
+                label="Permanent employees in the company"
                 name="permanentEmployee"
-                hidden={current !== 2}
                 // rules={[
                 //   {
                 //     required: true,
@@ -296,7 +374,7 @@ const CompanyOnboarding = ({ userId }) => {
                 //   },
                 // ]}
               >
-                <Input />
+                <InputNumber style={{ width: "100%" }} />
               </Form.Item>
             </Col>
           </Row>
@@ -305,7 +383,6 @@ const CompanyOnboarding = ({ userId }) => {
               <Form.Item
                 label="Contract employee in the company"
                 name="contractEmployee"
-                hidden={current !== 2}
                 // rules={[
                 //   {
                 //     required: true,
@@ -313,7 +390,7 @@ const CompanyOnboarding = ({ userId }) => {
                 //   },
                 // ]}
               >
-                <Input />
+                <InputNumber style={{ width: "100%" }} />
               </Form.Item>
             </Col>
             <Col span={2} />
@@ -321,7 +398,6 @@ const CompanyOnboarding = ({ userId }) => {
               <Form.Item
                 label="Operating unit address"
                 name="operationUnitAddress"
-                hidden={current !== 2}
                 // rules={[
                 //   { required: true, message: "please enter your unit address" },
                 // ]}
@@ -335,7 +411,6 @@ const CompanyOnboarding = ({ userId }) => {
               <Form.Item
                 label="GST number"
                 name="companyRegistrationNumber"
-                hidden={current !== 2}
                 // rules={[{ required: true, message: "please enter GST number" }]}
               >
                 <Input />
@@ -346,6 +421,21 @@ const CompanyOnboarding = ({ userId }) => {
       ),
     },
   ];
+
+  const next = () => {
+    form
+      .validateFields()
+      .then(() => {
+        form.submit();
+        setCurrent(current + 1);
+      })
+      .catch((error) => {
+        console.log("Validation failed:", error);
+      });
+  };
+  const prev = () => {
+    setCurrent(current - 1);
+  };
 
   const [data, setData] = useState({});
 
@@ -361,11 +451,10 @@ const CompanyOnboarding = ({ userId }) => {
     margin: "16px 4px 0px 4px",
   };
 
-  const handleFinish = (values) => {
+  const handleFinish = (values, x, y) => {
     setData((prev) => ({ ...prev, ...values }));
-    console.log("valuessssss", values);
+    console.log("valuessssss", values, x, y);
     message.success("Processing complete!");
-    // router.push(`${userId}/`);
   };
 
   console.log("sjxchgASDGVAISDGHLI", data);
@@ -392,7 +481,7 @@ const CompanyOnboarding = ({ userId }) => {
           form={form}
           layout="vertical"
           size="large"
-          onFinish={handleFinish}
+          onFinish={(values, x, y) => handleFinish(values, x, y)}
         >
           {steps[current].content}
         </Form>
@@ -430,12 +519,96 @@ const CompanyOnboarding = ({ userId }) => {
             </Button>
           )}
           {current === steps.length - 1 && (
-            <Button type="primary" onClick={() => form.submit()}>
+            <Button type="primary" onClick={() => form.submit("hello")}>
               Done
             </Button>
           )}
         </Flex>
       </Flex>
+      <Modal
+        title="Select business activity"
+        width={800}
+        open={openModal}
+        okText="Submit"
+        onCancel={() => setOpenModal(false)}
+        onClose={() => setOpenModal(false)}
+        onOk={() => activityForm.submit()}
+      >
+        <Form form={activityForm} size="large" layout="vertical">
+          <Row>
+            <Col span={24}>
+              <Form.Item label="Business activities" name="businessActivity">
+                <Select variant='filled' showSearch placeholder="Search for business activity" />
+              </Form.Item>
+            </Col>
+          </Row>
+
+          <Flex className="w-full" justify="center" align="center">
+            <Text className="main-heading-text">OR</Text>
+          </Flex>
+
+          <Row>
+            <Col span={11}>
+              <Form.Item label="Select industry" name="industry">
+                <Select
+                  showSearch
+                  options={
+                    industriesList?.length > 0
+                      ? industriesList?.map((item) => ({
+                          label: item?.industryName,
+                          value: item?.id,
+                        }))
+                      : []
+                  }
+                  filterOption={selectFilter}
+                  onChange={(e) => dispatch(getSubIndustryById(e))}
+                />
+              </Form.Item>
+            </Col>
+            <Col span={2} />
+            <Col span={11}>
+              <Form.Item label="Select subindustry" name="subindustry">
+                <Select
+                  showSearch
+                  options={
+                    subIndusryList?.length > 0
+                      ? subIndusryList?.map((item) => ({
+                          label: item?.industrySubCategoryName,
+                          value: item?.id,
+                        }))
+                      : []
+                  }
+                  filterOption={selectFilter}
+                  onChange={(e) =>
+                    dispatch(getBusinessActivityBySubIndustryId(e))
+                  }
+                />
+              </Form.Item>
+            </Col>
+          </Row>
+          <Row>
+            <Col span={24}>
+              <Form.Item
+                label="Select business activity"
+                name="businessActivityId"
+              >
+                <Select
+                  showSearch
+                  options={
+                    businessActivityList?.length > 0
+                      ? businessActivityList?.map((item) => ({
+                          label: item?.businessActivityName,
+                          value: item?.id,
+                        }))
+                      : []
+                  }
+                  filterOption={selectFilter}
+                />
+              </Form.Item>
+            </Col>
+          </Row>
+        </Form>
+      </Modal>
     </>
   );
 };

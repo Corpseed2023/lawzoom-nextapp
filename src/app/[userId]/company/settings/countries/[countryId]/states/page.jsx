@@ -5,11 +5,12 @@ import store from "@/app/redux-toolkit/store";
 
 const StatesPage = async ({ params }) => {
   const { userId, countryId } = params;
+  console.log('sdkvjnasdkvnasdk',params)
   let data = [];
   try {
     const response = await store.dispatch(getStatesByCountryId(countryId));
     data = response?.payload;
-    console.log("dkcjnskldjvhsklj", data.payload);
+    console.log("dkcjnskldjvhsklj", data);
   } catch (err) {
     console.log("Errrrorrrrr", err);
   }

@@ -2,6 +2,8 @@ import localFont from "next/font/local";
 import "./globals.css";
 import { ConfigProvider } from "antd";
 import Providers from "./Providers";
+import { Suspense } from "react";
+import Loading from "./loading";
 
 export const metadata = {
   title: "Law zoom",
@@ -12,40 +14,46 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body>
-        <ConfigProvider
-          theme={{
-            token: {
-              borderRadius: 6,
-              fontSize: 13,
-            },
-            components: {
-              Input: {
-                borderRadius: 5,
-                borderRadiusLG: 5,
+        <Suspense fallback={<Loading />}>
+          <ConfigProvider
+            theme={{
+              token: {
+                borderRadius: 6,
+                fontSize: 13,
               },
-              Select: {
-                borderRadius: 5,
-                borderRadiusLG: 5,
+              components: {
+                Input: {
+                  borderRadius: 5,
+                  borderRadiusLG: 5,
+                },
+                InputNumber: {
+                  borderRadius: 5,
+                  borderRadiusLG: 5,
+                },
+                Select: {
+                  borderRadius: 5,
+                  borderRadiusLG: 5,
+                },
+                Button: {
+                  borderRadius: 4,
+                  borderRadiusLG: 4,
+                  borderRadiusSM: 4,
+                },
+                Menu: {
+                  itemHeight: 32,
+                },
+                Table: {
+                  cellPaddingBlock: 12,
+                  selectionColumnWidth: 24,
+                  cellPaddingInline: 12,
+                  padding: 12,
+                },
               },
-              Button: {
-                borderRadius: 4,
-                borderRadiusLG: 4,
-                borderRadiusSM: 4,
-              },
-              Menu: {
-                itemHeight: 32,
-              },
-              Table: {
-                cellPaddingBlock: 12,
-                selectionColumnWidth: 24,
-                cellPaddingInline: 12,
-                padding: 12,
-              },
-            },
-          }}
-        >
-          <Providers>{children}</Providers>
-        </ConfigProvider>
+            }}
+          >
+            <Providers>{children}</Providers>
+          </ConfigProvider>
+        </Suspense>
       </body>
     </html>
   );

@@ -15,11 +15,13 @@ import {
   Typography,
 } from "antd";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 const { Text } = Typography;
 
 const Countries = ({ data, userId }) => {
+  const router = useRouter();
   const [form] = Form.useForm();
   const dispatch = useDispatch();
   const [openModal, setOpenModal] = useState(false);
@@ -71,7 +73,7 @@ const Countries = ({ data, userId }) => {
             });
             setOpenModal(false);
             form.resetFields();
-            window.location.reload();
+            router.refresh();
           } else {
             notification.error({ message: "Something went wrong !." });
           }
@@ -88,7 +90,7 @@ const Countries = ({ data, userId }) => {
             });
             setOpenModal(false);
             form.resetFields();
-            window.location.reload();
+            router.refresh();
           } else {
             notification.error({ message: "Something went wrong !." });
           }
@@ -103,7 +105,9 @@ const Countries = ({ data, userId }) => {
     <>
       <Flex justify="space-between" align="center" className="p-1 pt-0">
         <Text className="main-heading-text">Country list</Text>
-        <Button type="primary" onClick={()=>setOpenModal(true)}>Add country</Button>
+        <Button type="primary" onClick={() => setOpenModal(true)}>
+          Add country
+        </Button>
       </Flex>
       <CommonTable
         data={data}

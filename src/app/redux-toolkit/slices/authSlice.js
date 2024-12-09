@@ -2,17 +2,17 @@ import api from "@/app/httpRequest";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 export const loginUser = createAsyncThunk("loginUser", async (data) => {
-  const response = await api.post(`/api/auth/token`, data);
+  const response = await api.post(`/token`, data);
   return response.data;
 });
 
 export const signupUser = createAsyncThunk("", async (data) => {
-  const response = await api.post(`/api/auth/signup`, data);
+  const response = await api.post(`/signup`, data);
   return response.data;
 });
 
 export const genrateOpt = createAsyncThunk("genrateOpt", async (data) => {
-  const response = await api.post(`/api/auth/otp/generateOTP`, data);
+  const response = await api.post(`/otp/generateOTP`, data);
   return response.data;
 });
 
