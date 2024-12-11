@@ -1,11 +1,11 @@
 "use client";
-import CommonTable from "@/app/common/CommonTable";
+import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import {
-  createCompanyType,
-  deleteCompanyType,
-  editCompanyType,
+  createDepartment,
+  deleteDepartment,
+  updateDepartment,
 } from "@/app/redux-toolkit/slices/settingSlice";
-import { Icon } from "@iconify/react";
 import {
   Button,
   Flex,
@@ -16,24 +16,66 @@ import {
   Popconfirm,
   Typography,
 } from "antd";
+import { Icon } from "@iconify/react";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import CommonTable from "@/app/common/CommonTable";
+import Link from "next/link";
 const { Text, Title } = Typography;
 
-const CompanyType = ({ data, userId }) => {
+const Department = ({ data, userId }) => {
   const dispatch = useDispatch();
   const router = useRouter();
   const [form] = Form.useForm();
   const [openModal, setOpenModal] = useState(false);
   const [editData, setEditData] = useState(null);
 
+  const handleFinish = (values) => {
+    if (editData) {
+      dispatch(
+        updateDepartment({
+          ...values,
+          id: editData?.id,
+          userId: userId,
+        })
+      )
+        .then((resp) => {
+          if (resp.meta.requestStatus === "fulfilled") {
+            notification.success({
+              message: "Department updated successfully!",
+            });
+            setOpenModal(false);
+            form.resetFields();
+            router.refresh();
+            editData(null);
+          } else {
+            notification.error({ message: "Something went wrong!" });
+          }
+        })
+        .catch(() => notification.error({ message: "Something went wrong!" }));
+    } else {
+      dispatch(createDepartment({ ...values, userId }))
+        .then((resp) => {
+          if (resp.meta.requestStatus === "fulfilled") {
+            notification.success({
+              message: "Department added successfully!",
+            });
+            setOpenModal(false);
+            form.resetFields();
+            router.refresh();
+          } else {
+            notification.error({ message: "Something went wrong!" });
+          }
+        })
+        .catch(() => notification.error({ message: "Something went wrong!" }));
+    }
+  };
+
   const handleDelete = (id) => {
-    dispatch(deleteCompanyType(id))
+    dispatch(deleteDepartment(id))
       .then((resp) => {
         if (resp.meta.requestStatus === "fulfilled") {
           notification.success({
-            message: "Company type deleted successfully !.",
+            message: "Department deleted successfully !.",
           });
           router.refresh();
         } else {
@@ -45,20 +87,22 @@ const CompanyType = ({ data, userId }) => {
 
   const handleEdit = (data) => {
     form.setFieldsValue({
-      companyTypeName: data?.companyTypeName,
+      departmentName: data?.departmentName,
     });
     setEditData(data);
     setOpenModal(true);
   };
 
   const columns = [
+    { dataIndex: "id", title: "Id", width: 80 },
     {
-      dataIndex: "id",
-      title: "Id",
-    },
-    {
-      dataIndex: "companyTypeName",
-      title: "Company type",
+      dataIndex: "departmentName",
+      title: "Department name",
+      render: (_, data) => (
+        <Link href={`department/${data?.id}/designation`}>
+          {data?.departmentName}
+        </Link>
+      ),
     },
     {
       dataIndex: "edit",
@@ -74,7 +118,7 @@ const CompanyType = ({ data, userId }) => {
       title: "Delete",
       render: (_, data) => (
         <Popconfirm
-          title="Delete company type"
+          title="Delete department"
           description="Are you sure to delete the task"
           onConfirm={() => handleDelete(data?.id)}
         >
@@ -86,49 +130,10 @@ const CompanyType = ({ data, userId }) => {
     },
   ];
 
-  const handleFinish = (values) => {
-    if (editData) {
-      dispatch(
-        editCompanyType({
-          data: { ...values, userId },
-          id: editData?.id,
-        })
-      )
-        .then((resp) => {
-          if (resp.meta.requestStatus === "fulfilled") {
-            notification.success({
-              message: "Company type updated successfully!",
-            });
-            setOpenModal(false);
-            form.resetFields();
-            router.refresh();
-          } else {
-            notification.error({ message: "Something went wrong!" });
-          }
-        })
-        .catch(() => notification.error({ message: "Something went wrong!" }));
-    } else {
-      dispatch(createCompanyType({ ...values, userId }))
-        .then((resp) => {
-          if (resp.meta.requestStatus === "fulfilled") {
-            notification.success({
-              message: "Company type added successfully!",
-            });
-            setOpenModal(false);
-            form.resetFields();
-            router.refresh();
-          } else {
-            notification.error({ message: "Something went wrong!" });
-          }
-        })
-        .catch(() => notification.error({ message: "Something went wrong!" }));
-    }
-  };
-
   return (
     <>
       <Flex justify="space-between" align="center" className="mb-2">
-        <Title level={4}>Company type list</Title>
+        <Title level={4}>Department List</Title>
         <Button
           type="primary"
           onClick={() => {
@@ -137,17 +142,17 @@ const CompanyType = ({ data, userId }) => {
             form.resetFields();
           }}
         >
-          Add company type
+          Add Department
         </Button>
       </Flex>
       <CommonTable
         data={data}
         columns={columns}
-        rowKey={(row) => row?.id}
+        rowKey={(row) => row?.designationId}
         scroll={{ y: 600 }}
       />
       <Modal
-        title={editData ? "Edit company type" : "Create company type"}
+        title={editData ? "Edit department" : "Create department"}
         open={openModal}
         onCancel={() => setOpenModal(false)}
         onClose={() => setOpenModal(false)}
@@ -156,9 +161,9 @@ const CompanyType = ({ data, userId }) => {
       >
         <Form layout="vertical" form={form} onFinish={handleFinish}>
           <Form.Item
-            label="Company type"
-            name="companyTypeName"
-            rules={[{ required: true, message: "Please enter company type" }]}
+            label="Department"
+            name="departmentName"
+            rules={[{ required: true, message: "Please enter department" }]}
           >
             <Input />
           </Form.Item>
@@ -168,4 +173,4 @@ const CompanyType = ({ data, userId }) => {
   );
 };
 
-export default CompanyType;
+export default Department;

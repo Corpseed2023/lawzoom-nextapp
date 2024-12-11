@@ -19,7 +19,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-const { Text } = Typography;
+const { Text, Title } = Typography;
+const { Search } = Input;
 
 const Industries = ({ data, userId }) => {
   const dispatch = useDispatch();
@@ -98,8 +99,8 @@ const Industries = ({ data, userId }) => {
             });
             setOpenModal(false);
             form.resetFields();
-            router.refresh()
-            setEditData(null)
+            router.refresh();
+            setEditData(null);
           } else {
             notification.error({ message: "Something went wrong !" });
           }
@@ -114,7 +115,7 @@ const Industries = ({ data, userId }) => {
             });
             setOpenModal(false);
             form.resetFields();
-            router.refresh()
+            router.refresh();
           } else {
             notification.error({ message: "Something went wrong !" });
           }
@@ -124,8 +125,17 @@ const Industries = ({ data, userId }) => {
   };
   return (
     <>
-      <Flex justify="space-between" align="center" className="p-1 pt-0">
-        <Text className="main-heading-text">Industries list</Text>
+      <Flex justify="space-between" align="center" className="mb-2">
+        <Title level={4}>Industries list</Title>
+      </Flex>
+      <Flex className="w-full mb-2" justify='space-between'>
+        <Search
+          className="w-1/3"
+          enterButton="Search"
+          prefix={
+            <Icon icon="fluent:search-24-regular" width="18" height="18" />
+          }
+        />
         <Button
           type="primary"
           onClick={() => {

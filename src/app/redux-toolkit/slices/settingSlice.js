@@ -3,8 +3,8 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 export const getAllDesiginations = createAsyncThunk(
   "getAllDesiginations",
-  async () => {
-    const response = await api.get(`/designation/designation-list`);
+  async (id) => {
+    const response = await api.get(`/designation/designation-list?departmentId=${id}`);
     return response.data;
   }
 );
@@ -200,7 +200,32 @@ export const updateLocatedAt=createAsyncThunk('updateLocatedAt',async(data)=>{
 })
 
 export const deleteLocatedAt=createAsyncThunk('deleteLocatedAt',async(id)=>{
-  const response=await api.delete(`/api/auth/located-at/locatedAt-delete?id=${id}`)
+  const response=await api.delete(`/located-at/locatedAt-delete?id=${id}`)
+  return response.data
+})
+
+export const getAllBusinessActivity=createAsyncThunk('getAllBusinessActivity',async(searchText)=>{
+  const response=await api.get(`/business-activity/active-business-activities?searchTerm=${searchText}`)
+  return response.data
+})
+
+export const createDepartment=createAsyncThunk('createDepartment',async(data)=>{
+  const response=await api.post(`/department/createDepartment?departmentName=${data?.departmentName}&userId=${data?.userId}`)
+  return response.data
+})
+
+export const getAllDepartmentList=createAsyncThunk('getAllDepartment',async()=>{
+  const response=await api.get(`/department/department-list`)
+  return response.data
+})
+
+export const deleteDepartment=createAsyncThunk('deleteDepartment',async(id)=>{
+  const response=await api.get(`/department/delete-department?departmentId=${id}`)
+  return response.data
+})
+
+export const updateDepartment=createAsyncThunk('updateDepartment',async(data)=>{
+  const response=await api.get(`/department/update-department`,data)
   return response.data
 })
 
@@ -213,7 +238,9 @@ const settingSlice = createSlice({
     locatedAtList:[],
     industriesList:[],
     subIndusryList:[],
-    businessActivityList:[]
+    businessActivityList:[],
+    businessActivities:[],
+    departmentList:[]
   },
   extraReducers: (builder) => {
     builder.addCase(getAllDesiginations.pending, (state, action) => {
@@ -286,6 +313,30 @@ const settingSlice = createSlice({
     builder.addCase(getBusinessActivityBySubIndustryId.rejected, (state, action) => {
       state.loading = "error";
       state.businessActivityList = [];
+    });
+
+    builder.addCase(getAllBusinessActivity.pending, (state, action) => {
+      state.loading = "pending";
+    });
+    builder.addCase(getAllBusinessActivity.fulfilled, (state, action) => {
+      state.loading = "success";
+      state.businessActivities = action.payload;
+    });
+    builder.addCase(getAllBusinessActivity.rejected, (state, action) => {
+      state.loading = "error";
+      state.businessActivities = [];
+    });
+
+    builder.addCase(getAllDepartmentList.pending, (state, action) => {
+      state.loading = "pending";
+    });
+    builder.addCase(getAllDepartmentList.fulfilled, (state, action) => {
+      state.loading = "success";
+      state.departmentList = action.payload;
+    });
+    builder.addCase(getAllDepartmentList.rejected, (state, action) => {
+      state.loading = "error";
+      state.departmentList = [];
     });
   },
 });

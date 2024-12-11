@@ -19,7 +19,7 @@ import {
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-const { Text } = Typography;
+const { Text, Title } = Typography;
 
 const LocatedAt = ({ data, userId }) => {
   const dispatch = useDispatch();
@@ -129,8 +129,8 @@ const LocatedAt = ({ data, userId }) => {
 
   return (
     <>
-      <Flex justify="space-between" align="center" className="p-1 pt-0">
-        <Text className="main-heading-text">Locations list</Text>
+      <Flex justify="space-between" align="center" className="mb-2">
+        <Title level={4}>Locations list</Title>
         <Button
           type="primary"
           onClick={() => {

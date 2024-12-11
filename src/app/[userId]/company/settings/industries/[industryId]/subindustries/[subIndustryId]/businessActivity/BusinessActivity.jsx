@@ -16,15 +16,14 @@ import {
   Popconfirm,
   Typography,
 } from "antd";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-const { Text } = Typography;
+const { Text, Title } = Typography;
 
 const BusinessActivity = ({ data, industryId, subIndustryId, userId }) => {
   const dispatch = useDispatch();
-  const router=useRouter()
+  const router = useRouter();
   const [form] = Form.useForm();
   const [openModal, setOpenModal] = useState(false);
   const [editData, setEditData] = useState(null);
@@ -44,7 +43,7 @@ const BusinessActivity = ({ data, industryId, subIndustryId, userId }) => {
           notification.success({
             message: "Business activity deleted successfully !.",
           });
-          router.refresh()
+          router.refresh();
         } else {
           notification.error({ message: "Something went wrong !." });
         }
@@ -101,8 +100,8 @@ const BusinessActivity = ({ data, industryId, subIndustryId, userId }) => {
             });
             setOpenModal(false);
             form.resetFields();
-            router.refresh()
-            setEditData(null)
+            router.refresh();
+            setEditData(null);
           } else {
             notification.error({ message: "Something went wrong !" });
           }
@@ -123,7 +122,7 @@ const BusinessActivity = ({ data, industryId, subIndustryId, userId }) => {
             });
             setOpenModal(false);
             form.resetFields();
-            router.refresh()
+            router.refresh();
           } else {
             notification.error({ message: "Something went wrong !" });
           }
@@ -133,8 +132,8 @@ const BusinessActivity = ({ data, industryId, subIndustryId, userId }) => {
   };
   return (
     <>
-      <Flex justify="space-between" align="center" className="p-1 pt-0">
-        <Text className="main-heading-text">Business activity list</Text>
+      <Flex justify="space-between" align="center" className="mb-2">
+        <Title level={4}>Business activity list</Title>
         <Button
           type="primary"
           onClick={() => {

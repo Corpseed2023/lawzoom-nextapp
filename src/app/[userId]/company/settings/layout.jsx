@@ -19,11 +19,9 @@ const SettingMangements = ({ children, params }) => {
       ),
     },
     {
-      key: "desiginations",
+      key: "department",
       label: (
-        <Link href={`/${userId}/company/settings/desiginations`}>
-          Desiginations
-        </Link>
+        <Link href={`/${userId}/company/settings/department`}>Department</Link>
       ),
     },
     {
@@ -41,11 +39,15 @@ const SettingMangements = ({ children, params }) => {
       ),
     },
     {
+      key: "privilages",
+      label: (
+        <Link href={`/${userId}/company/settings/privilages`}>Privilages</Link>
+      ),
+    },
+    {
       key: "locatedAt",
       label: (
-        <Link href={`/${userId}/company/settings/locatedAt`}>
-          Locations
-        </Link>
+        <Link href={`/${userId}/company/settings/locatedAt`}>Locations</Link>
       ),
     },
   ];
@@ -55,7 +57,7 @@ const SettingMangements = ({ children, params }) => {
         <Sider
           // width={150}
           className="setting-sidebar"
-          collapsible
+          // collapsible
           style={{
             background: colorBgContainer,
             height: "100%",

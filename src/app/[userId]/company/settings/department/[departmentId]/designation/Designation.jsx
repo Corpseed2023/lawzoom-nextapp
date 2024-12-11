@@ -1,11 +1,10 @@
 "use client";
 import React, { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import {
   createDesiginations,
   deleteDesigination,
   editDesigination,
-  getAllDesiginations,
 } from "@/app/redux-toolkit/slices/settingSlice";
 import {
   Button,
@@ -18,11 +17,10 @@ import {
   Typography,
 } from "antd";
 import CommonTable from "@/app/common/CommonTable";
-import store from "@/app/redux-toolkit/store";
 import { Icon } from "@iconify/react";
 import { useRouter } from "next/navigation";
 
-const { Text } = Typography;
+const { Text,Title } = Typography;
 
 const Designation = ({ data, userId }) => {
   const dispatch = useDispatch();
@@ -36,7 +34,7 @@ const Designation = ({ data, userId }) => {
       dispatch(
         editDesigination({
           designationName: values?.designation,
-          designationId: editData?.id,
+          designationId: editData?.designationId,
           userID: userId,
         })
       )
@@ -114,7 +112,7 @@ const Designation = ({ data, userId }) => {
         <Popconfirm
           title="Delete designation"
           description="Are you sure to delete the task"
-          onConfirm={() => handleDelete(data?.id)}
+          onConfirm={() => handleDelete(data?.designationId)}
         >
           <Button size="small" type="text" danger>
             <Icon icon="fluent:delete-24-regular" />
@@ -126,8 +124,8 @@ const Designation = ({ data, userId }) => {
 
   return (
     <>
-      <Flex justify="space-between" align="center" className="p-1 pt-0">
-        <Text className="main-heading-text">Designation List</Text>
+      <Flex justify="space-between" align="center" className="mb-2">
+        <Title level={4}>Designation List</Title>
         <Button
           type="primary"
           onClick={() => {

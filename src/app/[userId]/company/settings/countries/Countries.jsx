@@ -18,7 +18,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-const { Text } = Typography;
+const { Text, Title } = Typography;
 
 const Countries = ({ data, userId }) => {
   const router = useRouter();
@@ -103,8 +103,8 @@ const Countries = ({ data, userId }) => {
 
   return (
     <>
-      <Flex justify="space-between" align="center" className="p-1 pt-0">
-        <Text className="main-heading-text">Country list</Text>
+      <Flex justify="space-between" align="center" className="mb-2">
+        <Title level={4}>Country list</Title>
         <Button type="primary" onClick={() => setOpenModal(true)}>
           Add country
         </Button>

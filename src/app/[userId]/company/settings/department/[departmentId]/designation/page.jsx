@@ -3,11 +3,10 @@ import store from "@/app/redux-toolkit/store";
 import { getAllDesiginations } from "@/app/redux-toolkit/slices/settingSlice";
 import Designation from "./Designation";
 
-
-export const fetchDesiginations = async () => {
+export const fetchDesiginations = async (id) => {
   let data = [];
   try {
-    const response = await store.dispatch(getAllDesiginations()); 
+    const response = await store.dispatch(getAllDesiginations(id));
     data = response?.payload;
     return data;
   } catch (err) {
@@ -16,20 +15,16 @@ export const fetchDesiginations = async () => {
   }
 };
 
-const DesiginationPage = async ({ params }) => {
-  const { userId } = params;
-  const data = await fetchDesiginations();
+const DesignationPage = async ({ params }) => {
+  const { departmentId, userId } = params;
+  const data = await fetchDesiginations(departmentId);
   console.log("Desigination =======================>", data);
 
   return (
     <>
-      <Designation
-        data={data}
-        userId={userId}
-        // getDesigination={fetchDesiginations}
-      />
+      <Designation data={data} userId={userId} departmentId={departmentId} />
     </>
   );
 };
 
-export default DesiginationPage;
+export default DesignationPage;

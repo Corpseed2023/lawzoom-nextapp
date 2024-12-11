@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   Button,
   Col,
@@ -20,6 +20,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  getAllBusinessActivity,
   getAllCompanyType,
   getAllDesiginations,
   getAllIndustries,
@@ -54,8 +55,14 @@ const CompanyOnboarding = ({ userId }) => {
   const businessActivityList = useSelector(
     (state) => state.setting.businessActivityList
   );
+  const businessActivities = useSelector(
+    (state) => state.setting.businessActivities
+  );
   const [current, setCurrent] = useState(0);
   const [openModal, setOpenModal] = useState(false);
+  const [data, setData] = useState({});
+  const [selectedOption, setSelectedOption] = useState(null);
+  const [openDropdown, setOpenDropdown] = useState(false);
 
   useEffect(() => {
     dispatch(getAllDesiginations());
@@ -63,6 +70,7 @@ const CompanyOnboarding = ({ userId }) => {
     dispatch(getAllCountries());
     dispatch(getAllLocatedAt());
     dispatch(getAllIndustries());
+    dispatch(getAllBusinessActivity(""));
   }, [dispatch]);
 
   const steps = [
@@ -346,19 +354,22 @@ const CompanyOnboarding = ({ userId }) => {
           </Row>
           <Row>
             <Col span={11}>
-              <Form.Item
-                label="Business activity"
-                name="businessActivityId"
-                rules={[
-                  {
-                    required: true,
-                    message: "please select business activity",
-                  },
-                ]}
-              >
+              <Form.Item label="Business activity" name="businessActivityId">
                 <Select
+                  // showSearch
+                  onDropdownVisibleChange={() => {
+                    setOpenModal(true);
+                  }}
                   open={false}
-                  onDropdownVisibleChange={(e) => setOpenModal(true)}
+                  options={
+                    businessActivities?.length > 0
+                      ? businessActivities?.map((item) => ({
+                          label: item?.businessActivityName,
+                          value: item?.id,
+                        }))
+                      : []
+                  }
+                  filterOption={selectFilter}
                 />
               </Form.Item>
             </Col>
@@ -396,6 +407,17 @@ const CompanyOnboarding = ({ userId }) => {
             <Col span={2} />
             <Col span={11}>
               <Form.Item
+                label="GST number"
+                name="companyRegistrationNumber"
+                // rules={[{ required: true, message: "please enter GST number" }]}
+              >
+                <Input />
+              </Form.Item>
+            </Col>
+          </Row>
+          <Row>
+            <Col span={24}>
+              <Form.Item
                 label="Operating unit address"
                 name="operationUnitAddress"
                 // rules={[
@@ -403,17 +425,6 @@ const CompanyOnboarding = ({ userId }) => {
                 // ]}
               >
                 <Input.TextArea />
-              </Form.Item>
-            </Col>
-          </Row>
-          <Row>
-            <Col span={11}>
-              <Form.Item
-                label="GST number"
-                name="companyRegistrationNumber"
-                // rules={[{ required: true, message: "please enter GST number" }]}
-              >
-                <Input />
               </Form.Item>
             </Col>
           </Row>
@@ -437,12 +448,11 @@ const CompanyOnboarding = ({ userId }) => {
     setCurrent(current - 1);
   };
 
-  const [data, setData] = useState({});
-
   const items = steps.map((item) => ({
     key: item.title,
     title: item.title,
   }));
+
   const contentStyle = {
     color: token.colorTextTertiary,
     backgroundColor: token.colorFillAlter,
@@ -451,11 +461,22 @@ const CompanyOnboarding = ({ userId }) => {
     margin: "16px 4px 0px 4px",
   };
 
-  const handleFinish = (values, x, y) => {
-    setData((prev) => ({ ...prev, ...values }));
-    console.log("valuessssss", values, x, y);
-    message.success("Processing complete!");
-  };
+  const handleFinish = useCallback(
+    (values, x, y) => {
+      setData((prev) => ({ ...prev, ...values }));
+      console.log("valuessssss", values, x, y);
+      message.success("Processing complete!");
+    },
+    [current]
+  );
+
+  const handleBusinessActivities = useCallback(
+    (values) => {
+      form.setFieldsValue({ businessActivityId: values?.businessActivityId });
+      setOpenModal(false);
+    },
+    [form]
+  );
 
   console.log("sjxchgASDGVAISDGHLI", data);
 
@@ -490,23 +511,22 @@ const CompanyOnboarding = ({ userId }) => {
         <div style={{ display: current === 0 ? "" : "none" }}></div>
         {current > 0 && (
           <Button
-            style={{
-              margin: "0 8px",
-            }}
+            size="large"
+            style={{ padding: "4px 32px", font: 14 }}
             onClick={() => prev()}
           >
             Previous
           </Button>
         )}
         <Flex vertical align="center">
-          <Title level={3} style={{ margin: 0 }} className="text-xl">
+          <Title level={3}  className="text-xl">
             Need help?
           </Title>
           <Flex align="center" gap={4}>
-            <Title level={4} style={{ margin: 0 }}>
+            <Title level={4} >
               Call
             </Title>
-            <Title level={4} style={{ margin: 0, color: "#1677ff" }}>
+            <Title level={4} style={{ color: "#1677ff" }}>
               7558 640 644
             </Title>
           </Flex>
@@ -514,12 +534,25 @@ const CompanyOnboarding = ({ userId }) => {
         </Flex>
         <Flex>
           {current < steps.length - 1 && (
-            <Button type="primary" onClick={() => next()}>
+            <Button
+              type="primary"
+              size="large"
+              style={{ padding: "4px 32px", font: 14 }}
+              onClick={() => next()}
+            >
               Next
             </Button>
           )}
           {current === steps.length - 1 && (
-            <Button type="primary" onClick={() => form.submit("hello")}>
+            <Button
+              type="primary"
+              size="large"
+              style={{ padding: "4px 32px", font: 14 }}
+              onClick={() => {
+                form.submit();
+                router.push(`addUsers`);
+              }}
+            >
               Done
             </Button>
           )}
@@ -529,27 +562,92 @@ const CompanyOnboarding = ({ userId }) => {
         title="Select business activity"
         width={800}
         open={openModal}
-        okText="Submit"
+        okText="Apply"
         onCancel={() => setOpenModal(false)}
         onClose={() => setOpenModal(false)}
         onOk={() => activityForm.submit()}
       >
-        <Form form={activityForm} size="large" layout="vertical">
-          <Row>
-            <Col span={24}>
-              <Form.Item label="Business activities" name="businessActivity">
-                <Select variant='filled' showSearch placeholder="Search for business activity" />
-              </Form.Item>
-            </Col>
-          </Row>
+        <Row>
+          <Col span={24}>
+            <Select
+              className="w-full my-4"
+              size="large"
+              variant="filled"
+              showSearch
+              allowClear
+              onClear={() => {
+                setSelectedOption(null);
+                activityForm.resetFields();
+                form.resetFields(["businessActivityId"]);
+              }}
+              placeholder="Search for business activity"
+              onSearch={(e) => dispatch(getAllBusinessActivity(e?.trim()))}
+              value={selectedOption?.label}
+              filterOption={false}
+              open={openDropdown}
+              onDropdownVisibleChange={(e) => setOpenDropdown(e)}
+              dropdownRender={() => {
+                return (
+                  <div className="grid grid-cols-3 gap-2 p-2 max-h-72 overflow-auto ">
+                    {businessActivities?.map((option) => (
+                      <div
+                        key={option.id}
+                        style={{
+                          backgroundColor:
+                            selectedOption?.value === option?.id
+                              ? "#e6f4ff"
+                              : null,
+                          borderColor:
+                            selectedOption?.value === option?.id
+                              ? "rgba(5, 145, 255, 0.1)"
+                              : null,
+                        }}
+                        className="border border-solid [border-color:#f0f0f0] p-2 text-left rounded-sm bg [background-color:#fafafa] z [z-index:10000] cursor-pointer"
+                        onClick={() => {
+                          setSelectedOption({
+                            label: option?.businessActivityName,
+                            value: option?.id,
+                          });
+                          setOpenDropdown(false);
+                          if (option) {
+                            dispatch(
+                              getBusinessActivityBySubIndustryId(
+                                option?.industrySubCategoryId
+                              )
+                            );
+                            dispatch(
+                              getSubIndustryById(option?.industryCategoryId)
+                            );
 
-          <Flex className="w-full" justify="center" align="center">
-            <Text className="main-heading-text">OR</Text>
-          </Flex>
-
+                            activityForm.setFieldsValue({
+                              subindustryId: option?.industrySubCategoryId,
+                              industryId: option?.industryCategoryId,
+                              businessActivityId: option?.id,
+                            });
+                          }
+                        }}
+                      >
+                        {option.businessActivityName}
+                      </div>
+                    ))}
+                  </div>
+                );
+              }}
+            />
+          </Col>
+        </Row>
+        <Flex className="w-full my-4" justify="center" align="center">
+          <Text className="main-heading-text">OR</Text>
+        </Flex>
+        <Form
+          form={activityForm}
+          size="large"
+          layout="vertical"
+          onFinish={handleBusinessActivities}
+        >
           <Row>
             <Col span={11}>
-              <Form.Item label="Select industry" name="industry">
+              <Form.Item label="Select industry" name="industryId">
                 <Select
                   showSearch
                   options={
@@ -567,7 +665,7 @@ const CompanyOnboarding = ({ userId }) => {
             </Col>
             <Col span={2} />
             <Col span={11}>
-              <Form.Item label="Select subindustry" name="subindustry">
+              <Form.Item label="Select subindustry" name="subindustryId">
                 <Select
                   showSearch
                   options={
@@ -602,6 +700,7 @@ const CompanyOnboarding = ({ userId }) => {
                         }))
                       : []
                   }
+                  onSelect={(x, y) => setSelectedOption(y)}
                   filterOption={selectFilter}
                 />
               </Form.Item>

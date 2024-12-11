@@ -16,11 +16,10 @@ import {
   Popconfirm,
   Typography,
 } from "antd";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-const { Text } = Typography;
+const { Text, Title } = Typography;
 
 const Cities = ({ data, userId, stateId, countryId }) => {
   const dispatch = useDispatch();
@@ -123,8 +122,8 @@ const Cities = ({ data, userId, stateId, countryId }) => {
 
   return (
     <>
-      <Flex justify="space-between" align="center" className="p-1 pt-0">
-        <Text className="main-heading-text">Cities list</Text>
+      <Flex justify="space-between" align="center" className="mb-2">
+        <Title level={4}>Cities list</Title>
         <Button type="primary" onClick={() => setOpenModal(true)}>
           Add city
         </Button>

@@ -20,7 +20,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-const { Text } = Typography;
+const { Text,Title } = Typography;
 
 const SubIndustries = ({ data, userId, industryId }) => {
   const dispatch = useDispatch();
@@ -136,8 +136,8 @@ const SubIndustries = ({ data, userId, industryId }) => {
   };
   return (
     <>
-      <Flex justify="space-between" align="center" className="p-1 pt-0">
-        <Text className="main-heading-text">Subindustries list</Text>
+      <Flex justify="space-between" align="center" className="mb-2">
+        <Title level={4}>Subindustries list</Title>
         <Button
           type="primary"
           onClick={() => {

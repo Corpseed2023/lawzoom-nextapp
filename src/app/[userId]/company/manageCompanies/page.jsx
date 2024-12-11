@@ -1,11 +1,12 @@
-import React from 'react'
+import React from "react";
+import ManageCompanies from "./ManageCompanies";
 
-const ManageCompanies = () => {
+const ManageCompaniesPage = () => {
   return (
-    <div>
-      This is my company management
-    </div>
-  )
-}
+    <>
+      <ManageCompanies />
+    </>
+  );
+};
 
-export default ManageCompanies
+export default ManageCompaniesPage;

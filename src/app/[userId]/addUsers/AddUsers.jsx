@@ -2,6 +2,7 @@
 import {
   Avatar,
   Button,
+  Checkbox,
   Col,
   Divider,
   Flex,
@@ -19,15 +20,30 @@ import logo from "../../../assets/lowZoom.png";
 import Image from "next/image";
 import { Icon } from "@iconify/react";
 import { getProductData } from "@/app/actions";
-const { Text } = Typography;
+import { useDispatch, useSelector } from "react-redux";
+import { getAllRoles } from "@/app/redux-toolkit/slices/commonSlice";
+import { selectFilter } from "@/app/commons";
+import { getAllBusinessActivity } from "@/app/redux-toolkit/slices/settingSlice";
+import { useRouter } from "next/navigation";
+const { Text, Title } = Typography;
 
 const fakeDataUrl = `https://randomuser.me/api/?results=${5}&inc=name,gender,email,nat,picture&noinfo`;
 const AddUsers = () => {
   const [form] = Form.useForm();
+  const dispatch = useDispatch();
+  const router = useRouter();
+
+  const allRoles = useSelector((state) => state.common.allRoles);
+
   const [initLoading, setInitLoading] = useState(true);
   const [openModal, setOpenModal] = useState(false);
   const [data, setData] = useState([]);
   const [list, setList] = useState([]);
+
+  useEffect(() => {
+    dispatch(getAllRoles());
+  }, [dispatch]);
+
   useEffect(() => {
     fetch(fakeDataUrl)
       .then((res) => res.json())
@@ -38,10 +54,8 @@ const AddUsers = () => {
       });
   }, [fakeDataUrl]);
 
-//   const dataProducts= await getProductData()
-//   console.log(dataProducts)
-
-
+  //   const dataProducts= await getProductData()
+  //   console.log(dataProducts)
 
   return (
     <>
@@ -91,17 +105,51 @@ const AddUsers = () => {
               <Skeleton avatar title={false} loading={item.loading} active>
                 <List.Item.Meta
                   avatar={<Avatar src={item.picture.large} />}
-                  title={<a href="https://ant.design">{item.name?.last}</a>}
-                  description="Ant Design, a design language for background applications, is refined by Ant UED Team"
+                  title={<a href="">{item.name?.last}</a>}
+                  description="This company compliance is managing by Corpdseed Ites Pvt Ltd"
                 />
                 <div>content</div>
               </Skeleton>
             </List.Item>
           )}
         />
+
+        <Flex justify={"space-between"} className="w-full px-12 py-6 mt-6">
+          <Button
+            style={{ padding: "4px 32px", font: 14 }}
+            size="large"
+            variant="dashed"
+            onClick={() => router.push("company/dashboard")}
+          >
+            Skip
+          </Button>
+          <Flex vertical align="center">
+            <Title level={3} className="text-xl">
+              Need help?
+            </Title>
+            <Flex align="center" gap={4}>
+              <Title level={4}>Call</Title>
+              <Title level={4} style={{ color: "#1677ff" }}>
+                7558 640 644
+              </Title>
+            </Flex>
+            <Text className="text-lg">(9.00 am to 6.00 PM IST, Mon-Fri)</Text>
+          </Flex>
+          <Flex>
+            <Button
+              type="primary"
+              size="large"
+              style={{ padding: "4px 32px", font: 14 }}
+              onClick={() => router.push("company/dashboard")}
+            >
+              Next
+            </Button>
+          </Flex>
+        </Flex>
       </Flex>
       <Modal
         title="Add users"
+        centered
         width={800}
         open={openModal}
         onCancel={() => setOpenModal(false)}
@@ -109,7 +157,13 @@ const AddUsers = () => {
         okText="Submit"
         onOk={() => form.submit()}
       >
-        <Form layout="vertical" form={form}>
+        <Form
+          layout="vertical"
+          form={form}
+          initialValues={{
+            privilages: ["read", "create"],
+          }}
+        >
           <Row>
             <Col span={11}>
               <Form.Item
@@ -140,7 +194,17 @@ const AddUsers = () => {
                   { required: true, message: "please select accessb type" },
                 ]}
               >
-                <Select />
+                <Select
+                  options={
+                    allRoles?.length > 0
+                      ? allRoles?.map((item) => ({
+                          label: item?.role,
+                          value: item?.id,
+                        }))
+                      : []
+                  }
+                  filterOption={selectFilter}
+                />
               </Form.Item>
             </Col>
             <Col span={2} />
@@ -215,10 +279,94 @@ const AddUsers = () => {
                   },
                 ]}
               >
-                <Select />
+                <Select
+                  options={
+                    allRoles?.length > 0
+                      ? allRoles?.map((item) => ({
+                          label: item?.role,
+                          value: item?.id,
+                        }))
+                      : []
+                  }
+                  filterOption={selectFilter}
+                />
               </Form.Item>
             </Col>
           </Row>
+          <Row>
+            <Col span={24}>
+              {" "}
+              <Flex className="w-full" justify="center">
+                <Text className="main-heading-text">Previlages for users</Text>
+              </Flex>{" "}
+            </Col>
+          </Row>
+          <Form.Item name="privilages" label="Privilages">
+            <Checkbox.Group>
+              <Row gutter={24}>
+                <Col>
+                  <Checkbox
+                    value="read"
+                    style={{
+                      lineHeight: "32px",
+                    }}
+                  >
+                    Read
+                  </Checkbox>
+                </Col>
+                <Col>
+                  <Checkbox
+                    value="create"
+                    style={{
+                      lineHeight: "32px",
+                    }}
+                  >
+                    Create
+                  </Checkbox>
+                </Col>
+                <Col>
+                  <Checkbox
+                    value="update"
+                    style={{
+                      lineHeight: "32px",
+                    }}
+                  >
+                    Update
+                  </Checkbox>
+                </Col>
+                <Col>
+                  <Checkbox
+                    value="delete"
+                    style={{
+                      lineHeight: "32px",
+                    }}
+                  >
+                    Delete
+                  </Checkbox>
+                </Col>
+                <Col>
+                  <Checkbox
+                    value="export"
+                    style={{
+                      lineHeight: "32px",
+                    }}
+                  >
+                    Export
+                  </Checkbox>
+                </Col>
+                <Col>
+                  <Checkbox
+                    value="upload"
+                    style={{
+                      lineHeight: "32px",
+                    }}
+                  >
+                    Upload
+                  </Checkbox>
+                </Col>
+              </Row>
+            </Checkbox.Group>
+          </Form.Item>
         </Form>
       </Modal>
     </>

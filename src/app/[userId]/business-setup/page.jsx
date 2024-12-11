@@ -55,10 +55,10 @@ const BusinessSetup = ({ params }) => {
                 />
               </Flex>
               <Flex vertical>
-                <Title level={1} style={{ margin: 0 }} className="m-0 text-2xl">
+                <Title level={2} >
                   Manage compliance for your{" "}
                 </Title>
-                <Title level={1} style={{ margin: 0 }} className="mt-0">
+                <Title level={2} >
                   existing company
                 </Title>
               </Flex>
@@ -153,19 +153,19 @@ const BusinessSetup = ({ params }) => {
                 />
               </Flex>
               <Flex vertical>
-                <Title level={1} style={{ margin: 0 }} className="m-0 text-2xl">
+                <Title level={2} >
                   Starting new business? Know
                 </Title>
-                <Title level={1} style={{ margin: 0 }} className="mt-0">
+                <Title level={2} >
                   your business approvals
                 </Title>
               </Flex>
             </Flex>
             <Flex vertical wrap>
-              <Text className="text-xl font-medium">
+              <Text className="text-lg font-medium">
                 AI tool to identify business approvals and reduces the
               </Text>
-              <Text className="text-xl font-medium">
+              <Text className="text-lg font-medium">
                 complexity to start businesses in India
               </Text>
             </Flex>
@@ -246,12 +246,12 @@ const BusinessSetup = ({ params }) => {
       </Flex>
       <Flex className="w-full" justify="center">
         <Flex vertical align='center'>
-          <Title level={3} style={{margin:0}} className="text-xl">
+          <Title level={3} >
             Need help?
           </Title>
           <Flex align='center' gap={4}>
-            <Title level={4} style={{margin:0}}>Call</Title>
-            <Title level={4} style={{margin:0,color:'#1677ff'}} >
+            <Title level={4} >Call</Title>
+            <Title level={4} style={{color:'#1677ff'}} >
               7558 640 644
             </Title>
           </Flex>

@@ -5,16 +5,24 @@ import {
   updateStatesForCountry,
 } from "@/app/redux-toolkit/slices/commonSlice";
 import { Icon } from "@iconify/react";
-import { Button, Flex, Form, Input, Modal, notification, Typography } from "antd";
+import {
+  Button,
+  Flex,
+  Form,
+  Input,
+  Modal,
+  notification,
+  Typography,
+} from "antd";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-const { Text } = Typography;
+const { Text, Title } = Typography;
 
 const States = ({ data, countryId, userId }) => {
   const dispatch = useDispatch();
-  const router=useRouter()
+  const router = useRouter();
   const [form] = Form.useForm();
   const [openModal, setOpenModal] = useState(false);
   const [editData, setEditData] = useState(null);
@@ -63,7 +71,7 @@ const States = ({ data, countryId, userId }) => {
             });
             setOpenModal(false);
             form.resetFields();
-            router.refresh()
+            router.refresh();
           } else {
             notification.error({ message: "Something went wrong !" });
           }
@@ -78,7 +86,7 @@ const States = ({ data, countryId, userId }) => {
             });
             setOpenModal(false);
             form.resetFields();
-            router.refresh()
+            router.refresh();
           } else {
             notification.error({ message: "Something went wrong!" });
           }
@@ -89,8 +97,8 @@ const States = ({ data, countryId, userId }) => {
 
   return (
     <>
-      <Flex justify="space-between" align="center" className="p-1 pt-0">
-        <Text className="main-heading-text">States list</Text>
+      <Flex justify="space-between" align="center" className="mb-2">
+        <Title level={4}>States list</Title>
         <Button type="primary" onClick={() => setOpenModal(true)}>
           Add state
         </Button>
