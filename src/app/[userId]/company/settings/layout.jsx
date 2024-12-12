@@ -47,7 +47,7 @@ const SettingMangements = ({ children, params }) => {
     {
       key: "locatedAt",
       label: (
-        <Link href={`/${userId}/company/settings/locatedAt`}>Locations</Link>
+        <Link href={`/${userId}/company/settings/locatedAt`}>Located at</Link>
       ),
     },
   ];

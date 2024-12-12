@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { Breadcrumb, Layout, Menu, theme } from "antd";
+import { Breadcrumb, Button, Flex, Layout, Menu, theme } from "antd";
 import Image from "next/image";
 import logo from "../../../assets/lowzoom.png";
 import Link from "next/link";
@@ -138,7 +138,9 @@ const CompanyLayout = ({ children, params }) => {
           width={ICON_WIDTH}
         />
       ),
-      label: <Link href={`/${userId}/company/settings/countries`}>Setting</Link>,
+      label: (
+        <Link href={`/${userId}/company/settings/countries`}>Setting</Link>
+      ),
     },
   ];
 
@@ -178,22 +180,28 @@ const CompanyLayout = ({ children, params }) => {
             padding: "0 8px 8px",
           }}
         >
-          <Breadcrumb
-            items={[
-              {
-                title: "Home",
-              },
-              {
-                title: "List",
-              },
-              {
-                title: "App",
-              },
-            ]}
-            style={{
-              margin: "16px 0",
-            }}
-          />
+          <Flex justify="space-between" align="center">
+            <Breadcrumb
+              items={[
+                {
+                  title: "Home",
+                },
+                {
+                  title: "List",
+                },
+                {
+                  title: "App",
+                },
+              ]}
+              style={{
+                margin: "16px 0",
+              }}
+            />
+            <Button type="text" size="large">
+              <Icon icon="fluent:sign-out-24-regular" width="22" height="22" />{" "}
+              Logout
+            </Button>
+          </Flex>
           <Content
             style={{
               padding: 0,

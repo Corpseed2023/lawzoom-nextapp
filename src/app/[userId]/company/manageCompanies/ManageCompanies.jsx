@@ -12,20 +12,39 @@ import {
   Row,
   Typography,
 } from "antd";
-import React from "react";
+import React, { useEffect } from "react";
+import AddNEditCompanyForm from "./AddCompanyForm";
+import {
+  getAllBusinessActivity,
+  getAllCompanyType,
+  getAllDesiginations,
+  getAllIndustries,
+  getAllLocatedAt,
+} from "@/app/redux-toolkit/slices/settingSlice";
+import { useDispatch } from "react-redux";
+import { getAllCountries } from "@/app/redux-toolkit/slices/commonSlice";
+import { useRouter } from "next/navigation";
 const { Title, Text } = Typography;
 
-const ManageCompanies = () => {
+const ManageCompanies = ({ userId }) => {
+  const dispatch = useDispatch();
+  const router = useRouter();
+
+  useEffect(() => {
+    dispatch(getAllCompanyType());
+    dispatch(getAllCountries());
+    dispatch(getAllLocatedAt());
+    dispatch(getAllIndustries());
+    dispatch(getAllBusinessActivity(""));
+  }, [dispatch]);
+
   return (
     <div className="p-4">
       <Flex>
         <Title level={2}>Manage companies</Title>
       </Flex>
-      <Flex justify="space-between" className="w-full my-4">
-        <Button size="large" type="text" variant="filled">
-          <Icon icon="fluent:add-24-regular" width="24" height="24" />
-          Add new company
-        </Button>
+      <Flex justify="space-between" className="w-full my-2">
+        <AddNEditCompanyForm userId={userId} />
         <Button size="large" type="text" variant="filled">
           <Icon
             icon="fluent:arrow-download-24-regular"
@@ -48,6 +67,7 @@ const ManageCompanies = () => {
       </Flex>
       <Flex className="w-full my-4">
         <Card
+          onClick={() => router.push(`manageCompanies/${1}/companyInfo`)}
           hoverable
           title={
             <Flex align="center" gap={8}>
@@ -75,10 +95,7 @@ const ManageCompanies = () => {
                   Delete
                 </Button>
               </Popconfirm>
-              <Button type="text" size="small">
-                <Icon icon="fluent:edit-24-regular" height={16} width={16} />
-                Edit
-              </Button>
+              <AddNEditCompanyForm edit={true} userId={userId} />
             </Flex>
           }
         >

@@ -62,7 +62,7 @@ const SignupOtp = () => {
         </Title>
         <Form
           size="large"
-          style={{ width: "70%" }}
+          style={{ width: "75%" }}
           layout="vertical"
           onFinish={handleSubmitUserDetail}
         >
@@ -72,7 +72,7 @@ const SignupOtp = () => {
             rules={[{ required: true, message: "Please enter your email id" }]}
           >
             <Input
-              placeholder="example@email.com"
+              placeholder="your name"
               prefix={
                 <Icon
                   icon="fluent:person-24-regular"

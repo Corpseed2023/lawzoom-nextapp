@@ -2,7 +2,7 @@ import api from "@/app/httpRequest";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 export const createCompany = createAsyncThunk("createCompany", async (data) => {
-  const response = await api.post(`/company/addCompany`, data);
+  const response = await api.post(`/company/addCompany?userId=${data?.userId}`, data);
   return response.data;
 });
 

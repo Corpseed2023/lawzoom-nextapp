@@ -20,9 +20,9 @@ import CommonTable from "@/app/common/CommonTable";
 import { Icon } from "@iconify/react";
 import { useRouter } from "next/navigation";
 
-const { Text,Title } = Typography;
+const { Text, Title } = Typography;
 
-const Designation = ({ data, userId }) => {
+const Designation = ({ data, userId, departmentId }) => {
   const dispatch = useDispatch();
   const router = useRouter();
   const [form] = Form.useForm();
@@ -33,7 +33,7 @@ const Designation = ({ data, userId }) => {
     if (editData) {
       dispatch(
         editDesigination({
-          designationName: values?.designation,
+          designationName: values?.designationName,
           designationId: editData?.designationId,
           userID: userId,
         })
@@ -46,14 +46,13 @@ const Designation = ({ data, userId }) => {
             setOpenModal(false);
             form.resetFields();
             router.refresh();
-            editData(null);
           } else {
             notification.error({ message: "Something went wrong!" });
           }
         })
         .catch(() => notification.error({ message: "Something went wrong!" }));
     } else {
-      dispatch(createDesiginations({ ...values, userId }))
+      dispatch(createDesiginations({ ...values, userId, departmentId }))
         .then((resp) => {
           if (resp.meta.requestStatus === "fulfilled") {
             notification.success({
@@ -87,7 +86,7 @@ const Designation = ({ data, userId }) => {
 
   const handleEdit = (data) => {
     form.setFieldsValue({
-      designation: data?.designationName,
+      designationName: data?.designationName,
     });
     setEditData(data);
     setOpenModal(true);
@@ -154,7 +153,7 @@ const Designation = ({ data, userId }) => {
         <Form layout="vertical" form={form} onFinish={handleFinish}>
           <Form.Item
             label="Designation"
-            name="designation"
+            name="designationName"
             rules={[{ required: true, message: "Please enter designation" }]}
           >
             <Input />

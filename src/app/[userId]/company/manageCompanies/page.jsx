@@ -1,10 +1,11 @@
 import React from "react";
 import ManageCompanies from "./ManageCompanies";
 
-const ManageCompaniesPage = () => {
+const ManageCompaniesPage = ({ params }) => {
+  const { userId } = params;
   return (
     <>
-      <ManageCompanies />
+      <ManageCompanies userId={userId} />
     </>
   );
 };

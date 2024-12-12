@@ -4,7 +4,9 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 export const getAllDesiginations = createAsyncThunk(
   "getAllDesiginations",
   async (id) => {
-    const response = await api.get(`/designation/designation-list?departmentId=${id}`);
+    const response = await api.get(
+      `/designation/designation-list?departmentId=${id}`
+    );
     return response.data;
   }
 );
@@ -12,9 +14,7 @@ export const getAllDesiginations = createAsyncThunk(
 export const createDesiginations = createAsyncThunk(
   "createDesiginations",
   async (data) => {
-    const response = await api.post(
-      `/designation/createDesignation?designationName=${data?.designation}&userId=${data?.userId}`
-    );
+    const response = await api.post(`/designation/createDesignation`, data);
     return response.data;
   }
 );
@@ -32,10 +32,7 @@ export const deleteDesigination = createAsyncThunk(
 export const editDesigination = createAsyncThunk(
   "editDesigination",
   async (data) => {
-    const response = await api.put(
-      `/designation/update-designation`,
-      data
-    );
+    const response = await api.put(`/designation/update-designation`, data);
     return response.data;
   }
 );
@@ -43,9 +40,7 @@ export const editDesigination = createAsyncThunk(
 export const getAllIndustries = createAsyncThunk(
   "getAllIndustries",
   async () => {
-    const response = await api.get(
-      `/industry-category/fetch-all-industry`
-    );
+    const response = await api.get(`/industry-category/fetch-all-industry`);
     return response.data;
   }
 );
@@ -63,10 +58,7 @@ export const createIndustry = createAsyncThunk(
 export const updateIndustry = createAsyncThunk(
   "updateIndustry",
   async (data) => {
-    const response = await api.put(
-      `/industry-category/update-industry`,
-      data
-    );
+    const response = await api.put(`/industry-category/update-industry`, data);
     return response.data;
   }
 );
@@ -135,10 +127,7 @@ export const getBusinessActivityBySubIndustryId = createAsyncThunk(
 export const updateBusinessActivityBySubIndustryAndId = createAsyncThunk(
   "updateBusinessActivityBySubIndustryAndId",
   async (data) => {
-    const response = await api.put(
-      `/business-activity/update-activity`,
-      data
-    );
+    const response = await api.put(`/business-activity/update-activity`, data);
     return response.data;
   }
 );
@@ -164,7 +153,10 @@ export const getAllCompanyType = createAsyncThunk(
 export const editCompanyType = createAsyncThunk(
   "editCompanyType",
   async (data) => {
-    const response = await api.put(`/company/updateCompanyType?id=${data?.id}`, data?.data);
+    const response = await api.put(
+      `/company/updateCompanyType?id=${data?.id}`,
+      data?.data
+    );
     return response.data;
   }
 );
@@ -172,62 +164,96 @@ export const editCompanyType = createAsyncThunk(
 export const createCompanyType = createAsyncThunk(
   "createCompanyType",
   async (data) => {
-    const response = await api.post(
-      `/company/createCompanyType?companyTypeName=${data?.companyTypeName}&userId=${data?.userId}`
+    const response = await api.post(`/company/createCompanyType`, data);
+    return response.data;
+  }
+);
+
+export const deleteCompanyType = createAsyncThunk(
+  "deleteCompanyType",
+  async (id) => {
+    const response = await api.delete(`/company/deleteCompanyType?id=${id}`);
+    return response.data;
+  }
+);
+
+export const createdLocatedAt = createAsyncThunk(
+  "createdLocatedAt",
+  async (data) => {
+    const response = await api.post(`/located-at/create-locatedAt`, data);
+    return response.data;
+  }
+);
+
+export const getAllLocatedAt = createAsyncThunk("getAllLocatedAt", async () => {
+  const response = await api.get(`/located-at/get-all-locatedAt`);
+  return response.data;
+});
+
+export const updateLocatedAt = createAsyncThunk(
+  "updateLocatedAt",
+  async (data) => {
+    const response = await api.put(
+      `/located-at/update-locatedAt?id=${data?.id}`,
+      data?.data
     );
     return response.data;
   }
 );
 
-export const deleteCompanyType=createAsyncThunk('deleteCompanyType',async(id)=>{
-  const response=await api.delete(`/company/deleteCompanyType?id=${id}`)
-  return response.data
-})
+export const deleteLocatedAt = createAsyncThunk(
+  "deleteLocatedAt",
+  async (id) => {
+    const response = await api.delete(`/located-at/locatedAt-delete?id=${id}`);
+    return response.data;
+  }
+);
 
-export const createdLocatedAt=createAsyncThunk('createdLocatedAt',async(data)=>{
-  const response=await api.post(`/located-at/create-locatedAt`,data)
-  return response.data
-})
+export const getAllBusinessActivity = createAsyncThunk(
+  "getAllBusinessActivity",
+  async (searchText) => {
+    const response = await api.get(
+      `/business-activity/active-business-activities?searchTerm=${searchText}`
+    );
+    return response.data;
+  }
+);
 
-export const getAllLocatedAt=createAsyncThunk('getAllLocatedAt',async()=>{
-  const response=await api.get(`/located-at/get-all-locatedAt`)
-  return response.data
-})
+export const createDepartment = createAsyncThunk(
+  "createDepartment",
+  async (data) => {
+    const response = await api.post(
+      `/department/createDepartment?departmentName=${data?.departmentName}&userId=${data?.userId}`
+    );
+    return response.data;
+  }
+);
 
-export const updateLocatedAt=createAsyncThunk('updateLocatedAt',async(data)=>{
-  const response=await api.put(`/located-at/update-locatedAt?id=${data?.id}`,data?.data)
-  return response.data
-})
+export const getAllDepartmentList = createAsyncThunk(
+  "getAllDepartment",
+  async () => {
+    const response = await api.get(`/department/department-list`);
+    return response.data;
+  }
+);
 
-export const deleteLocatedAt=createAsyncThunk('deleteLocatedAt',async(id)=>{
-  const response=await api.delete(`/located-at/locatedAt-delete?id=${id}`)
-  return response.data
-})
+export const deleteDepartment = createAsyncThunk(
+  "deleteDepartment",
+  async (id) => {
+    const response = await api.get(
+      `/department/delete-department?departmentId=${id}`
+    );
+    return response.data;
+  }
+);
 
-export const getAllBusinessActivity=createAsyncThunk('getAllBusinessActivity',async(searchText)=>{
-  const response=await api.get(`/business-activity/active-business-activities?searchTerm=${searchText}`)
-  return response.data
-})
-
-export const createDepartment=createAsyncThunk('createDepartment',async(data)=>{
-  const response=await api.post(`/department/createDepartment?departmentName=${data?.departmentName}&userId=${data?.userId}`)
-  return response.data
-})
-
-export const getAllDepartmentList=createAsyncThunk('getAllDepartment',async()=>{
-  const response=await api.get(`/department/department-list`)
-  return response.data
-})
-
-export const deleteDepartment=createAsyncThunk('deleteDepartment',async(id)=>{
-  const response=await api.get(`/department/delete-department?departmentId=${id}`)
-  return response.data
-})
-
-export const updateDepartment=createAsyncThunk('updateDepartment',async(data)=>{
-  const response=await api.get(`/department/update-department`,data)
-  return response.data
-})
+export const updateDepartment = createAsyncThunk(
+  "updateDepartment",
+  async (data) => {
+    const response = await api.get(`/department/update-department`, data);
+    return response.data;
+  }
+);
 
 const settingSlice = createSlice({
   name: "setting",
@@ -235,12 +261,12 @@ const settingSlice = createSlice({
     desiginationList: [],
     loading: "",
     companyTypeList: [],
-    locatedAtList:[],
-    industriesList:[],
-    subIndusryList:[],
-    businessActivityList:[],
-    businessActivities:[],
-    departmentList:[]
+    locatedAtList: [],
+    industriesList: [],
+    subIndusryList: [],
+    businessActivityList: [],
+    businessActivities: [],
+    departmentList: [],
   },
   extraReducers: (builder) => {
     builder.addCase(getAllDesiginations.pending, (state, action) => {
@@ -303,17 +329,26 @@ const settingSlice = createSlice({
       state.subIndusryList = [];
     });
 
-    builder.addCase(getBusinessActivityBySubIndustryId.pending, (state, action) => {
-      state.loading = "pending";
-    });
-    builder.addCase(getBusinessActivityBySubIndustryId.fulfilled, (state, action) => {
-      state.loading = "success";
-      state.businessActivityList = action.payload;
-    });
-    builder.addCase(getBusinessActivityBySubIndustryId.rejected, (state, action) => {
-      state.loading = "error";
-      state.businessActivityList = [];
-    });
+    builder.addCase(
+      getBusinessActivityBySubIndustryId.pending,
+      (state, action) => {
+        state.loading = "pending";
+      }
+    );
+    builder.addCase(
+      getBusinessActivityBySubIndustryId.fulfilled,
+      (state, action) => {
+        state.loading = "success";
+        state.businessActivityList = action.payload;
+      }
+    );
+    builder.addCase(
+      getBusinessActivityBySubIndustryId.rejected,
+      (state, action) => {
+        state.loading = "error";
+        state.businessActivityList = [];
+      }
+    );
 
     builder.addCase(getAllBusinessActivity.pending, (state, action) => {
       state.loading = "pending";
