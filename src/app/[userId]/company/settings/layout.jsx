@@ -39,9 +39,9 @@ const SettingMangements = ({ children, params }) => {
       ),
     },
     {
-      key: "privilages",
+      key: "privileges",
       label: (
-        <Link href={`/${userId}/company/settings/privilages`}>Privilages</Link>
+        <Link href={`/${userId}/company/settings/privileges`}>Privileges</Link>
       ),
     },
     {

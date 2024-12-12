@@ -19,7 +19,7 @@ const { Text, Title } = Typography;
 const fakeDataUrl =
   "https://randomuser.me/api/?results=20&inc=name,gender,email,nat,picture&noinfo";
 const ContainerHeight = 580;
-const Privilages = () => {
+const Privileges = () => {
   const [data, setData] = useState([]);
 
   const appendData = (showMessage = true) => {
@@ -49,10 +49,10 @@ const Privilages = () => {
   return (
     <>
       <Flex className="w-full mb-2" justify="space-between" align="center">
-        <Title level={4}>Users privilages</Title>
+        <Title level={4}>Users privileges</Title>
         <Button type="text" size="large" className="text [color:#1677ff]">
           <Icon icon="fluent:add-24-regular" width="24" height="24" />
-          Add privilages for users
+          Add privileges for users
         </Button>
       </Flex>
       <Divider style={{ margin: 6 }} />
@@ -120,4 +120,4 @@ const Privilages = () => {
   );
 };
 
-export default Privilages;
+export default Privileges;
