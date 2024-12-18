@@ -48,6 +48,9 @@ export default function RootLayout({ children }) {
                   cellPaddingInline: 12,
                   padding: 12,
                 },
+                Card:{
+                  actionsLiMargin:'2px 0px'
+                }
               },
             }}
           >

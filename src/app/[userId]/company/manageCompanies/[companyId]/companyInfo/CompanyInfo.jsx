@@ -6,16 +6,39 @@ import {
   Card,
   Col,
   Divider,
+  Drawer,
   Flex,
   Input,
+  List,
   Popconfirm,
   Row,
+  Skeleton,
   Typography,
 } from "antd";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import AddGstForm from "./AddGstForm";
+import { useRouter } from "next/navigation";
+import { getAllCountries } from "@/app/redux-toolkit/slices/commonSlice";
+import { useDispatch } from "react-redux";
+import BusinessUnits from "./BusinessUnits";
+import { getAllLocatedAt } from "@/app/redux-toolkit/slices/settingSlice";
 const { Text, Title } = Typography;
 
-const CompanyInfo = () => {
+const CompanyInfo = ({ companyId, data, companyDetail,userId }) => {
+  const router = useRouter();
+  const dispatch = useDispatch();
+  const [openDrawer, setOpenDrawer] = useState(false);
+  const [gstData, setGstData] = useState(null);
+
+  const refreshPage=()=>{
+    router.refresh()
+  }
+
+  useEffect(() => {
+    dispatch(getAllCountries());
+    dispatch(getAllLocatedAt());
+  }, [dispatch]);
+
   return (
     <div className="h-full w-full p-4">
       <Flex className="w-full" justify="space-between">
@@ -24,27 +47,24 @@ const CompanyInfo = () => {
             size={42}
             src="https://img.freepik.com/premium-vector/minimalist-type-creative-business-logo-template_1283348-23026.jpg?semt=ais_hybrid"
           ></Avatar>
-          <Title level={5}>GPAY Pvt Ltd.</Title>
+          <Title level={5}>{companyDetail?.companyName}</Title>
         </Flex>
-        <Flex>
-          <Button type="text" size="small">
-            <Icon icon="fluent:edit-24-regular" height={16} width={16} />
-            Edit
-          </Button>
+        <Flex gap={4}>
+          <AddGstForm companyId={companyId} />
         </Flex>
       </Flex>
       <Divider style={{ margin: 8 }} />
       <Flex vertical gap={8}>
         <Row>
           <Col span={8}>
-            <Text>Private Limaited company</Text>
+            <Text>{companyDetail?.companyType}</Text>
           </Col>
           <Col span={8} />
           <Col span={8}>
             <Flex gap={8} align="center">
               <Text type="secondary">Registration ID (CIN)</Text>
               <Text>:</Text>
-              <Text>U74999UP2018PTC221873</Text>
+              <Text>{companyDetail?.companyCINNumber}</Text>
             </Flex>
           </Col>
         </Row>
@@ -53,7 +73,7 @@ const CompanyInfo = () => {
             <Flex align="center" gap={8}>
               <Text type="secondary">Formation state</Text>
               <Text>:</Text>
-              <Text>Haryana</Text>
+              <Text>{companyDetail?.companyState}</Text>
             </Flex>
           </Col>
           <Col span={8} />
@@ -61,7 +81,7 @@ const CompanyInfo = () => {
             <Flex gap={8} align="center">
               <Text type="secondary">Formation date</Text>
               <Text>:</Text>
-              <Text>Oct 1, 2021</Text>
+              <Text>{companyDetail?.companyRegistrationDate}</Text>
             </Flex>
           </Col>
         </Row>
@@ -82,128 +102,94 @@ const CompanyInfo = () => {
           </Col>
           <Col span={8}>
             <Flex gap={8} align="center">
-              <Text>GST Registraion</Text>
+              <Text>GST Registration</Text>
               <Text>:</Text>
               <Text>2 states</Text>
             </Flex>
           </Col>
         </Row>
       </Flex>
-      <Flex
-        vertical
-        gap={16}
-        className="w-full p-4 mt-8 shadow-[0px_2px_8px_0px_rgba(99,99,99,0.2)] rounded-md"
-      >
-        <Flex className="w-full" justify="space-between" align="center">
-          <Title level={4}>Company units</Title>
-          <Button type="primary">
-            <Icon icon="fluent:add-24-regular" width="16" height="16" />
-            Add company units
-          </Button>
-        </Flex>
-        <Flex className="w-full">
-          <Input
-            prefix={
-              <Icon icon="fluent:search-24-regular" width="24" height="24" />
-            }
-            placeholder="Search"
-          />
-        </Flex>
-        <Flex vertical gap={24} className="[max-height:48vh] overflow-auto">
-          {Array.from({ length: 4 })?.map((item) => {
-            return (
-              <Card className="w-full">
-                <Flex className="w-full" gap={8} justify="flex-end">
-                  <Popconfirm
-                    title="Delete the company unit"
-                    description="Are you sure to delete this company unit"
-                  >
-                    <Button type="text" size="small" danger>
-                      <Icon
-                        icon="fluent:delete-24-regular"
-                        height={16}
-                        width={16}
-                      />
-                    </Button>
-                  </Popconfirm>
-                  <Button type="text" size="small">
-                    <Icon
-                      icon="fluent:edit-24-regular"
-                      height={16}
-                      width={16}
-                    />
-                  </Button>
-                </Flex>
-                <Flex vertical gap={8}>
-                  <Row>
-                    <Col span={8}>
-                      <Flex gap={4}>
-                        <Text type="secondary">GST number</Text>
-                        <Text>:</Text>
-                        <Text>09AAHCC4679J1ZC</Text>
-                      </Flex>
-                    </Col>
-                    <Col span={8} />
-                    <Col span={8}>
-                      <Flex gap={4} align="center">
-                        <Text type="secondary">City</Text>
-                        <Text>:</Text>
-                        <Text>Mumbai</Text>
-                      </Flex>
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col span={8}>
-                      <Flex align="center" gap={4}>
-                        <Text type="secondary">Permanent employees</Text>
-                        <Text>:</Text>
-                        <Text>50</Text>
-                      </Flex>
-                    </Col>
-                    <Col span={8} />
-                    <Col span={8}>
-                      <Flex gap={4} align="center">
-                        <Text type="secondary">business activity</Text>
-                        <Text>:</Text>
-                        <Text>Food Manufacturing Unit</Text>
-                      </Flex>
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col span={8}>
-                      <Flex align="center" gap={4}>
-                        <Text type="secondary">Located at</Text>
-                        <Text>:</Text>
-                        <Text>SEZ</Text>
-                      </Flex>
-                    </Col>
-                    <Col span={8} />
-                    <Col span={8}>
-                      <Flex align="center" gap={4}>
-                        <Text type="secondary">State</Text>
-                        <Text>:</Text>
-                        <Text>Maharashtra</Text>
-                      </Flex>
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col span={24}>
-                      <Flex gap={4} align="center">
-                        <Text>Operating Unit address</Text>
-                        <Text>:</Text>
-                        <Text>
-                          A-43, SECTOR-63 NOIDA NOIDA Gautam Buddha Nagar UP
-                          201301 IN
-                        </Text>
-                      </Flex>
-                    </Col>
-                  </Row>
-                </Flex>
-              </Card>
-            );
-          })}
-        </Flex>
+      <Divider />
+      <Flex vertical gap={8} className="w-full">
+        <Title level={4}>GST details</Title>
+        <Input
+          prefix={
+            <Icon icon="fluent:search-24-regular" width="24" height="24" />
+          }
+          placeholder="Search"
+        />
       </Flex>
+      <Flex className="w-full [max-height:65vh] overflow-auto">
+        <List
+          className="demo-loadmore-list my-2 w-full"
+          itemLayout="horizontal"
+          bordered
+          dataSource={data}
+          renderItem={(item) => (
+            <List.Item
+              onClick={() => {
+                setOpenDrawer(true);
+                setGstData(item);
+              }}
+              actions={[
+                <Popconfirm
+                  title="Delete GST"
+                  description="Are you sure to delete the gst"
+                  onConfirm={(e) => {
+                    e.stopPropagation();
+                  }}
+                  onCancel={(e) => {
+                    e.stopPropagation();
+                  }}
+                >
+                  <Button
+                    type="text"
+                    size="small"
+                    danger
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <Icon icon="fluent:delete-24-regular" />
+                  </Button>
+                </Popconfirm>,
+                <AddGstForm edit={true} editData={item} />,
+              ]}
+            >
+              <Skeleton avatar title={false} loading={item.loading} active>
+                <List.Item.Meta
+                  className="cursor-pointer"
+                  // avatar={<Avatar src={item.picture.large} />}
+                  title={
+                    <Flex align="center" gap={4}>
+                      <Text type="secondary">GST Number</Text>
+                      <Text>:</Text>
+                      <Text>{item.gstNumber}</Text>
+                    </Flex>
+                  }
+                />
+                <Flex gap={12} align="center">
+                  <Flex align="center" gap={4}>
+                    <Text type="secondary">GST registration date</Text>{" "}
+                    <Text>:</Text>
+                    <Text>{item?.gstRegistrationDate}</Text>
+                  </Flex>
+                  <Flex align="center" gap={4}>
+                    <Text type="secondary">State name</Text> <Text>:</Text>
+                    <Text>{item?.stateName}</Text>
+                  </Flex>
+                </Flex>
+              </Skeleton>
+            </List.Item>
+          )}
+        />
+      </Flex>
+      <Drawer
+        width={"70%"}
+        open={openDrawer}
+        closeIcon={false}
+        onClose={() => setOpenDrawer(false)}
+      >
+        <BusinessUnits data={gstData} userId={userId} refreshPage={refreshPage} />
+      </Drawer>
     </div>
   );
 };

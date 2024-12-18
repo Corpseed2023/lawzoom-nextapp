@@ -4,18 +4,34 @@ import {
   getCitiesByStateId,
   getStatesByCountryId,
 } from "@/app/redux-toolkit/slices/commonSlice";
-import { createCompany } from "@/app/redux-toolkit/slices/companySlice";
+import {
+  createCompany,
+  updateCompany,
+} from "@/app/redux-toolkit/slices/companySlice";
 import {
   getBusinessActivityBySubIndustryId,
   getSubIndustryById,
 } from "@/app/redux-toolkit/slices/settingSlice";
 import { Icon } from "@iconify/react";
-import { Button, Col, DatePicker, Form, Input, Modal, Row, Select } from "antd";
-import React, { useCallback, useState } from "react";
+import {
+  Button,
+  Col,
+  DatePicker,
+  Form,
+  Input,
+  Modal,
+  notification,
+  Row,
+  Select,
+} from "antd";
+import dayjs from "dayjs";
+import { useRouter } from "next/navigation";
+import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-const AddNEditCompanyForm = ({ edit, userId }) => {
+const AddNEditCompanyForm = ({ edit, userId, editData }) => {
   const dispatch = useDispatch();
+  const router = useRouter();
   const [form] = Form.useForm();
   const designationList = useSelector(
     (state) => state.setting.desiginationList
@@ -34,18 +50,102 @@ const AddNEditCompanyForm = ({ edit, userId }) => {
     (state) => state.setting.businessActivities
   );
   const [openModal, setOpenModal] = useState(false);
+  const [editCompanyId, setEditCompanyId] = useState(null);
+
+  const handleEdit = useCallback(() => {
+    if (editData) {
+      dispatch(getSubIndustryById(editData?.industryId));
+      dispatch(
+        getBusinessActivityBySubIndustryId(editData?.industrySubCategoryId)
+      );
+      dispatch(getStatesByCountryId(editData?.countryId));
+      dispatch(getCitiesByStateId(editData?.companyStateId));
+      setEditCompanyId(editData?.companyId);
+
+      form.setFieldsValue({
+        companyName: editData?.companyName,
+        companyTypeId: editData?.companyTypeId,
+        businessEmailId: editData?.businessEmailId,
+        companyCINNumber: editData?.companyCINNumber,
+        companyPanNumber: editData?.companyPanNumber,
+        companyRegistrationDate: dayjs(editData?.companyRegistrationDate),
+        companyRegistrationNumber: editData?.companyRegistrationNumber,
+        companyTurnover: editData?.companyTurnover,
+        gstNumber: editData?.gstNumber,
+        permanentEmployee: editData?.permanentEmployee,
+        contractEmployee: editData?.contractEmployee,
+        industryId: editData?.industryId,
+        industrySubCategoryId: editData?.industrySubCategoryId,
+        businessActivityId: editData?.businessActivityId,
+        locatedAtId: editData?.locatedAtId,
+        countryId: editData?.countryId,
+        companyStateId: editData?.companyStateId,
+        companyCityId: editData?.companyCityId,
+        pinCode: editData?.pinCode,
+        companyAddress: editData?.companyAddress,
+        operationUnitAddress: editData?.operationUnitAddress,
+        companyRemarks: editData?.companyRemarks,
+      });
+      setOpenModal(true);
+    }
+  }, [editData, form, dispatch]);
 
   const handleFinish = useCallback(
     (values) => {
-      dispatch(createCompany({ ...values, userId, companyTypeId: 5 }));
+      if (editCompanyId) {
+        dispatch(
+          updateCompany({ formData: values, companyId: editCompanyId, userId })
+        )
+          .then((resp) => {
+            if (resp.meta.requestStatus === "fulfilled") {
+              notification.success({
+                message: "Company updated successfully !.",
+              });
+              router.refresh();
+              setOpenModal(false);
+              setEditCompanyId(null);
+              form.resetFields();
+            } else {
+              notification.error({ message: "Something went wrong !." });
+            }
+          })
+          .catch(() =>
+            notification.error({ message: "Something went wrong !." })
+          );
+      } else {
+        dispatch(createCompany({ ...values, userId, subscriptionId: 1 }))
+          .then((resp) => {
+            if (resp.meta.requestStatus === "fulfilled") {
+              notification.success({
+                message: "Company added successfully !.",
+              });
+              router.refresh();
+              setOpenModal(false);
+              form.resetFields();
+            } else {
+              notification.error({ message: "Something went wrong !." });
+            }
+          })
+          .catch(() =>
+            notification.error({ message: "Something went wrong !." })
+          );
+      }
     },
-    [dispatch]
+    [dispatch, form]
   );
 
   return (
     <>
       {edit ? (
-        <Button type="text" size="small" onClick={() => setOpenModal(true)}>
+        <Button
+          type="text"
+          size="small"
+          onClick={(e) => {
+            setOpenModal(true);
+            e.stopPropagation();
+            handleEdit();
+          }}
+        >
           <Icon icon="fluent:edit-24-regular" height={16} width={16} />
           Edit
         </Button>
@@ -64,12 +164,21 @@ const AddNEditCompanyForm = ({ edit, userId }) => {
         title={edit ? "Edit company" : "Create company"}
         centered
         open={openModal}
-        onCancel={() => setOpenModal(false)}
-        onClose={() => setOpenModal(false)}
+        onCancel={(e) => {
+          e.stopPropagation();
+          setOpenModal(false);
+        }}
+        onClose={(e) => {
+          e.stopPropagation();
+          setOpenModal(false);
+        }}
         okText="Submit"
         width={800}
         height={650}
-        onOk={() => form.submit()}
+        onOk={(e) => {
+          e.stopPropagation();
+          form.submit();
+        }}
       >
         <Form
           form={form}
@@ -103,7 +212,7 @@ const AddNEditCompanyForm = ({ edit, userId }) => {
                   options={
                     companyTypeList?.length > 0
                       ? companyTypeList?.map((item) => ({
-                          label: item?.designationName,
+                          label: item?.companyTypeName,
                           value: item?.id,
                         }))
                       : []
