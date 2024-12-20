@@ -22,22 +22,42 @@ import { getAllCountries } from "@/app/redux-toolkit/slices/commonSlice";
 import { useDispatch } from "react-redux";
 import BusinessUnits from "./BusinessUnits";
 import { getAllLocatedAt } from "@/app/redux-toolkit/slices/settingSlice";
+import Link from "next/link";
 const { Text, Title } = Typography;
 
-const CompanyInfo = ({ companyId, data, companyDetail,userId }) => {
+const CompanyInfo = ({ companyId, data, companyDetail, userId }) => {
   const router = useRouter();
   const dispatch = useDispatch();
   const [openDrawer, setOpenDrawer] = useState(false);
   const [gstData, setGstData] = useState(null);
+  const [filteredData, setFilteredData] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
 
-  const refreshPage=()=>{
-    router.refresh()
-  }
+  const refreshPage = () => {
+    router.refresh();
+  };
 
   useEffect(() => {
     dispatch(getAllCountries());
     dispatch(getAllLocatedAt());
   }, [dispatch]);
+
+  useEffect(() => {
+    if (data && data?.length > 0) {
+      setFilteredData(data);
+    }
+  }, [data]);
+
+  const handleSearch = (e) => {
+    const query = e.target.value.toLowerCase()?.trim();
+    setSearchTerm(query);
+    const filtered = data?.filter((item) =>
+      Object.values(item).some((value) =>
+        String(value).toLowerCase().includes(query)
+      )
+    );
+    setFilteredData(filtered);
+  };
 
   return (
     <div className="h-full w-full p-4">
@@ -50,25 +70,67 @@ const CompanyInfo = ({ companyId, data, companyDetail,userId }) => {
           <Title level={5}>{companyDetail?.companyName}</Title>
         </Flex>
         <Flex gap={4}>
-          <AddGstForm companyId={companyId} />
+          <AddGstForm companyId={companyId} userId={userId} />
         </Flex>
       </Flex>
       <Divider style={{ margin: 8 }} />
       <Flex vertical gap={8}>
         <Row>
           <Col span={8}>
-            <Text>{companyDetail?.companyType}</Text>
+            <Flex gap={8} align="center">
+              <Text type="secondary">Company type</Text>
+              <Text>:</Text>
+              <Text>{companyDetail?.companyType}</Text>
+            </Flex>
           </Col>
-          <Col span={8} />
           <Col span={8}>
             <Flex gap={8} align="center">
-              <Text type="secondary">Registration ID (CIN)</Text>
+              <Text type="secondary">Business email id</Text>
+              <Text>:</Text>
+              <Text>{companyDetail?.businessEmailId}</Text>
+            </Flex>
+          </Col>
+          <Col span={8}>
+            <Flex gap={8} align="center">
+              <Text type="secondary">CIN number</Text>
               <Text>:</Text>
               <Text>{companyDetail?.companyCINNumber}</Text>
             </Flex>
           </Col>
         </Row>
+
         <Row>
+          <Col span={8}>
+            <Flex gap={8} align="center">
+              <Text type="secondary">Business activity</Text>
+              <Text>:</Text>
+              <Text>{companyDetail?.businessActivityName}</Text>
+            </Flex>
+          </Col>
+          <Col span={8}>
+            <Flex gap={8} align="center">
+              <Text type="secondary">City</Text>
+              <Text>:</Text>
+              <Text>{companyDetail?.companyCity}</Text>
+            </Flex>
+          </Col>
+          <Col span={8}>
+            <Flex gap={8} align="center">
+              <Text type="secondary">Pin code / Zip code</Text>
+              <Text>:</Text>
+              <Text>{companyDetail?.pinCode}</Text>
+            </Flex>
+          </Col>
+        </Row>
+
+        <Row>
+          <Col span={8}>
+            <Flex align="center" gap={8}>
+              <Text type="secondary">Registration number</Text>
+              <Text>:</Text>
+              <Text>{companyDetail?.companyRegistrationNumber}</Text>
+            </Flex>
+          </Col>
           <Col span={8}>
             <Flex align="center" gap={8}>
               <Text type="secondary">Formation state</Text>
@@ -76,7 +138,7 @@ const CompanyInfo = ({ companyId, data, companyDetail,userId }) => {
               <Text>{companyDetail?.companyState}</Text>
             </Flex>
           </Col>
-          <Col span={8} />
+
           <Col span={8}>
             <Flex gap={8} align="center">
               <Text type="secondary">Formation date</Text>
@@ -88,31 +150,33 @@ const CompanyInfo = ({ companyId, data, companyDetail,userId }) => {
         <Row>
           <Col span={8}>
             <Flex align="center" gap={8}>
-              <Text>Operation units</Text>
+              <Text type="secondary">Operation units</Text>
               <Text>:</Text>
-              <Text>5 units</Text>
+              <Link href={""}>{companyDetail?.businessUnitCount} units</Link>
             </Flex>
           </Col>
           <Col span={8}>
             <Flex align="center" gap={8}>
-              <Text>Number of states operating</Text>
+              <Text type="secondary">Number of states operating</Text>
               <Text>:</Text>
-              <Text>2 states</Text>
+              <Link href={""}>{companyDetail?.stateCount} states</Link>
             </Flex>
           </Col>
           <Col span={8}>
             <Flex gap={8} align="center">
-              <Text>GST Registration</Text>
+              <Text type="secondary">GST Registration</Text>
               <Text>:</Text>
-              <Text>2 states</Text>
+              <Link href={""}>{companyDetail?.gstDetailsCount} states</Link>
             </Flex>
           </Col>
         </Row>
       </Flex>
-      <Divider />
+      <Divider style={{ margin: "12px 0px" }} />
       <Flex vertical gap={8} className="w-full">
         <Title level={4}>GST details</Title>
         <Input
+          value={searchTerm}
+          onChange={handleSearch}
           prefix={
             <Icon icon="fluent:search-24-regular" width="24" height="24" />
           }
@@ -123,8 +187,7 @@ const CompanyInfo = ({ companyId, data, companyDetail,userId }) => {
         <List
           className="demo-loadmore-list my-2 w-full"
           itemLayout="horizontal"
-          bordered
-          dataSource={data}
+          dataSource={filteredData}
           renderItem={(item) => (
             <List.Item
               onClick={() => {
@@ -188,7 +251,11 @@ const CompanyInfo = ({ companyId, data, companyDetail,userId }) => {
         closeIcon={false}
         onClose={() => setOpenDrawer(false)}
       >
-        <BusinessUnits data={gstData} userId={userId} refreshPage={refreshPage} />
+        <BusinessUnits
+          data={gstData}
+          userId={userId}
+          refreshPage={refreshPage}
+        />
       </Drawer>
     </div>
   );

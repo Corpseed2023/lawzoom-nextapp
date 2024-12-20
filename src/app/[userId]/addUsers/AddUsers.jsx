@@ -19,11 +19,9 @@ import React, { useEffect, useState } from "react";
 import logo from "../../../assets/lowZoom.png";
 import Image from "next/image";
 import { Icon } from "@iconify/react";
-import { getProductData } from "@/app/actions";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllRoles } from "@/app/redux-toolkit/slices/commonSlice";
 import { selectFilter } from "@/app/commons";
-import { getAllBusinessActivity } from "@/app/redux-toolkit/slices/settingSlice";
 import { useRouter } from "next/navigation";
 const { Text, Title } = Typography;
 

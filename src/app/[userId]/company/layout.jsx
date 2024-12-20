@@ -119,6 +119,17 @@ const CompanyLayout = ({ children, params }) => {
       label: <Link href={`/${userId}/company/vendorTask`}>Vendor task</Link>,
     },
     {
+      key: "employees",
+      icon: (
+        <Icon
+          icon="fluent:people-community-24-regular"
+          height={ICON_HEIGHT}
+          width={ICON_WIDTH}
+        />
+      ),
+      label: <Link href={`/${userId}/company/employees`}>Employees</Link>,
+    },
+    {
       key: "Accounts",
       icon: (
         <Icon
@@ -204,9 +215,9 @@ const CompanyLayout = ({ children, params }) => {
           </Flex>
           <Content
             style={{
-              padding: 0,
+              padding: 12,
               margin: 0,
-              minHeight: 280,
+              height: "100%",
               background: colorBgContainer,
               borderRadius: 6,
             }}

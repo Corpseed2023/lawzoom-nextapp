@@ -255,6 +255,40 @@ export const updateDepartment = createAsyncThunk(
   }
 );
 
+export const getAllResourceType = createAsyncThunk(
+  "getAllResourceType",
+  async () => {
+    const response = await api.get(`/resource-type/get-all`);
+    return response.data;
+  }
+);
+
+export const createResourceType = createAsyncThunk(
+  "createResourceType",
+  async ({ typeOfResourceName }) => {
+    const response = await api.post(
+      `/resource-type/create?typeOfResourceName=${typeOfResourceName}`
+    );
+    return response.data;
+  }
+);
+
+export const updateResourceType = createAsyncThunk(
+  "updateResourceType",
+  async ({id,data}) => {
+    const response = await api.put(`/resource-type/update?id=${id}`, data);
+    return response.data;
+  }
+);
+
+export const deleteResourceType = createAsyncThunk(
+  "deleteResourceType",
+  async (id) => {
+    const response = await api.delete(`/resource-type/delete?id=${id}`);
+    return response.data;
+  }
+);
+
 const settingSlice = createSlice({
   name: "setting",
   initialState: {
@@ -267,6 +301,7 @@ const settingSlice = createSlice({
     businessActivityList: [],
     businessActivities: [],
     departmentList: [],
+    resourceTypeList: [],
   },
   extraReducers: (builder) => {
     builder.addCase(getAllDesiginations.pending, (state, action) => {
@@ -372,6 +407,18 @@ const settingSlice = createSlice({
     builder.addCase(getAllDepartmentList.rejected, (state, action) => {
       state.loading = "error";
       state.departmentList = [];
+    });
+
+    builder.addCase(getAllResourceType.pending, (state, action) => {
+      state.loading = "pending";
+    });
+    builder.addCase(getAllResourceType.fulfilled, (state, action) => {
+      state.loading = "success";
+      state.resourceTypeList = action.payload;
+    });
+    builder.addCase(getAllResourceType.rejected, (state, action) => {
+      state.loading = "error";
+      state.resourceTypeList = [];
     });
   },
 });

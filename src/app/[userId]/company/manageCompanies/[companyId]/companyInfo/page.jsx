@@ -5,11 +5,14 @@ import {
   fetchAllGstDetails,
   fetchSingleCompanyDetail,
 } from "@/app/redux-toolkit/slices/companySlice";
+import { SUBSCRIPTION_ID } from "@/app/constants";
 
-const getAllGst = async (companyId) => {
+const getAllGst = async (companyId, userId, subscriptionId) => {
   let result = [];
   try {
-    const response = await store.dispatch(fetchAllGstDetails(companyId));
+    const response = await store.dispatch(
+      fetchAllGstDetails({ companyId, userId, subscriptionId })
+    );
     result = response.payload;
   } catch (err) {
     console.log("All GST fetch error", err);
@@ -32,10 +35,15 @@ const getSingleCompanyDetail = async (companyId, userId, subscriptionId) => {
 
 const CompanyInfoPage = async ({ params }) => {
   const { companyId, userId } = params;
-  const data = await getAllGst(companyId);
-  const companyDetail = await getSingleCompanyDetail(companyId, userId, 1);
+  const data = await getAllGst(companyId, userId, SUBSCRIPTION_ID);
+  const companyDetail = await getSingleCompanyDetail(
+    companyId,
+    userId,
+    SUBSCRIPTION_ID
+  );
 
   console.log("Somethngfgcuh", data);
+  console.log("unit counts", companyDetail);
 
   return (
     <>

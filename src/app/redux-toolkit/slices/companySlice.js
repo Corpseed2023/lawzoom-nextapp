@@ -36,9 +36,9 @@ export const deleteCompanyById = createAsyncThunk(
 
 export const fetchAllGstDetails = createAsyncThunk(
   "fetchAllGstDetails",
-  async (companyId) => {
+  async ({ companyId, userId, subscriptionId }) => {
     const response = await api.get(
-      `/gst-details/fetch-all?companyId=${companyId}`
+      `/gst-details/fetch-company-gstDetails?companyId=${companyId}&userId=${userId}&subscriptionId=${subscriptionId}`
     );
     return response.data;
   }
@@ -62,15 +62,37 @@ export const updateCompany = createAsyncThunk("updateCompany", async (data) => {
   return response.data;
 });
 
-export const updateGstDetails=createAsyncThunk('updateGstDetails',async(data)=>{
-  const response=await api.put(`/gst-details/update-gst-details?id=${data?.gstId}`)
-  return response.data
-})
+export const updateGstDetails = createAsyncThunk(
+  "updateGstDetails",
+  async (data) => {
+    const response = await api.put(
+      `/gst-details/update-gst-details?id=${data?.gstId}`
+    );
+    return response.data;
+  }
+);
 
-export const createBusinessUnit=createAsyncThunk('createBusinessUnit',async(data)=>{
-  const response=await api.post(`/business-unit/saveBusinessUnit?gstDetailsId=${data?.gstDetailsId}`,data?.data)
-  return response.data
-})
+export const createBusinessUnit = createAsyncThunk(
+  "createBusinessUnit",
+  async (data) => {
+    const response = await api.post(
+      `/business-unit/saveBusinessUnit?gstDetailsId=${data?.gstDetailsId}`,
+      data?.data
+    );
+    return response.data;
+  }
+);
+
+export const updateBusinessUnit = createAsyncThunk(
+  "updateBusinessUnit",
+  async ({ data, businessUnitId }) => {
+    const response = await api.put(
+      `/business-unit/updateBusinessUnit?businessUnitId=${businessUnitId}`,
+      data
+    );
+    return response.data;
+  }
+);
 
 const companySlice = createSlice({
   name: "company",

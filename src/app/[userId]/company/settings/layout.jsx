@@ -50,14 +50,24 @@ const SettingMangements = ({ children, params }) => {
         <Link href={`/${userId}/company/settings/locatedAt`}>Located at</Link>
       ),
     },
+    {
+      key: "resourceType",
+      label: (
+        <Link href={`/${userId}/company/settings/resourceType`}>
+          Resource type
+        </Link>
+      ),
+    },
+    {
+      key: "roles",
+      label: <Link href={`/${userId}/company/settings/roles`}>Roles</Link>,
+    },
   ];
   return (
     <Layout style={{ padding: "0px", height: "90vh", borderRadius: 6 }}>
       <Layout style={{ height: "100%", borderRadius: 6 }}>
         <Sider
-          // width={150}
           className="setting-sidebar"
-          // collapsible
           style={{
             background: colorBgContainer,
             height: "100%",
@@ -76,9 +86,7 @@ const SettingMangements = ({ children, params }) => {
           />
         </Sider>
         <Layout>
-          <Content style={{ height: "100%", padding: "0px 12px" }}>
-            {children}
-          </Content>
+          <Content style={{ height: "100%", padding: 12 }}>{children}</Content>
         </Layout>
       </Layout>
     </Layout>

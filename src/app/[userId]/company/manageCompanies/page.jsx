@@ -2,6 +2,7 @@ import React from "react";
 import ManageCompanies from "./ManageCompanies";
 import store from "@/app/redux-toolkit/store";
 import { getAllCompanies } from "@/app/redux-toolkit/slices/companySlice";
+import { SUBSCRIPTION_ID } from "@/app/constants";
 
 const fetchAllCompanies = async (userId, subscriptionId) => {
   let data = [];
@@ -18,7 +19,7 @@ const fetchAllCompanies = async (userId, subscriptionId) => {
 
 const ManageCompaniesPage = async ({ params }) => {
   const { userId } = params;
-  const data = await fetchAllCompanies(userId, 1);
+  const data = await fetchAllCompanies(userId, SUBSCRIPTION_ID);
   console.log('jfdbvsdjbvajsbd',data)
   return (
     <>

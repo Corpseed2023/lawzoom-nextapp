@@ -2,10 +2,15 @@
 import { selectFilter } from "@/app/commons";
 import { SUBSCRIPTION_ID } from "@/app/constants";
 import {
+  getAllCountries,
   getCitiesByStateId,
   getStatesByCountryId,
 } from "@/app/redux-toolkit/slices/commonSlice";
-import { createBusinessUnit } from "@/app/redux-toolkit/slices/companySlice";
+import {
+  createBusinessUnit,
+  updateBusinessUnit,
+} from "@/app/redux-toolkit/slices/companySlice";
+import { getAllBusinessActivity } from "@/app/redux-toolkit/slices/settingSlice";
 import { Icon } from "@iconify/react";
 import {
   Button,
@@ -34,48 +39,102 @@ const BusinessUnits = ({ data, refreshPage, userId }) => {
   const statesList = useSelector((state) => state.common.statesList);
   const citiesList = useSelector((state) => state.common.citiesList);
   const locationsList = useSelector((state) => state.setting.locatedAtList);
+  const businessActivities = useSelector(
+    (state) => state.setting.businessActivities
+  );
   const [openModal, setOpenModal] = useState(false);
   const [editData, setEditData] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredData, setFilteredData] = useState([]);
 
   useEffect(() => {
+    if (data && data?.businessUnitResponseList?.length > 0) {
+      setFilteredData(data?.businessUnitResponseList);
+    }
+  }, [data]);
+
+  const handleSearch = (e) => {
+    const query = e.target.value.toLowerCase()?.trim();
+    setSearchTerm(query);
+    const filtered = data?.businessUnitResponseList?.filter((item) =>
+      Object.values(item).some((value) =>
+        String(value).toLowerCase().includes(query)
+      )
+    );
+    setFilteredData(filtered);
+  };
+
+  useEffect(() => {
+    dispatch(getAllCountries());
     dispatch(getStatesByCountryId(data?.countryId));
     dispatch(getCitiesByStateId(data?.stateId));
+    dispatch(getAllBusinessActivity(""));
   }, [data, dispatch]);
 
+  const handleEdit = (value) => {
 
-  const handleEdit=(value)=>{
+    console.log('sdivhaosidhvash',value)
+    dispatch(getAllCountries());
+    dispatch(getStatesByCountryId(value?.countryId));
     form.setFieldsValue({
-        gstNumber:value?.gstNumber,
-        countryId:value?.countryId,
-        stateId:value?.stateId,
-        cityId:value?.cityId,
-        locatedAtId:value?.locatedAtId,
-        address:value?.address
-    })
-    setEditData(value)
-    setOpenModal(true)
-  }
+      gstNumber: value?.gstNumber,
+      countryId: value?.countryId,
+      stateId: value?.stateId,
+      cityId: value?.cityId,
+      locatedAtId: value?.locatedAtId,
+      businessActivityId: value?.businessActivityId,
+      address: value?.address,
+    });
+    setEditData(value);
+    setOpenModal(true);
+  };
 
   const handleFinish = (values) => {
-    dispatch(
-      createBusinessUnit({
-        data: { ...values, userId, subscriptionId: SUBSCRIPTION_ID },
-        gstDetailsId: data?.id,
-      })
-    )
-      .then((resp) => {
-        if (resp.meta.requestStatus === "fulfilled") {
-          notification.success({
-            message: "Business unit created successfully",
-          });
-          setOpenModal(false);
-          router.refresh();
-          refreshPage();
-        } else {
-          notification.error({ message: "Something went wrong !." });
-        }
-      })
-      .then(() => notification.error({ message: "Something went wrong !." }));
+    if (editData) {
+      dispatch(
+        updateBusinessUnit({
+          data: { ...values, userId, subscriptionId: SUBSCRIPTION_ID },
+          businessUnitId: editData?.id,
+        })
+      )
+        .then((resp) => {
+          if (resp.meta.requestStatus === "fulfilled") {
+            notification.success({
+              message: "Business unit created successfully",
+            });
+            setOpenModal(false);
+            router.refresh();
+            refreshPage();
+          } else {
+            notification.error({ message: "Something went wrong !." });
+          }
+        })
+        .catch(() =>
+          notification.error({ message: "Something went wrong !." })
+        );
+    } else {
+      dispatch(
+        createBusinessUnit({
+          data: { ...values, userId, subscriptionId: SUBSCRIPTION_ID },
+          gstDetailsId: data?.gstId,
+        })
+      )
+        .then((resp) => {
+          if (resp.meta.requestStatus === "fulfilled") {
+            notification.success({
+              message: "Business unit created successfully",
+            });
+            setOpenModal(false);
+            router.refresh();
+            refreshPage();
+          } else {
+            notification.error({ message: "Something went wrong !." });
+          }
+        })
+        .catch(() =>
+          notification.error({ message: "Something went wrong !." })
+        );
+    }
   };
 
   console.log("jdshckjsdhcskjvd", data);
@@ -87,13 +146,24 @@ const BusinessUnits = ({ data, refreshPage, userId }) => {
           <Title level={5}>Business units</Title>{" "}
           <Button onClick={() => setOpenModal(true)}>Add business unit</Button>
         </Flex>
-        <Flex>
+        <Flex className="my-4">
+          <Input
+            placeholder="Search for company units"
+            value={searchTerm}
+            onChange={handleSearch}
+            prefix={
+              <Icon icon="fluent:search-24-regular" width="24" height="24" />
+            }
+          />
+        </Flex>
+        <Flex vertical className="[max-height:80vh] overflow-auto">
           {data &&
             data?.businessUnitResponseList?.length > 0 &&
-            data?.businessUnitResponseList?.map((item) => {
+            filteredData?.map((item,idx) => {
               return (
                 <Card
                   className="w-full my-2"
+                  key={`${idx}businessUnit`}
                   actions={[
                     <Flex justify="flex-end" className="px-2">
                       <Flex gap={8}>
@@ -105,7 +175,11 @@ const BusinessUnits = ({ data, refreshPage, userId }) => {
                             <Icon icon="fluent:delete-24-regular" />
                           </Button>
                         </Popconfirm>
-                        <Button size="small" type="text" onClick={()=>handleEdit(item)}>
+                        <Button
+                          size="small"
+                          type="text"
+                          onClick={() => handleEdit(item)}
+                        >
                           <Icon icon="fluent:edit-24-regular" />
                         </Button>
                       </Flex>
@@ -239,6 +313,20 @@ const BusinessUnits = ({ data, refreshPage, userId }) => {
                 locationsList?.length > 0
                   ? locationsList?.map((item) => ({
                       label: item?.locationName,
+                      value: item?.id,
+                    }))
+                  : []
+              }
+              filterOption={selectFilter}
+            />
+          </Form.Item>
+          <Form.Item label="Select business activity" name="businessActivityId">
+            <Select
+              showSearch
+              options={
+                businessActivities?.length > 0
+                  ? businessActivities?.map((item) => ({
+                      label: item?.businessActivityName,
                       value: item?.id,
                     }))
                   : []

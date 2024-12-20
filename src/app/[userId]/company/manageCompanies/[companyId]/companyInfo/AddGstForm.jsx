@@ -1,5 +1,6 @@
 "use client";
 import { selectFilter } from "@/app/commons";
+import { SUBSCRIPTION_ID } from "@/app/constants";
 import {
   getAllCountries,
   getStatesByCountryId,
@@ -23,7 +24,7 @@ import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-const AddGstForm = ({ edit, companyId, editData }) => {
+const AddGstForm = ({ edit, companyId, editData, userId }) => {
   const [form] = Form.useForm();
   const dispatch = useDispatch();
   const router = useRouter();
@@ -31,7 +32,6 @@ const AddGstForm = ({ edit, companyId, editData }) => {
   const statesList = useSelector((state) => state.common.statesList);
   const [openModal, setOpenModal] = useState(false);
   const [gstId, setGstId] = useState(null);
-
 
   const handleEdit = () => {
     if (editData) {
@@ -48,8 +48,18 @@ const AddGstForm = ({ edit, companyId, editData }) => {
   };
 
   const handleFinish = (values) => {
+    values.gstRegistrationDate = dayjs(values?.gstRegistrationDate).format(
+      "YYYY-MM-DD"
+    );
     if (gstId) {
-      dispatch(updateGstDetails({ ...values, gstId }))
+      dispatch(
+        updateGstDetails({
+          ...values,
+          gstId,
+          userId,
+          subscriptionId: SUBSCRIPTION_ID,
+        })
+      )
         .then((resp) => {
           if (resp.meta.requestStatus === "fulfilled") {
             notification.success({
@@ -66,7 +76,14 @@ const AddGstForm = ({ edit, companyId, editData }) => {
           notification.error({ message: "Something went wrong !." })
         );
     } else {
-      dispatch(addGstDetails({ ...values, companyId }))
+      dispatch(
+        addGstDetails({
+          ...values,
+          companyId,
+          userId,
+          subscriptionId: SUBSCRIPTION_ID,
+        })
+      )
         .then((resp) => {
           if (resp.meta.requestStatus === "fulfilled") {
             notification.success({

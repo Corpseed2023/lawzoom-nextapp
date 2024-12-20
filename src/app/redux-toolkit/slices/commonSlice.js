@@ -11,6 +11,12 @@ export const getAllRoles = createAsyncThunk("getAllRoles", async () => {
   return response.data;
 });
 
+export const createRole=createAsyncThunk('createRole',async({role})=>{
+  const response=await api.post(`/role/createRole?role=${role}`)
+  return response.data
+})
+
+
 export const getAllCountries = createAsyncThunk("getAllCountries", async () => {
   const response = await api.get(`/countries/fetch-all-countries`);
   return response.data;
