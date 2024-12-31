@@ -124,7 +124,7 @@ const Home = () => {
           gap={48}
           className="my-1 bg-white h-full overflow-auto"
         >
-          <Row className="p-14">
+          <Row className="p-4">
             <Col span={1} />
             <Col span={10}>
               <Flex vertical gap={24}>

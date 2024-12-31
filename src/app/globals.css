@@ -104,6 +104,11 @@ a {
   font-weight: 700;
 }
 
+.link-heading-text {
+  color: #1677ff;
+  cursor: pointer;
+}
+
 h1,
 h2,
 h3,

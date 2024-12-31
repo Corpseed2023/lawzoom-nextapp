@@ -123,7 +123,7 @@ const Compliances = ({ userId, data }) => {
       dataIndex: "complianceCount",
       title: "Compliance",
       render: (_, data) => (
-        <Link href={`compliances/${data?.complianceCount}/complianceDetails`}>
+        <Link href={`compliances/${data?.businessUnitId}/complianceDetails`}>
           {data?.complianceCount}
         </Link>
       ),
@@ -175,7 +175,7 @@ const Compliances = ({ userId, data }) => {
   return (
     <>
       <Flex justify="space-between" align="center" className="mb-2">
-        <Title level={4}>Compliances list</Title>
+        <Title level={4}>Approve applicable Compliances</Title>
       </Flex>
       <Flex justify="space-between" align="center" className="mb-2">
         <Input

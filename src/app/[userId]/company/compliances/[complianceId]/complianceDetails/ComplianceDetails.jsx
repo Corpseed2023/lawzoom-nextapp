@@ -1,59 +1,66 @@
-'use client'
+"use client";
 import CommonTable from "@/app/common/CommonTable";
-import { Button, Flex, Form, Input, Modal, Typography } from "antd";
+import { Button, Flex, Form, Input, Modal, Radio, Typography } from "antd";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import AddCompliances from "../../AddCompliances";
 import { Icon } from "@iconify/react";
+import Link from "next/link";
 const { Text, Title } = Typography;
 
-const ComplianceDetails = () => {
+const ComplianceDetails = ({ data }) => {
   const router = useRouter();
   const [form] = Form.useForm();
   const dispatch = useDispatch();
   const [openModal, setOpenModal] = useState(false);
-  const data=[
+  const columns = [
     {
-        id:1,
-        issuerAuthority:'ROC',
-        certificateType:'Company Annual Commplaince',
-        duration:'Life Time',
-        status:'alreadyDone'
+      dataIndex: "id",
+      title: "Id",
+      width: 80,
+      fixed: "left",
     },
     {
-        id:2,
-        issuerAuthority:'Labour Law',
-        certificateType:'Contract Labour Compliance',
-        duration:'Life Time',
-        status:'alreadyDone'
+      dataIndex: "name",
+      title: "Compliance name",
+      width: 300,
+      fixed: "left",
+      render: (_, data) => (
+        <Link href={`complianceDetails/${data?.id}/complianceTask`}>
+          {data?.name}
+        </Link>
+      ),
     },
     {
-        id:3,
-        issuerAuthority:'FSSAI',
-        certificateType:'FSSAI Certificate',
-        duration:'1 - 5 Years',
-        status:'applyNow'
+      dataIndex: "issueAuthority",
+      title: "Issuer authority",
+      width: 200,
     },
     {
-        id:4,
-        issuerAuthority:'GST',
-        certificateType:'GST Filing',
-        duration:'Life Time',
-        status:'notApplicable'
+      dataIndex: "certificateType",
+      title: "Certificate type",
+      width: 250,
     },
     {
-        id:5,
-        issuerAuthority:'Pollution Department',
-        certificateType:'EPR Certificate',
-        duration:'1 - 5 Years',
-        status:'alreadyDone'
+      dataIndex: "duration",
+      title: "Duration",
+      width: 150,
     },
-  ]
-
-  const columns=[{
-    dataIndex:'id'
-  }]
+    {
+      dataIndex: "status",
+      title: "Status",
+      render: (_, data) => (
+        <Flex>
+          <Radio.Group>
+            <Radio value={"apply_now"}>Apply now</Radio>
+            <Radio value={"alredy_done"}>Already done</Radio>
+            <Radio value={"not_applicable"}>Not applicable</Radio>
+          </Radio.Group>
+        </Flex>
+      ),
+    },
+  ];
 
   return (
     <>
@@ -78,7 +85,7 @@ const ComplianceDetails = () => {
         data={data}
         columns={columns}
         rowKey={(row) => row?.id}
-        scroll={{ y: "65vh" }}
+        scroll={{ y: "65vh", x: 1500 }}
       />
       <Modal
         title="Add compliance"
