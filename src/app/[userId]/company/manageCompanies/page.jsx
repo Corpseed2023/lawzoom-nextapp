@@ -20,7 +20,7 @@ const fetchAllCompanies = async (userId, subscriptionId) => {
 const ManageCompaniesPage = async ({ params }) => {
   const { userId } = params;
   const data = await fetchAllCompanies(userId, SUBSCRIPTION_ID);
-  console.log('jfdbvsdjbvajsbd',data)
+  
   return (
     <>
       <ManageCompanies userId={userId} data={data} />

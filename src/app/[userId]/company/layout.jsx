@@ -50,12 +50,23 @@ const CompanyLayout = ({ children, params }) => {
       key: "compliances",
       icon: (
         <Icon
+          icon="fluent:clipboard-text-edit-24-regular"
+          height={ICON_HEIGHT}
+          width={ICON_WIDTH}
+        />
+      ),
+      label: <Link href={`/${userId}/company/compliances`}>Compliances</Link>,
+    },
+    {
+      key: "manageCompliances",
+      icon: (
+        <Icon
           icon="fluent:notepad-person-24-regular"
           height={ICON_HEIGHT}
           width={ICON_WIDTH}
         />
       ),
-      label: "Compliances",
+      label: "Manage compliances",
       children: [
         {
           key: "taskManagement",

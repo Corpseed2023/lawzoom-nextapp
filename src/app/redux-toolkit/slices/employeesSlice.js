@@ -5,7 +5,7 @@ export const getAllEmployeesByCompanyId = createAsyncThunk(
   "getAllEmployeesByCompanyId",
   async ({ userId, subscriptionId }) => {
     const response = await api.get(
-      `/team/getAllTeamMembers?userId=${userId}&subscriptionId=${subscriptionId}`
+      `api/auth/team/getAllTeamMembers?userId=${userId}&subscriptionId=${subscriptionId}`
     );
     return response.data;
   }
@@ -15,7 +15,7 @@ export const addEmployee = createAsyncThunk(
   "addEmployee",
   async ({ userId, data }) => {
     const response = await api.post(
-      `/team/addTeamMember?userId=${userId}`,
+      `api/auth/team/addTeamMember?userId=${userId}`,
       data
     );
     return response.data;
@@ -25,7 +25,7 @@ export const addEmployee = createAsyncThunk(
 export const updateEmployee = createAsyncThunk(
   "updateEmployee",
   async ({ id, data }) => {
-    const response = await api.put(`/team/updateTeamMember?id=${id}`, data);
+    const response = await api.put(`api/auth/team/updateTeamMember?id=${id}`, data);
     return response.data;
   }
 );
@@ -34,7 +34,7 @@ export const deleteEmployee = createAsyncThunk(
   "deleteEmployee",
   async ({ userId, subscriptionId,teamMemberId }) => {
     const response = await api.delete(
-      `/team/removeTeamMember?userId=${userId}&subscriptionId=${subscriptionId}&teamMemberId=${teamMemberId}`
+      `api/auth/team/removeTeamMember?userId=${userId}&subscriptionId=${subscriptionId}&teamMemberId=${teamMemberId}`
     );
     return response.data;
   }

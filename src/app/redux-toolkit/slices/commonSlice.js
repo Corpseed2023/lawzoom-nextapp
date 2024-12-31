@@ -2,30 +2,30 @@ import api from "@/app/httpRequest";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 export const createEnquiry = createAsyncThunk("createEnquiry", async (data) => {
-  const response = await api.post(`/createEnquiry`, data);
+  const response = await api.post(`api/auth/createEnquiry`, data);
   return response.data;
 });
 
 export const getAllRoles = createAsyncThunk("getAllRoles", async () => {
-  const response = await api.get(`/role/getAllRoles`);
+  const response = await api.get(`api/auth/role/getAllRoles`);
   return response.data;
 });
 
 export const createRole=createAsyncThunk('createRole',async({role})=>{
-  const response=await api.post(`/role/createRole?role=${role}`)
+  const response=await api.post(`api/auth/role/createRole?role=${role}`)
   return response.data
 })
 
 
 export const getAllCountries = createAsyncThunk("getAllCountries", async () => {
-  const response = await api.get(`/countries/fetch-all-countries`);
+  const response = await api.get(`api/auth/countries/fetch-all-countries`);
   return response.data;
 });
 
 export const getStatesByCountryId = createAsyncThunk(
   "getStatesByCountryId",
   async (id) => {
-    const response = await api.get(`/states/fetch-all-states?countryId=${id}`);
+    const response = await api.get(`api/auth/states/fetch-all-states?countryId=${id}`);
     return response.data;
   }
 );
@@ -33,20 +33,20 @@ export const getStatesByCountryId = createAsyncThunk(
 export const getCitiesByStateId = createAsyncThunk(
   "getCitiesByStateId",
   async (id) => {
-    const response = await api.get(`/city/get-all-cities?stateId=${id}`);
+    const response = await api.get(`api/auth/city/get-all-cities?stateId=${id}`);
     return response.data;
   }
 );
 
 export const createCountry = createAsyncThunk("createCountry", async (data) => {
   const response = await api.post(
-    `/countries/create-country?countryName=${data?.countryName}&countryCode=${data?.countryCode}`
+    `api/auth/countries/create-country?countryName=${data?.countryName}&countryCode=${data?.countryCode}`
   );
   return response.data;
 });
 
 export const updateCountry = createAsyncThunk("updateCountry", async (data) => {
-  const response = await api.put(`/countries/update-country`, data);
+  const response = await api.put(`api/auth/countries/update-country`, data);
   return response.data;
 });
 
@@ -54,7 +54,7 @@ export const createStatesForCountry = createAsyncThunk(
   "createStatesForCountry",
   async (data) => {
     const response = await api.post(
-      `/states/create-state?countryId=${data?.countryId}&stateName=${data?.stateName}`
+      `api/auth/states/create-state?countryId=${data?.countryId}&stateName=${data?.stateName}`
     );
     return response.data;
   }
@@ -63,25 +63,25 @@ export const createStatesForCountry = createAsyncThunk(
 export const updateStatesForCountry = createAsyncThunk(
   "updateStatesForCountry",
   async (data) => {
-    const response = await api.put(`/states/update-states`, data);
+    const response = await api.put(`api/auth/states/update-states`, data);
     return response.data;
   }
 );
 
 export const createCities = createAsyncThunk("createCities", async (data) => {
   const response = await api.post(
-    `/city/save-cities?cityName=${data?.cityName}&cityCode=${data?.cityCode}&stateId=${data?.stateId}`
+    `api/auth/city/save-cities?cityName=${data?.cityName}&cityCode=${data?.cityCode}&stateId=${data?.stateId}`
   );
   return response.data;
 });
 
 export const updateCities = createAsyncThunk("updateCities", async (data) => {
-  const response = await api.put(`/city/update-city`, data);
+  const response = await api.put(`api/auth/city/update-city`, data);
   return response.data;
 });
 
 export const deleteCitiesById = createAsyncThunk("", async (id) => {
-  const response = await api.delete(`/city/softDeleteCity?id=${id}`);
+  const response = await api.delete(`api/auth/city/softDeleteCity?id=${id}`);
   return response.data;
 });
 
