@@ -26,7 +26,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 const { Text, Title } = Typography;
 
-const Compliances = ({ userId, data }) => {
+const BusinessUnit = ({ userId, data }) => {
   const router = useRouter();
   const [form] = Form.useForm();
   const dispatch = useDispatch();
@@ -123,7 +123,7 @@ const Compliances = ({ userId, data }) => {
       dataIndex: "complianceCount",
       title: "Compliance",
       render: (_, data) => (
-        <Link href={`compliances/${data?.businessUnitId}/complianceDetails`}>
+        <Link href={`businessUnit/${data?.businessUnitId}/compliances`}>
           {data?.complianceCount}
         </Link>
       ),
@@ -227,4 +227,4 @@ const Compliances = ({ userId, data }) => {
   );
 };
 
-export default Compliances;
+export default BusinessUnit;

@@ -50,7 +50,7 @@ const AddUsers = () => {
         setData(res.results);
         setList(res.results);
       });
-  }, [fakeDataUrl]);
+  }, []);
 
   //   const dataProducts= await getProductData()
   //   console.log(dataProducts)
@@ -87,8 +87,9 @@ const AddUsers = () => {
           loading={initLoading}
           itemLayout="horizontal"
           dataSource={list}
-          renderItem={(item) => (
+          renderItem={(item,idx) => (
             <List.Item
+            key={`${idx}users`}
               actions={[
                 <Button type="link">
                   <Icon icon="fluent:add-24-regular" />

@@ -21,6 +21,16 @@ export const getComplianceByUnitId = createAsyncThunk(
   }
 );
 
+export const createCompliance = createAsyncThunk(
+  "createCompliance",
+  async (data) => {
+    const response = await api.post(
+      `/api/compliance/saveCompliance?businessUnitId=${businessUnitId}&userId=${userId}`,data
+    );
+    return response.data;
+  }
+);
+
 const complianceSlice = createSlice({
   name: "compliance",
   initialState: {},

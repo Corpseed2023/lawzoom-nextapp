@@ -47,7 +47,7 @@ const CompanyLayout = ({ children, params }) => {
       ),
     },
     {
-      key: "compliances",
+      key: "businessUnit",
       icon: (
         <Icon
           icon="fluent:clipboard-text-edit-24-regular"
@@ -55,7 +55,7 @@ const CompanyLayout = ({ children, params }) => {
           width={ICON_WIDTH}
         />
       ),
-      label: <Link href={`/${userId}/company/compliances`}>Compliances</Link>,
+      label: <Link href={`/${userId}/company/businessUnit`}>Set Compliance map</Link>,
     },
     {
       key: "manageCompliances",
@@ -71,7 +71,7 @@ const CompanyLayout = ({ children, params }) => {
         {
           key: "taskManagement",
           label: (
-            <Link href={`/${userId}/company/compliances/taskManagement`}>
+            <Link href={`/${userId}/company/manageCompliances/taskManagement`}>
               Task management
             </Link>
           ),
@@ -170,7 +170,7 @@ const CompanyLayout = ({ children, params }) => {
     <Layout>
       <Layout style={{ height: "100vh" }}>
         <Sider
-          width={200}
+          width={220}
           collapsible
           style={{
             background: colorBgContainer,

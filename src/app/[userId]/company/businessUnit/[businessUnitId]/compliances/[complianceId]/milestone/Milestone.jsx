@@ -1,16 +1,22 @@
-'use client'
+"use client";
 import CommonTable from "@/app/common/CommonTable";
 import { Icon } from "@iconify/react";
-import { Button, Flex, Input, Typography } from "antd";
+import { Button, Flex, Form, Input, Modal, Typography } from "antd";
+import { useRouter } from "next/navigation";
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
+import AddMilestone from "./AddMilestone";
 const { Title, Text } = Typography;
 
-const ComplianceTask = ({ data }) => {
+const Milestone = ({ data }) => {
+  const router = useRouter();
+  const [form] = Form.useForm();
+  const dispatch = useDispatch();
   const [openModal, setOpenModal] = useState(false);
 
   const columns = [
     { dataIndex: "id", title: "Id" },
-    { dataIndex: "task", title: "Task" },
+    { dataIndex: "issuerAuthority", title: "IssuerAuthority" },
     { dataIndex: "description", title: "Description" },
     { dataIndex: "complianceFrequency", title: "Compliance frequency" },
     { dataIndex: "renewalDate", title: "Renewal date" },
@@ -44,8 +50,21 @@ const ComplianceTask = ({ data }) => {
         rowKey={(row) => row?.id}
         scroll={{ y: "65vh", x: 1500 }}
       />
+      <Modal
+        title="Add milestone"
+        open={openModal}
+        centered
+        onCancel={() => setOpenModal(false)}
+        onClose={() => setOpenModal(false)}
+        onOk={() => form.submit()}
+        okText="Submit"
+        width={"80%"}
+        footer={null}
+      >
+        <AddMilestone />
+      </Modal>
     </>
   );
 };
 
-export default ComplianceTask;
+export default Milestone;

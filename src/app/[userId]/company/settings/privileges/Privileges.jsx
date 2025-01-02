@@ -33,7 +33,7 @@ const Privileges = () => {
   };
   useEffect(() => {
     appendData(false);
-  }, []);
+  }, [appendData]);
 
   const onScroll = (e) => {
     if (
@@ -74,9 +74,9 @@ const Privileges = () => {
           onScroll={onScroll}
           style={{ padding: "8px" }}
         >
-          {(item) => (
+          {(item,idx) => (
             <List.Item
-              key={item.email}
+              key={`${item.email}${idx}`}
               style={{ width: "95%" }}
               actions={[
                 <Button size="small" type="text" danger>

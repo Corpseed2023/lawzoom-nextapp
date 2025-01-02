@@ -131,7 +131,7 @@ const AddNEditCompanyForm = ({ edit, userId, editData }) => {
           );
       }
     },
-    [dispatch, form]
+    [dispatch, form,editCompanyId,router,userId]
   );
 
   return (

@@ -188,8 +188,9 @@ const CompanyInfo = ({ companyId, data, companyDetail, userId }) => {
           className="demo-loadmore-list my-2 w-full"
           itemLayout="horizontal"
           dataSource={filteredData}
-          renderItem={(item) => (
+          renderItem={(item,idx) => (
             <List.Item
+            key={`${idx}companyInfo`}
               onClick={() => {
                 setOpenDrawer(true);
                 setGstData(item);

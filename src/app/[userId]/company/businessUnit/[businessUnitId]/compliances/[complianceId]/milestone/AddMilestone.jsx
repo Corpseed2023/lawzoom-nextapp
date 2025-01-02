@@ -18,7 +18,7 @@ import BasicDetails from "./BasicDetails";
 import { Icon } from "@iconify/react";
 const { Text, Title } = Typography;
 
-const AddCompliances = () => {
+const AddMilestone = () => {
   const items = [
     {
       key: "1",
@@ -166,4 +166,4 @@ const AddCompliances = () => {
   );
 };
 
-export default AddCompliances;
+export default AddMilestone;

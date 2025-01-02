@@ -1,7 +1,8 @@
 import React from "react";
-import ComplianceDetails from "./ComplianceDetails";
 import store from "@/app/redux-toolkit/store";
 import { getComplianceByUnitId } from "@/app/redux-toolkit/slices/complianceSlice";
+import Compliances from "./Compliances";
+
 
 const fetchComplianceByCompanyUnitId = async (unitId) => {
   let data = [];
@@ -15,17 +16,17 @@ const fetchComplianceByCompanyUnitId = async (unitId) => {
   return data;
 };
 
-const ComplianceDetailsPage = async({ params }) => {
-  const { complianceId } = params;
-  const data=await fetchComplianceByCompanyUnitId(complianceId)
+const CompliancesPage = async({ params }) => {
+  const { businessUnitId,userId } = params;
+  const data=await fetchComplianceByCompanyUnitId(businessUnitId)
 
-  console.log('jsdghckjsdvckjsv =====================>',data,complianceId)
+  console.log('jsdghckjsdvckjsv =====================>',data,businessUnitId)
   
   return (
     <>
-      <ComplianceDetails data={data} />
+      <Compliances data={data} />
     </>
   );
 };
 
-export default ComplianceDetailsPage;
+export default CompliancesPage;

@@ -1,11 +1,12 @@
-import React from 'react'
+import React from "react";
+import TaskManagementPage from "./TaskManagementPage";
 
 const TaskManagement = () => {
   return (
-    <div>
-      This is my task management
-    </div>
-  )
-}
+    <>
+      <TaskManagementPage />
+    </>
+  );
+};
 
-export default TaskManagement
+export default TaskManagement;
