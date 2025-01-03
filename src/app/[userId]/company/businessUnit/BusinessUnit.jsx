@@ -219,7 +219,7 @@ const BusinessUnit = ({ userId, data }) => {
       <CommonTable
         data={data}
         columns={columns}
-        rowKey={(row) => row?.id}
+        rowKey={(row) => row?.businessUnitId}
         scroll={{ y: 600 }}
         handleRowSelection={onRowSelection}
       />

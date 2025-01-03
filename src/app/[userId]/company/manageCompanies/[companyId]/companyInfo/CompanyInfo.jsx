@@ -16,14 +16,22 @@ import {
   Typography,
 } from "antd";
 import React, { useEffect, useState } from "react";
-import AddGstForm from "./AddGstForm";
 import { useRouter } from "next/navigation";
 import { getAllCountries } from "@/app/redux-toolkit/slices/commonSlice";
 import { useDispatch } from "react-redux";
-import BusinessUnits from "./BusinessUnits";
 import { getAllLocatedAt } from "@/app/redux-toolkit/slices/settingSlice";
 import Link from "next/link";
+import dynamic from "next/dynamic";
+import Loading from "@/app/loading";
 const { Text, Title } = Typography;
+const BusinessUnits = dynamic(() => import("./BusinessUnits"), {
+  loading: () => <Loading />,
+  ssr: false,
+});
+const AddGstForm = dynamic(() => import("./AddGstForm"), {
+  loading: () => <Loading />,
+  ssr: false,
+});
 
 const CompanyInfo = ({ companyId, data, companyDetail, userId }) => {
   const router = useRouter();
@@ -188,9 +196,9 @@ const CompanyInfo = ({ companyId, data, companyDetail, userId }) => {
           className="demo-loadmore-list my-2 w-full"
           itemLayout="horizontal"
           dataSource={filteredData}
-          renderItem={(item,idx) => (
+          renderItem={(item, idx) => (
             <List.Item
-            key={`${idx}companyInfo`}
+              key={`${idx}companyInfo`}
               onClick={() => {
                 setOpenDrawer(true);
                 setGstData(item);

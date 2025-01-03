@@ -7,18 +7,17 @@ import Link from "next/link";
 import { Icon } from "@iconify/react";
 import { ICON_HEIGHT, ICON_WIDTH } from "@/app/constants";
 // import { useRouter } from "next/router";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 const { Content, Sider } = Layout;
 
-const CompanyLayout = ({ children, params }) => {
+const CompanyLayout = ({ children }) => {
   const {
-    token: { colorBgContainer, borderRadiusLG },
+    token: { colorBgContainer },
   } = theme.useToken();
 
-  const { userId } = params;
-
-  console.log("sdxkcvjhasdjghal", userId);
-
+  const params = useParams();
+  const userId = params.userId; 
+  
   const items = [
     {
       key: "dashboard",

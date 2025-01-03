@@ -13,7 +13,7 @@ export const getAllCompanies = createAsyncThunk(
   "getAllCompanies",
   async ({ userId, subscriptionId }) => {
     const response = await api.get(
-      `api/auth/company/fetch-all-company?userId=${userId}&subscriptionId=${subscriptionId}`
+      `/api/compliance/company/fetch-all-companies?userId=${userId}&subscriptionId=${subscriptionId}`
     );
     return response.data;
   }

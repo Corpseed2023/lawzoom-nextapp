@@ -1,11 +1,16 @@
 import React from "react";
-import CompanyInfo from "./CompanyInfo";
 import store from "@/app/redux-toolkit/store";
 import {
   fetchAllGstDetails,
   fetchSingleCompanyDetail,
 } from "@/app/redux-toolkit/slices/companySlice";
 import { SUBSCRIPTION_ID } from "@/app/constants";
+import dynamic from "next/dynamic";
+import Loading from "@/app/loading";
+
+const CompanyInfo = dynamic(() => import("./CompanyInfo"), {
+  loading: () => <Loading />,
+});
 
 const getAllGst = async (companyId, userId, subscriptionId) => {
   let result = [];

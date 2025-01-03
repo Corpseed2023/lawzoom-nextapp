@@ -14,7 +14,6 @@ import {
   Typography,
 } from "antd";
 import React, { useEffect, useState } from "react";
-import AddNEditCompanyForm from "./AddCompanyForm";
 import {
   getAllBusinessActivity,
   getAllCompanyType,
@@ -25,21 +24,33 @@ import {
 import { useDispatch } from "react-redux";
 import { getAllCountries } from "@/app/redux-toolkit/slices/commonSlice";
 import { useRouter } from "next/navigation";
-import { deleteCompanyById } from "@/app/redux-toolkit/slices/companySlice";
+import {
+  deleteCompanyById,
+  getAllCompanies,
+} from "@/app/redux-toolkit/slices/companySlice";
 import Link from "next/link";
+import dynamic from "next/dynamic";
+const AddNEditCompanyForm = dynamic(() => import("./AddCompanyForm"), {
+  loading: () => <h1>Loading .....</h1>,
+  ssr: false,
+});
 const { Title, Text } = Typography;
 
 const ManageCompanies = ({ userId, data }) => {
   const dispatch = useDispatch();
   const router = useRouter();
   const [searchTerm, setSearchTerm] = useState("");
-  const [filteredData, setFilteredData] = useState(data);
+  const [filteredData, setFilteredData] = useState([]);
 
   useEffect(() => {
     if (data && data?.length > 0) {
       setFilteredData(data);
     }
   }, [data]);
+
+  // useEffect(() => {
+  //   dispatch(getAllCompanies({ userId: 1, subscriptionId: 1 }));
+  // }, [dispatch]);
 
   useEffect(() => {
     dispatch(getAllCompanyType());

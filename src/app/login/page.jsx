@@ -7,6 +7,7 @@ import {
   Flex,
   Form,
   Input,
+  message,
   notification,
   Typography,
 } from "antd";
@@ -24,6 +25,13 @@ const Login = () => {
   const dispatch = useDispatch();
   const router = useRouter();
   const [form] = Form.useForm();
+  const [api, contextHolder] = notification.useNotification();
+
+  const openNotification = (resp) => {
+    api[resp.status]({
+      message: resp.message,
+    });
+  };
 
   const [loading, setLoading] = useState("");
 
@@ -32,11 +40,17 @@ const Login = () => {
     dispatch(loginUser(values))
       .then((resp) => {
         if (resp.meta.requestStatus === "fulfilled") {
-          notification.success({ message: "User logged in successfully !." });
+          openNotification({
+            status: "success",
+            message: "User logged in successfully !.",
+          });
           router.push(`/${resp?.payload?.body?.id}/company/dashboard`);
           setLoading("success");
         } else {
-          notification.error({ message: "Something went wrong !." });
+          openNotification({
+            status: "error",
+            message: "Something went wrong !.",
+          });
           form.setFields([
             {
               name: "username",
@@ -51,7 +65,10 @@ const Login = () => {
         }
       })
       .catch(() => {
-        notification.error({ message: "Something went wrong !." });
+        openNotification({
+          status: "error",
+          message: "Something went wrong !.",
+        });
         form.setFields([
           {
             name: "username",
@@ -141,6 +158,7 @@ const Login = () => {
           </Form.Item>
         </Form>
       </Flex>
+      {contextHolder}
     </Flex>
   );
 };

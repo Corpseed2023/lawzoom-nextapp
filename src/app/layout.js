@@ -1,9 +1,12 @@
-import localFont from "next/font/local";
+import "@ant-design/v5-patch-for-react-19";
 import "./globals.css";
 import { ConfigProvider } from "antd";
-import Providers from "./Providers";
-import { Suspense } from "react";
+import dynamic from "next/dynamic";
 import Loading from "./loading";
+const Providers = dynamic(() => import("./Providers"), {
+  loading: () => <Loading />,
+  // ssr: false,
+});
 
 export const metadata = {
   title: "Law Zoom",
@@ -14,54 +17,52 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body>
-        <Suspense fallback={<Loading />}>
-          <ConfigProvider
-            theme={{
-              token: {
-                borderRadius: 6,
-                fontSize: 13,
+        <ConfigProvider
+          theme={{
+            token: {
+              borderRadius: 6,
+              fontSize: 13,
+            },
+            components: {
+              Input: {
+                borderRadius: 5,
+                borderRadiusLG: 5,
               },
-              components: {
-                Input: {
-                  borderRadius: 5,
-                  borderRadiusLG: 5,
-                },
-                InputNumber: {
-                  borderRadius: 5,
-                  borderRadiusLG: 5,
-                },
-                Select: {
-                  borderRadius: 5,
-                  borderRadiusLG: 5,
-                },
-                Button: {
-                  borderRadius: 4,
-                  borderRadiusLG: 4,
-                  borderRadiusSM: 4,
-                },
-                DatePicker: {
-                  borderRadius: 4,
-                  borderRadiusLG: 4,
-                  borderRadiusSM: 4,
-                },
-                Menu: {
-                  itemHeight: 32,
-                },
-                Table: {
-                  cellPaddingBlock: 12,
-                  selectionColumnWidth: 24,
-                  cellPaddingInline: 12,
-                  padding: 12,
-                },
-                Card: {
-                  actionsLiMargin: "2px 0px",
-                },
+              InputNumber: {
+                borderRadius: 5,
+                borderRadiusLG: 5,
               },
-            }}
-          >
-            <Providers>{children}</Providers>
-          </ConfigProvider>
-        </Suspense>
+              Select: {
+                borderRadius: 5,
+                borderRadiusLG: 5,
+              },
+              Button: {
+                borderRadius: 4,
+                borderRadiusLG: 4,
+                borderRadiusSM: 4,
+              },
+              DatePicker: {
+                borderRadius: 4,
+                borderRadiusLG: 4,
+                borderRadiusSM: 4,
+              },
+              Menu: {
+                itemHeight: 32,
+              },
+              Table: {
+                cellPaddingBlock: 12,
+                selectionColumnWidth: 24,
+                cellPaddingInline: 12,
+                padding: 12,
+              },
+              Card: {
+                actionsLiMargin: "2px 0px",
+              },
+            },
+          }}
+        >
+          <Providers>{children}</Providers>
+        </ConfigProvider>
       </body>
     </html>
   );

@@ -20,14 +20,23 @@ import { useDispatch } from "react-redux";
 import { Icon } from "@iconify/react";
 import Link from "next/link";
 import { createCompliance } from "@/app/redux-toolkit/slices/complianceSlice";
+import { SUBSCRIPTION_ID } from "@/app/constants";
 const { Text, Title } = Typography;
 
-const Compliances = ({ data }) => {
+const Compliances = ({ data, businessUnitId, userId }) => {
   const router = useRouter();
   const [form] = Form.useForm();
   const dispatch = useDispatch();
   const [openModal, setOpenModal] = useState(false);
   const [editData, setEditData] = useState(null);
+  const [api, contextHolder] = notification.useNotification();
+
+  const openNotification = (resp) => {
+    api[resp.status]({
+      message: resp.message,
+    });
+  };
+
   const columns = [
     {
       dataIndex: "id",
@@ -41,9 +50,7 @@ const Compliances = ({ data }) => {
       width: 300,
       fixed: "left",
       render: (_, data) => (
-        <Link href={`compliances/${data?.id}/milestone`}>
-          {data?.name}
-        </Link>
+        <Link href={`compliances/${data?.id}/milestone`}>{data?.name}</Link>
       ),
     },
     {
@@ -76,27 +83,41 @@ const Compliances = ({ data }) => {
     },
   ];
 
-
-
-  const handleFinish=(values)=>{
-    dispatch(createCompliance(values)).then((resp)=>{
-      if(resp.meta.requestStatus==='fulfilled'){
-        notification.success({message:'Compliance created successfully !.'})
-        setOpenModal(false)
-        form.resetFields()
-        router.refresh()
-      }else{
-        notification.error({message:'Something went wrong !.'})
-      }
-    }).catch(()=>notification.error({message:'Something went wrong !.'}))
-  }
-
-
-
-
+  const handleFinish = (values) => {
+    dispatch(
+      createCompliance({
+        userId,
+        businessUnitId,
+        data: { subscriberId: SUBSCRIPTION_ID, ...values },
+      })
+    )
+      .then((resp) => {
+        if (resp.meta.requestStatus === "fulfilled") {
+          openNotification({
+            status: "success",
+            message: "Compliance created successfully !.",
+          });
+          setOpenModal(false);
+          form.resetFields();
+          router.refresh();
+        } else {
+          openNotification({
+            status: "error",
+            message: "Something went wrong !.",
+          });
+        }
+      })
+      .catch(() =>
+        openNotification({
+          status: "error",
+          message: "Something went wrong !.",
+        })
+      );
+  };
 
   return (
     <>
+      {contextHolder}
       <Flex justify="space-between" align="center" className="mb-2">
         <Title level={4}>Compliances list</Title>
       </Flex>
