@@ -36,6 +36,16 @@ export const createCompliance = createAsyncThunk(
   }
 );
 
+export const getAllMileStones=createAsyncThunk('getAllMileStones',async(data)=>{
+  const response =await api.post(`/api/compliance/milestone/fetch-all-milestone`,data)
+  return response.data
+})
+
+export const createMileStone=createAsyncThunk('createMileStone',async(data)=>{
+  const response=await api.post(`/api/compliance/milestone/create`,data)
+  return response.data
+})
+
 const complianceSlice = createSlice({
   name: "compliance",
   initialState: {},

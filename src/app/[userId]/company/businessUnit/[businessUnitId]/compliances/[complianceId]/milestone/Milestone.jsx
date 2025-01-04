@@ -1,27 +1,58 @@
 "use client";
 import CommonTable from "@/app/common/CommonTable";
 import { Icon } from "@iconify/react";
-import { Button, Flex, Form, Input, Modal, Typography } from "antd";
+import { Button, Flex, Form, Input, Modal, Progress, Typography } from "antd";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import AddMilestone from "./AddMilestone";
 const { Title, Text } = Typography;
 
-const Milestone = ({ data }) => {
+const Milestone = ({ data, businessUnitId, complianceId }) => {
   const router = useRouter();
   const [form] = Form.useForm();
   const dispatch = useDispatch();
   const [openModal, setOpenModal] = useState(false);
+  const [formData, setFormData] = useState({
+    mileStoneName:
+      "Register and other records to be maintained by the contractor",
+    description: "ghhghg",
+    complianceId: 1,
+    businessUnitId: 1,
+    reporterId: 1,
+    assignedTo: 1,
+    assignedBy: 1,
+    assigneeMail: "vbnvbn@jfjkf.com",
+    issuedDate: "2025-01-04",
+    criticality: "fdsfd",
+    status: "dffdfd",
+  });
 
   const columns = [
-    { dataIndex: "id", title: "Id" },
-    { dataIndex: "issuerAuthority", title: "IssuerAuthority" },
+    { dataIndex: "id", title: "Id", width: 80, fixed: "left" },
+    { dataIndex: "mileStoneName", title: "Milestone name", fixed: "left" },
+    { dataIndex: "reporterName", title: "Reporter" },
+    { dataIndex: "assignedName", title: "Assignee" },
+    { dataIndex: "assigneeMail", title: "Assignee email" },
+    { dataIndex: "assignedByName", title: "Assigned By" },
     { dataIndex: "description", title: "Description" },
-    { dataIndex: "complianceFrequency", title: "Compliance frequency" },
+    { dataIndex: "issuedDate", title: "Issue date" },
     { dataIndex: "renewalDate", title: "Renewal date" },
+    { dataIndex: "dueDate", title: "Due date" },
     { dataIndex: "criticality", title: "Criticality" },
-    { dataIndex: "document", title: "Document copy" },
+    {
+      dataIndex: "status",
+      title: "Status",
+      render: (_, data) => (
+        <Progress
+          percent={30}
+          percentPosition={{
+            align: "start",
+            type: "outer",
+          }}
+        />
+      ),
+    },
     { dataIndex: "remark", title: "Remark" },
   ];
 
@@ -61,7 +92,13 @@ const Milestone = ({ data }) => {
         width={"80%"}
         footer={null}
       >
-        <AddMilestone />
+        <AddMilestone
+          setFormData={setFormData}
+          setOpenModal={setOpenModal}
+          formData={formData}
+          businessUnitId={businessUnitId}
+          complianceId={complianceId}
+        />
       </Modal>
     </>
   );

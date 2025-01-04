@@ -18,12 +18,26 @@ import BasicDetails from "./BasicDetails";
 import { Icon } from "@iconify/react";
 const { Text, Title } = Typography;
 
-const AddMilestone = () => {
+const AddMilestone = ({
+  formData,
+  setFormData,
+  businessUnitId,
+  complianceId,
+  setOpenModal
+}) => {
   const items = [
     {
       key: "1",
       label: "Basic details",
-      children: <BasicDetails />,
+      children: (
+        <BasicDetails
+          formData={formData}
+          setFormData={setFormData}
+          businessUnitId={businessUnitId}
+          complianceId={complianceId}
+          setOpenModal={setOpenModal}
+        />
+      ),
     },
     {
       key: "2",
@@ -128,7 +142,7 @@ const AddMilestone = () => {
               </Upload>
               <Flex align="center" gap={8}>
                 <Text>Document issue date</Text>
-                <DatePicker size="small"  />
+                <DatePicker size="small" />
               </Flex>
             </Flex>
             <Flex justify="space-between" align="center" gap={12}>
@@ -138,7 +152,7 @@ const AddMilestone = () => {
               </Flex>
               <Flex vertical gap={8}>
                 <Text>Certificate type</Text>
-                <Input size="small"  />
+                <Input size="small" />
               </Flex>
             </Flex>
             <Flex justify="space-between" align="center" gap={8}>
@@ -148,11 +162,11 @@ const AddMilestone = () => {
             <Flex justify="space-between" align="center">
               <Flex vertical gap={8}>
                 <Text>Set compliance reminder</Text>
-                <DatePicker size="small"  />
+                <DatePicker size="small" />
               </Flex>
               <Flex vertical gap={8}>
                 <Text>Set renewal reminder</Text>
-                <DatePicker size="small"  />
+                <DatePicker size="small" />
               </Flex>
             </Flex>
             <Flex vertical gap={8}>
