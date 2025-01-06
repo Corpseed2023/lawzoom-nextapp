@@ -4,10 +4,12 @@ import React from "react";
 import Link from "next/link";
 import { Icon } from "@iconify/react";
 import { ICON_HEIGHT, ICON_WIDTH } from "@/app/constants";
+import { useParams } from "next/navigation";
 const { Content, Sider } = Layout;
 
 const SettingMangements = ({ children, params }) => {
-  const { userId } = params;
+  const { userId } = useParams();
+  console.log('kxhbvcjsvhdcg',)
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
@@ -61,6 +63,10 @@ const SettingMangements = ({ children, params }) => {
     {
       key: "roles",
       label: <Link href={`/${userId}/company/settings/roles`}>Roles</Link>,
+    },
+    {
+      key: "subscription",
+      label: <Link href={`/${userId}/company/settings/subscription`}>Subscription</Link>,
     },
   ];
   return (

@@ -18,6 +18,7 @@ const fetchComplianceByCompanyUnitId = async (
     const response = await store.dispatch(
       getComplianceByUnitId({ businessUnitId, userId, subscriberId })
     );
+    console.log('kasjdhcjkasbhckjascjskjdsh============================>>>>>>>>>>',response,businessUnitId,subscriberId,userId)
     data = response.payload;
   } catch (err) {
     console.log("compliande unit erroir", err);

@@ -1,11 +1,12 @@
 import api from "@/app/httpRequest";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import axios from "axios";
 
 export const getAllCompliances = createAsyncThunk(
   "getAllCompliances",
   async ({ userId, subscriberId }) => {
     const response = await api.get(
-      `/api/compliance/company-details-count?userId=${userId}&subscriberId=${subscriberId}`
+      `/api/compliance/compliance/company-details-count?userId=${userId}&subscriberId=${subscriberId}`
     );
     return response.data;
   }
@@ -15,14 +16,14 @@ export const getComplianceByUnitId = createAsyncThunk(
   "getComplianceByUnitId",
   async ({ businessUnitId, userId, subscriberId }) => {
     const response = await api.get(
-      `/api/compliance/fetchByBusinessUnit?businessUnitId=${businessUnitId}&userId=${userId}&subscriberId=${subscriberId}`
+      `/api/compliance/compliance/fetchByBusinessUnit?businessUnitId=${businessUnitId}&userId=${userId}&subscriberId=${subscriberId}`
     );
     return response.data;
   }
 );
 
 export const createCompliance = createAsyncThunk(
-  "createComplianceSbsdvb",
+  "createCompliance",
   async ({ businessUnitId, userId, data }) => {
     try {
       const response = await api.post(
@@ -43,6 +44,16 @@ export const getAllMileStones=createAsyncThunk('getAllMileStones',async(data)=>{
 
 export const createMileStone=createAsyncThunk('createMileStone',async(data)=>{
   const response=await api.post(`/api/compliance/milestone/create`,data)
+  return response.data
+})
+
+export const createTask=createAsyncThunk('createTask',async(data)=>{
+  const response=await api.post(`/api/compliance/tasks/create`,data)
+  return response.data
+})
+
+export const getComplianceById=createAsyncThunk('getComplianceById',async(id)=>{
+  const response=await api.get(`/api/compliance/compliance/fetch-compliance?complianceId=${id}`)
   return response.data
 })
 

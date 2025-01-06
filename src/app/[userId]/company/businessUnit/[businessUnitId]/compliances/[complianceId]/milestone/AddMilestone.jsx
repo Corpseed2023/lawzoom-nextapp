@@ -23,8 +23,12 @@ const AddMilestone = ({
   setFormData,
   businessUnitId,
   complianceId,
-  setOpenModal
+  setOpenModal,
+  userId,
+  complianceData,
 }) => {
+  console.log("Compliance dataatatatatat", complianceData);
+
   const items = [
     {
       key: "1",
@@ -36,6 +40,7 @@ const AddMilestone = ({
           businessUnitId={businessUnitId}
           complianceId={complianceId}
           setOpenModal={setOpenModal}
+          userId={userId}
         />
       ),
     },
@@ -65,56 +70,58 @@ const AddMilestone = ({
           <Flex vertical gap={24}>
             <Flex justify="space-between" className="w-full">
               <Flex vertical gap={8}>
-                <Title level={5}>Haldirams Foods Private Limited</Title>
+                <Title level={5}>{complianceData?.companyName}</Title>
                 <Flex gap={8}>
                   <Text type="secondary">Activity</Text>
                   <Text>:</Text>
-                  <Text>Food Manufacturing unit</Text>
+                  <Text>{complianceData?.businessActivityName}</Text>
                 </Flex>
                 <Flex gap={8}>
-                  <Text type="secondary">Task Type</Text>
+                  <Text type="secondary">Certificate Type</Text>
                   <Text>:</Text>
-                  <Text>Contract Labour Compliances</Text>
+                  <Text>{complianceData?.certificateType}</Text>
                 </Flex>
               </Flex>
               <Flex vertical gap={8}>
                 <Flex align="center" gap={8}>
-                  <Text type="secondary">Gurugram</Text>
+                  <Text type="secondary">{complianceData?.city}</Text>
                   <Divider type="vertical" style={{ margin: 0 }} />
-                  <Text type="secondary">Haryana</Text>
+                  <Text type="secondary">{complianceData?.state}</Text>
                 </Flex>
                 <Flex align="center" gap={8}>
                   <Text type="secondary">Priority</Text>
                   <Text>:</Text>
-                  <Text strong>High</Text>
+                  <Text strong>{complianceData?.priority}</Text>
                 </Flex>
               </Flex>
             </Flex>
             <Flex justify="space-between" align="center" className="w-full">
-              <Flex vertical justify="center" gap={8}>
+              <Flex align="center" gap={8}>
                 <Text>Approval state</Text>
-                <Select size="small" style={{ width: "200px" }} />
+                <Text>:</Text>
+                <Text>{complianceData?.approvalState}</Text>
               </Flex>
-              <Flex vertical justify="center" gap={8}>
+              <Flex align="center" gap={8}>
                 <Text>Applicable zone</Text>
-                <Select size="small" style={{ width: "200px" }} />
+                <Text>:</Text>
+                <Text>{complianceData?.applicableZone}</Text>
               </Flex>
             </Flex>
             <Flex justify="space-between" align="center">
               <Flex gap={8} align="center">
                 <Text type="secondary">Start</Text>
                 <Text>:</Text>
-                <Text>01/05/2024</Text>
+                <Text>{complianceData?.startDate}</Text>
               </Flex>
               <Flex gap={8} align="center">
                 <Text type="secondary">Due</Text>
                 <Text>:</Text>
-                <Text>10/07/2024</Text>
+                <Text>{complianceData?.dueDate}</Text>
               </Flex>
               <Flex gap={8} align="center">
                 <Text type="secondary">Completed</Text>
                 <Text>:</Text>
-                <Text>15/08/2024</Text>
+                <Text>{complianceData?.completedDate}</Text>
               </Flex>
             </Flex>
             <Flex align="center" justify="space-between" gap={24}>
@@ -129,7 +136,7 @@ const AddMilestone = ({
                 <Text>Abhishek singh</Text>
               </Flex>
             </Flex>
-            <Flex align="center" justify="space-between">
+            {/* <Flex align="center" justify="space-between">
               <Upload>
                 <Button size="large" type="text">
                   <Icon
@@ -144,22 +151,24 @@ const AddMilestone = ({
                 <Text>Document issue date</Text>
                 <DatePicker size="small" />
               </Flex>
-            </Flex>
+            </Flex> */}
             <Flex justify="space-between" align="center" gap={12}>
-              <Flex vertical gap={8}>
+              <Flex align="center" gap={8}>
                 <Text>Issuer authority</Text>
-                <Input size="small" />
+                <Text>:</Text>
+                <Text>{complianceData?.issueAuthority}</Text>
               </Flex>
-              <Flex vertical gap={8}>
+              <Flex align="center" gap={8}>
                 <Text>Certificate type</Text>
-                <Input size="small" />
+                <Text>:</Text>
+                <Text>{complianceData?.certificateType}</Text>
               </Flex>
             </Flex>
-            <Flex justify="space-between" align="center" gap={8}>
+            {/* <Flex justify="space-between" align="center" gap={8}>
               <Text>Document reference number</Text>
               <Input />
-            </Flex>
-            <Flex justify="space-between" align="center">
+            </Flex> */}
+            {/* <Flex justify="space-between" align="center">
               <Flex vertical gap={8}>
                 <Text>Set compliance reminder</Text>
                 <DatePicker size="small" />
@@ -168,11 +177,11 @@ const AddMilestone = ({
                 <Text>Set renewal reminder</Text>
                 <DatePicker size="small" />
               </Flex>
-            </Flex>
-            <Flex vertical gap={8}>
+            </Flex> */}
+            {/* <Flex vertical gap={8}>
               <Text>Remark</Text>
               <Input.TextArea />
-            </Flex>
+            </Flex> */}
           </Flex>
         </Col>
       </Row>

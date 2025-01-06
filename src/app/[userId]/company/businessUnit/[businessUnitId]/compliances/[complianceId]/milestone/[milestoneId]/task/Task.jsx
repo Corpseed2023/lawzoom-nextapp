@@ -1,12 +1,14 @@
+"use client";
 import CommonTable from "@/app/common/CommonTable";
 import { Icon } from "@iconify/react";
-import { Button, Col, Flex, Form, Input, Modal, Row, Typography } from "antd";
+import { Button, Col, DatePicker, Flex, Form, Input, InputNumber, Modal, Row, Select, Typography } from "antd";
 import React, { useState } from "react";
 const { Title, Text } = Typography;
 
-const Task = ({data}) => {
+const Task = ({ data }) => {
   const [form] = Form.useForm();
   const [openModal, setOpenModal] = useState(false);
+  const [editData, setEditData] = useState(null);
   const columns = [
     { dataIndex: "id", title: "Id" },
     { dataIndex: "task", title: "Task" },
@@ -57,66 +59,13 @@ const Task = ({data}) => {
           <Row>
             <Col span={11}>
               <Form.Item
-                label="Issuer authority"
-                name="issueAuthority"
-                rules={[
-                  {
-                    required: true,
-                    message: "please enter issuer authority name ",
-                  },
-                ]}
-              >
-                <Input />
-              </Form.Item>
-            </Col>
-            <Col span={2} />
-            <Col span={11}>
-              <Form.Item
-                label="Certificate type"
-                name="certificateType"
-                rules={[
-                  { required: true, message: "Please enter certificate type" },
-                ]}
-              >
-                <Input />
-              </Form.Item>
-            </Col>
-          </Row>
-          <Row>
-            <Col span={11}>
-              <Form.Item
-                label="Duration (in months)"
-                name="duration"
-                rules={[
-                  {
-                    required: true,
-                    message: "please enter duration in numbers",
-                  },
-                ]}
-              >
-                <InputNumber className="w-full" controls={false} />
-              </Form.Item>
-            </Col>
-            <Col span={2} />
-            <Col span={11}>
-              <Form.Item
-                label="Compliance name"
+                label="Task name"
                 name="name"
                 rules={[
-                  { required: true, message: "please enter compliance name" },
-                ]}
-              >
-                <Input />
-              </Form.Item>
-            </Col>
-          </Row>
-          <Row>
-            <Col span={11}>
-              <Form.Item
-                label="Applicable zone"
-                name="applicableZone"
-                rules={[
-                  { required: true, message: "please enter applicable zone" },
+                  {
+                    required: true,
+                    message: "please enter task name ",
+                  },
                 ]}
               >
                 <Input />
@@ -125,10 +74,10 @@ const Task = ({data}) => {
             <Col span={2} />
             <Col span={11}>
               <Form.Item
-                label="Approval state"
-                name="approvalState"
+                label="Time line type"
+                name="timelineType"
                 rules={[
-                  { required: true, message: "please enter approval state" },
+                  { required: true, message: "Please enter time line" },
                 ]}
               >
                 <Input />
@@ -137,8 +86,37 @@ const Task = ({data}) => {
           </Row>
           <Row>
             <Col span={11}>
+            <Form.Item label="Criticality" name="criticality">
+                <Select
+                  options={[
+                    { label: "Low", value: "Low" },
+                    { label: "Medium", value: "Medium" },
+                    { label: "High", value: "High" },
+                  ]}
+                />
+              </Form.Item>
+            </Col>
+            <Col span={2} />
+            <Col span={11}>
+            <Form.Item label="Status" name="status">
+                <Select
+                  showSearch
+                  options={[
+                    { label: "Initiated", value: "Initiated" },
+                    { label: "Hold", value: "Hold" },
+                    { label: "Progress", value: "Progress" },
+                    { label: "Rejected", value: "Rejected" },
+                    { label: "Completed", value: "Completed" },
+                  ]}
+                />
+              </Form.Item>
+            </Col>
+          </Row>
+          
+          <Row>
+            <Col span={11}>
               <Form.Item
-                label="start date"
+                label="Start date"
                 name="startDate"
                 rules={[{ required: true, message: "please enter start date" }]}
               >

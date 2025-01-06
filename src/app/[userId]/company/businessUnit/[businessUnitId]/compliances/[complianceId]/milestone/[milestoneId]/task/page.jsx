@@ -1,8 +1,8 @@
 import React from "react";
 import Task from "./Task";
 
-const TaskPage = ({ params }) => {
-  const { milestoneId, userId } = params;
+const TaskPage = async({ params }) => {
+  const { milestoneId, userId } = await params;
   return (
     <>
       <Task  />

@@ -6,9 +6,10 @@ import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import AddMilestone from "./AddMilestone";
+import Link from "next/link";
 const { Title, Text } = Typography;
 
-const Milestone = ({ data, businessUnitId, complianceId }) => {
+const Milestone = ({ data, businessUnitId, complianceId, userId,complianceData }) => {
   const router = useRouter();
   const [form] = Form.useForm();
   const dispatch = useDispatch();
@@ -30,7 +31,14 @@ const Milestone = ({ data, businessUnitId, complianceId }) => {
 
   const columns = [
     { dataIndex: "id", title: "Id", width: 80, fixed: "left" },
-    { dataIndex: "mileStoneName", title: "Milestone name", fixed: "left" },
+    {
+      dataIndex: "mileStoneName",
+      title: "Milestone name",
+      fixed: "left",
+      render: (_, data) => (
+        <Link href={`milestone/${data?.id}/task`}>{data?.mileStoneName}</Link>
+      ),
+    },
     { dataIndex: "reporterName", title: "Reporter" },
     { dataIndex: "assignedName", title: "Assignee" },
     { dataIndex: "assigneeMail", title: "Assignee email" },
@@ -98,6 +106,8 @@ const Milestone = ({ data, businessUnitId, complianceId }) => {
           formData={formData}
           businessUnitId={businessUnitId}
           complianceId={complianceId}
+          userId={userId}
+          complianceData={complianceData}
         />
       </Modal>
     </>

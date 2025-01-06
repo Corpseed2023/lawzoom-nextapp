@@ -1,4 +1,5 @@
 "use client";
+import { SUBSCRIPTION_ID } from "@/app/constants";
 import { createMileStone } from "@/app/redux-toolkit/slices/complianceSlice";
 import { Icon } from "@iconify/react";
 import {
@@ -26,6 +27,7 @@ const BasicDetails = ({
   businessUnitId,
   complianceId,
   setOpenModal,
+  userId,
 }) => {
   const dispatch = useDispatch();
   const router = useRouter();
@@ -39,7 +41,16 @@ const BasicDetails = ({
   };
 
   const handleFinish = (value) => {
-    dispatch(createMileStone({ ...value, businessUnitId, complianceId }))
+    dispatch(
+      createMileStone({
+        ...value,
+        businessUnitId,
+        complianceId,
+        assignedBy: userId,
+        subscriberId: SUBSCRIPTION_ID,
+        userId,
+      })
+    )
       .then((resp) => {
         if (resp.meta.requestStatus === "fulfilled") {
           openNotification({
@@ -48,7 +59,7 @@ const BasicDetails = ({
           });
           form.resetFields();
           setOpenModal(false);
-          router.refresh()
+          router.refresh();
         } else {
           openNotification({
             status: "error",
@@ -65,9 +76,15 @@ const BasicDetails = ({
   };
 
   return (
-    <>
+    <Flex className="[max-height:80vh] overflow-auto w-full pr-2">
       {contextHolder}
-      <Form layout="vertical" form={form} onFinish={handleFinish}>
+      <Form
+        layout="vertical"
+        size="large"
+        className="w-full"
+        form={form}
+        onFinish={handleFinish}
+      >
         <Flex vertical gap={18}>
           <Flex align="center" gap={16}>
             <Icon
@@ -140,7 +157,7 @@ const BasicDetails = ({
           </Row>
           <Row gutter={16}>
             <Col span={12}>
-              <Form.Item label="Compliance reminder" name="complianceReminder">
+              <Form.Item label="Compliance reminder" name="reminderDate">
                 <DatePicker className="w-full" />
               </Form.Item>
             </Col>
@@ -168,7 +185,7 @@ const BasicDetails = ({
           </Flex>
         </Flex>
       </Form>
-    </>
+    </Flex>
   );
 };
 

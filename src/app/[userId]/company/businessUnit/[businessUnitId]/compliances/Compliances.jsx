@@ -15,11 +15,14 @@ import {
   Typography,
 } from "antd";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { Icon } from "@iconify/react";
 import Link from "next/link";
-import { createCompliance } from "@/app/redux-toolkit/slices/complianceSlice";
+import {
+  createCompliance,
+  getComplianceByUnitId,
+} from "@/app/redux-toolkit/slices/complianceSlice";
 import { SUBSCRIPTION_ID } from "@/app/constants";
 const { Text, Title } = Typography;
 
@@ -235,7 +238,7 @@ const Compliances = ({ data, businessUnitId, userId }) => {
           <Row>
             <Col span={11}>
               <Form.Item
-                label="start date"
+                label="Start date"
                 name="startDate"
                 rules={[{ required: true, message: "please enter start date" }]}
               >

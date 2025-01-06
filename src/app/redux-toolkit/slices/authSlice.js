@@ -1,8 +1,13 @@
 import api from "@/app/httpRequest";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import axios from "axios";
 
 export const loginUser = createAsyncThunk("loginUser", async (data) => {
-  const response = await api.post(`api/auth/token`, data);
+  const response = await axios.post(
+    `http://localhost:8081/api/auth/token`,
+    data,
+    { headers: { "Content-Type": "application/json" } }
+  );
   return response.data;
 });
 
@@ -21,7 +26,7 @@ const authSlice = createSlice({
   initialState: {
     userDetail: {},
     userDetailLoading: "",
-    otpResponse:{}
+    otpResponse: {},
   },
   reducers: {},
   extraReducers: (builder) => {
