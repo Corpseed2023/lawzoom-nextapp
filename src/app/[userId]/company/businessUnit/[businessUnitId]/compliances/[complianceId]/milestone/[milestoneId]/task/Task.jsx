@@ -20,7 +20,13 @@ const Task = ({ data }) => {
     { dataIndex: "remark", title: "Remark" },
   ];
 
-  const handleFinish = () => {};
+  const handleFinish = (values) => {
+
+  };
+
+
+
+
   return (
     <>
       <Flex justify="space-between" align="center" className="mb-2">
@@ -74,10 +80,10 @@ const Task = ({ data }) => {
             <Col span={2} />
             <Col span={11}>
               <Form.Item
-                label="Time line type"
-                name="timelineType"
+                label="Assigned to"
+                name="reporterUserId"
                 rules={[
-                  { required: true, message: "Please enter time line" },
+                  { required: true, message: "Please select assigned person" },
                 ]}
               >
                 <Input />
