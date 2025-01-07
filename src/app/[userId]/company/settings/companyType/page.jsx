@@ -1,7 +1,11 @@
 import React from "react";
-import CompanyType from "./CompanyType";
 import store from "@/app/redux-toolkit/store";
 import { getAllCompanyType } from "@/app/redux-toolkit/slices/settingSlice";
+import dynamic from "next/dynamic";
+import Loading from "@/app/loading";
+const CompanyType = dynamic(() => import("./CompanyType"), {
+  loading: <Loading />,
+});
 
 export async function fetchComapnyTypeData() {
   let data = [];
@@ -10,7 +14,7 @@ export async function fetchComapnyTypeData() {
     data = response.payload;
     return data;
   } catch (err) {
-    console.log("Company type err",err);
+    console.log("Company type err", err);
     return data;
   }
 }

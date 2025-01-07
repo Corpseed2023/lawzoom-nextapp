@@ -1,8 +1,11 @@
 import React from "react";
 import store from "@/app/redux-toolkit/store";
 import { getAllCompliances } from "@/app/redux-toolkit/slices/complianceSlice";
-import BusinessUnit from "./BusinessUnit";
 import { SUBSCRIPTION_ID } from "@/app/constants";
+import dynamic from "next/dynamic";
+import Loading from "@/app/loading";
+
+const BusinessUnit=dynamic(()=>import('./BusinessUnit'),{loading:()=><Loading/>})
 
 const fetchCompliances = async (userId, subscriberId) => {
   let data = [];

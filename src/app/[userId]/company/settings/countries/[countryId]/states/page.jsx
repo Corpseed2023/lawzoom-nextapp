@@ -1,11 +1,15 @@
 import React from "react";
-import States from "./States";
 import { getStatesByCountryId } from "@/app/redux-toolkit/slices/commonSlice";
 import store from "@/app/redux-toolkit/store";
+import dynamic from "next/dynamic";
+import Loading from "@/app/loading";
+const States = dynamic(() => import("./States"), {
+  loading: () => <Loading />,
+});
 
 const StatesPage = async ({ params }) => {
   const { userId, countryId } = params;
-  console.log('sdkvjnasdkvnasdk',params)
+  console.log("sdkvjnasdkvnasdk", params);
   let data = [];
   try {
     const response = await store.dispatch(getStatesByCountryId(countryId));

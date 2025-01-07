@@ -1,7 +1,11 @@
 import React from "react";
-import Countries from "./Countries";
 import store from "@/app/redux-toolkit/store";
 import { getAllCountries } from "@/app/redux-toolkit/slices/commonSlice";
+import dynamic from "next/dynamic";
+import Loading from "@/app/loading";
+const Countries = dynamic(() => import("./Countries"), {
+  loading: () => <Loading />,
+});
 
 const CountriesPage = async ({ params }) => {
   const { userId } = params;

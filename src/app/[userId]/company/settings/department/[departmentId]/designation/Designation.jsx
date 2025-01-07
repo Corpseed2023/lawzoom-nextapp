@@ -16,11 +16,14 @@ import {
   Popconfirm,
   Typography,
 } from "antd";
-import CommonTable from "@/app/common/CommonTable";
 import { Icon } from "@iconify/react";
 import { useRouter } from "next/navigation";
-
+import dynamic from "next/dynamic";
+import Loading from "@/app/loading";
 const { Text, Title } = Typography;
+const CommonTable = dynamic(() => import("@/app/common/CommonTable"), {
+  loading: () => <Loading />,
+});
 
 const Designation = ({ data, userId, departmentId }) => {
   const dispatch = useDispatch();

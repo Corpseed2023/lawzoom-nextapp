@@ -1,5 +1,7 @@
 import React from "react";
-import Task from "./Task";
+import dynamic from "next/dynamic";
+import Loading from "@/app/loading";
+const Task=dynamic(()=>import('./Task'),{loading:()=><Loading/>})
 
 const TaskPage = async({ params }) => {
   const { milestoneId, userId } = await params;

@@ -1,5 +1,4 @@
 "use client";
-import CommonTable from "@/app/common/CommonTable";
 import {
   Button,
   Col,
@@ -24,7 +23,12 @@ import {
   getComplianceByUnitId,
 } from "@/app/redux-toolkit/slices/complianceSlice";
 import { SUBSCRIPTION_ID } from "@/app/constants";
+import dynamic from "next/dynamic";
+import Loading from "@/app/loading";
 const { Text, Title } = Typography;
+const CommonTable = dynamic(() => import("@/app/common/CommonTable"), {
+  loading: () => <Loading />,
+});
 
 const Compliances = ({ data, businessUnitId, userId }) => {
   const router = useRouter();

@@ -1,7 +1,11 @@
 import React from "react";
 import store from "@/app/redux-toolkit/store";
 import { getAllDesiginations } from "@/app/redux-toolkit/slices/settingSlice";
-import Designation from "./Designation";
+import dynamic from "next/dynamic";
+import Loading from "@/app/loading";
+const Designation = dynamic(() => import("./Designation"), {
+  loading: <Loading />,
+});
 
 export const fetchDesiginations = async (id) => {
   let data = [];

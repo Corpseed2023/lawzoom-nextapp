@@ -30,8 +30,9 @@ import {
 } from "@/app/redux-toolkit/slices/companySlice";
 import Link from "next/link";
 import dynamic from "next/dynamic";
+import Loading from "@/app/loading";
 const AddNEditCompanyForm = dynamic(() => import("./AddCompanyForm"), {
-  loading: () => <h1>Loading .....</h1>,
+  loading: () => <Loading/>,
   ssr: false,
 });
 const { Title, Text } = Typography;

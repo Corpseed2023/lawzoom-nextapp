@@ -1,7 +1,11 @@
 import React from "react";
-import Cities from "./Cities";
 import store from "@/app/redux-toolkit/store";
 import { getCitiesByStateId } from "@/app/redux-toolkit/slices/commonSlice";
+import dynamic from "next/dynamic";
+import Loading from "@/app/loading";
+const Cities = dynamic(() => import("./Cities"), {
+  loading: () => <Loading />,
+});
 
 const CitiesPage = async ({ params }) => {
   const { userId, countryId, stateId } = params;

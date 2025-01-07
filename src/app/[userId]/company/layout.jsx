@@ -6,7 +6,6 @@ import logo from "../../../assets/lowzoom.png";
 import Link from "next/link";
 import { Icon } from "@iconify/react";
 import { ICON_HEIGHT, ICON_WIDTH } from "@/app/constants";
-// import { useRouter } from "next/router";
 import { useParams, useRouter } from "next/navigation";
 const { Content, Sider } = Layout;
 

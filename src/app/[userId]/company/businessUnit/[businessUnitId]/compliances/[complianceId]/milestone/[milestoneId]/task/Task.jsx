@@ -1,9 +1,25 @@
 "use client";
-import CommonTable from "@/app/common/CommonTable";
+import Loading from "@/app/loading";
 import { Icon } from "@iconify/react";
-import { Button, Col, DatePicker, Flex, Form, Input, InputNumber, Modal, Row, Select, Typography } from "antd";
+import {
+  Button,
+  Col,
+  DatePicker,
+  Flex,
+  Form,
+  Input,
+  InputNumber,
+  Modal,
+  Row,
+  Select,
+  Typography,
+} from "antd";
+import dynamic from "next/dynamic";
 import React, { useState } from "react";
 const { Title, Text } = Typography;
+const CommonTable = dynamic(() => import("@/app/common/CommonTable"), {
+  loading: () => <Loading />,
+});
 
 const Task = ({ data }) => {
   const [form] = Form.useForm();
@@ -20,12 +36,7 @@ const Task = ({ data }) => {
     { dataIndex: "remark", title: "Remark" },
   ];
 
-  const handleFinish = (values) => {
-
-  };
-
-
-
+  const handleFinish = (values) => {};
 
   return (
     <>
@@ -92,7 +103,7 @@ const Task = ({ data }) => {
           </Row>
           <Row>
             <Col span={11}>
-            <Form.Item label="Criticality" name="criticality">
+              <Form.Item label="Criticality" name="criticality">
                 <Select
                   options={[
                     { label: "Low", value: "Low" },
@@ -104,7 +115,7 @@ const Task = ({ data }) => {
             </Col>
             <Col span={2} />
             <Col span={11}>
-            <Form.Item label="Status" name="status">
+              <Form.Item label="Status" name="status">
                 <Select
                   showSearch
                   options={[
@@ -118,7 +129,7 @@ const Task = ({ data }) => {
               </Form.Item>
             </Col>
           </Row>
-          
+
           <Row>
             <Col span={11}>
               <Form.Item

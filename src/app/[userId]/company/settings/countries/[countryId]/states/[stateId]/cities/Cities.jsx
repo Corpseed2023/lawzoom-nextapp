@@ -1,5 +1,5 @@
 "use client";
-import CommonTable from "@/app/common/CommonTable";
+import Loading from "@/app/loading";
 import {
   createCities,
   deleteCitiesById,
@@ -16,10 +16,14 @@ import {
   Popconfirm,
   Typography,
 } from "antd";
+import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 const { Text, Title } = Typography;
+const CommonTable = dynamic(() => import("@/app/common/CommonTable"), {
+  loading: () => <Loading />,
+});
 
 const Cities = ({ data, userId, stateId, countryId }) => {
   const dispatch = useDispatch();

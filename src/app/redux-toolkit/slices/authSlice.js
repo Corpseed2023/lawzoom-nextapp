@@ -4,7 +4,7 @@ import axios from "axios";
 
 export const loginUser = createAsyncThunk("loginUser", async (data) => {
   const response = await axios.post(
-    `http://localhost:8081/api/auth/token`,
+    `${process.env.NEXT_PUBLIC_BASE_URL_LOGIN}/api/auth/token`,
     data,
     { headers: { "Content-Type": "application/json" } }
   );

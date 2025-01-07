@@ -1,11 +1,15 @@
 import React from "react";
-import Milestone from "./Milestone";
 import store from "@/app/redux-toolkit/store";
 import {
   getAllMileStones,
   getComplianceById,
 } from "@/app/redux-toolkit/slices/complianceSlice";
 import { SUBSCRIPTION_ID } from "@/app/constants";
+import dynamic from "next/dynamic";
+import Loading from "@/app/loading";
+const Milestone = dynamic(() => import("./Milestone"), {
+  loading: () => <Loading />,
+});
 
 const getMileStoneByComplianceId = async (
   businessUnitId,
@@ -48,7 +52,7 @@ const MilestonePage = async ({ params }) => {
     userId
   );
 
-  const complianceData=await getComplianceDataById(complianceId)
+  const complianceData = await getComplianceDataById(complianceId);
 
   console.log("Milestone data", complianceData);
 

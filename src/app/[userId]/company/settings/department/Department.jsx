@@ -18,9 +18,13 @@ import {
 } from "antd";
 import { Icon } from "@iconify/react";
 import { useRouter } from "next/navigation";
-import CommonTable from "@/app/common/CommonTable";
 import Link from "next/link";
+import dynamic from "next/dynamic";
+import Loading from "@/app/loading";
 const { Text, Title } = Typography;
+const CommonTable = dynamic(() => import("@/app/common/CommonTable"), {
+  loading: <Loading />,
+});
 
 const Department = ({ data, userId }) => {
   const dispatch = useDispatch();

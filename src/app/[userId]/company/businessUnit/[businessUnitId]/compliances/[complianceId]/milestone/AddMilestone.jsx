@@ -14,9 +14,11 @@ import {
   Upload,
 } from "antd";
 import React from "react";
-import BasicDetails from "./BasicDetails";
 import { Icon } from "@iconify/react";
+import dynamic from "next/dynamic";
+import Loading from "@/app/loading";
 const { Text, Title } = Typography;
+const BasicDetails=dynamic(()=>import('./BasicDetails'),{loading:()=><Loading/>})
 
 const AddMilestone = ({
   formData,
@@ -27,7 +29,7 @@ const AddMilestone = ({
   userId,
   complianceData,
 }) => {
-  console.log("Compliance dataatatatatat", complianceData);
+
 
   const items = [
     {
@@ -56,7 +58,7 @@ const AddMilestone = ({
     },
     {
       key: "4",
-      label: "Guid",
+      label: "Guide",
       children: "Content of Tab Pane 3",
     },
   ];

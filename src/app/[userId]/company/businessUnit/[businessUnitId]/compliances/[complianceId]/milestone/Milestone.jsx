@@ -5,11 +5,21 @@ import { Button, Flex, Form, Input, Modal, Progress, Typography } from "antd";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import AddMilestone from "./AddMilestone";
 import Link from "next/link";
+import dynamic from "next/dynamic";
+import Loading from "@/app/loading";
 const { Title, Text } = Typography;
+const AddMilestone = dynamic(() => import("./AddMilestone"), {
+  loading: () => <Loading />,
+});
 
-const Milestone = ({ data, businessUnitId, complianceId, userId,complianceData }) => {
+const Milestone = ({
+  data,
+  businessUnitId,
+  complianceId,
+  userId,
+  complianceData,
+}) => {
   const router = useRouter();
   const [form] = Form.useForm();
   const dispatch = useDispatch();

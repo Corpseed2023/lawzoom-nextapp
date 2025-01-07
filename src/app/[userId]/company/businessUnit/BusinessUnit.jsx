@@ -1,5 +1,5 @@
 "use client";
-import CommonTable from "@/app/common/CommonTable";
+import Loading from "@/app/loading";
 import {
   createCountry,
   updateCountry,
@@ -20,11 +20,13 @@ import {
   Tag,
   Typography,
 } from "antd";
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 const { Text, Title } = Typography;
+const CommonTable=dynamic(()=>import('@/app/common/CommonTable'),{loading:()=><Loading/>})
 
 const BusinessUnit = ({ userId, data }) => {
   const router = useRouter();

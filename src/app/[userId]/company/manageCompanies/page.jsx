@@ -3,8 +3,9 @@ import store from "@/app/redux-toolkit/store";
 import { getAllCompanies } from "@/app/redux-toolkit/slices/companySlice";
 import { SUBSCRIPTION_ID } from "@/app/constants";
 import dynamic from "next/dynamic";
+import Loading from "@/app/loading";
 const ManageCompanies = dynamic(() => import("./ManageCompanies"), {
-  loading: () => <h1>Loading .....</h1>,
+  loading: () => <Loading/>,
 });
 
 const fetchAllCompanies = async (userId, subscriptionId) => {
