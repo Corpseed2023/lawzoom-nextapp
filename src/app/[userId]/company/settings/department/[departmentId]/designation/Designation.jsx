@@ -32,6 +32,14 @@ const Designation = ({ data, userId, departmentId }) => {
   const [openModal, setOpenModal] = useState(false);
   const [editData, setEditData] = useState(null);
 
+  const [api, contextHolder] = notification.useNotification();
+
+  const openNotification = (resp) => {
+    api[resp.status]({
+      message: resp.message,
+    });
+  };
+
   const handleFinish = (values) => {
     if (editData) {
       dispatch(
@@ -43,32 +51,50 @@ const Designation = ({ data, userId, departmentId }) => {
       )
         .then((resp) => {
           if (resp.meta.requestStatus === "fulfilled") {
-            notification.success({
-              message: "Designation updated successfully!",
+            openNotification({
+              status: "success",
+              message: "Designation updated successfully !.",
             });
             setOpenModal(false);
             form.resetFields();
             router.refresh();
           } else {
-            notification.error({ message: "Something went wrong!" });
+            openNotification({
+              status: "error",
+              message: "Something went wrong !.",
+            });
           }
         })
-        .catch(() => notification.error({ message: "Something went wrong!" }));
+        .catch(() =>
+          openNotification({
+            status: "error",
+            message: "Something went wrong !.",
+          })
+        );
     } else {
       dispatch(createDesiginations({ ...values, userId, departmentId }))
         .then((resp) => {
           if (resp.meta.requestStatus === "fulfilled") {
-            notification.success({
-              message: "Designation added successfully!",
+            openNotification({
+              status: "success",
+              message: "Designation added successfully !.",
             });
             setOpenModal(false);
             form.resetFields();
             router.refresh();
           } else {
-            notification.error({ message: "Something went wrong!" });
+            openNotification({
+              status: "error",
+              message: "Something went wrong !.",
+            });
           }
         })
-        .catch(() => notification.error({ message: "Something went wrong!" }));
+        .catch(() =>
+          openNotification({
+            status: "error",
+            message: "Something went wrong !.",
+          })
+        );
     }
   };
 
@@ -81,10 +107,18 @@ const Designation = ({ data, userId, departmentId }) => {
           });
           router.refresh();
         } else {
-          notification.error({ message: "Something went wrong !." });
+          openNotification({
+            status: "error",
+            message: "Something went wrong !.",
+          });
         }
       })
-      .catch(() => notification.error({ message: "Something went wrong !." }));
+      .catch(() =>
+        openNotification({
+          status: "error",
+          message: "Something went wrong !.",
+        })
+      );
   };
 
   const handleEdit = (data) => {
@@ -126,6 +160,7 @@ const Designation = ({ data, userId, departmentId }) => {
 
   return (
     <>
+      {contextHolder}
       <Flex justify="space-between" align="center" className="mb-2">
         <Title level={4}>Designation List</Title>
         <Button

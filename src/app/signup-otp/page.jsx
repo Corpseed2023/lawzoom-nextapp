@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import '../login/login.css'
+import "../login/login.css";
 import {
   Button,
   Checkbox,
@@ -25,102 +25,123 @@ const SignupOtp = () => {
   const router = useRouter();
 
   const [loading, setLoading] = useState("");
+  const [api, contextHolder] = notification.useNotification();
+
+  const openNotification = (resp) => {
+    api[resp.status]({
+      message: resp.message,
+    });
+  };
 
   const handleSubmitUserDetail = (values) => {
     setLoading("pending");
     dispatch(genrateOpt(values))
       .then((resp) => {
         if (resp.meta.requestStatus === "fulfilled") {
-          notification.success({
+          openNotification({
+            status: "success",
             message: "OTP send successfully to your email id !.",
           });
           router.push(`/signup`);
           setLoading("success");
         } else {
-          notification.error({ message: "Something went wrong !." });
+          openNotification({
+            status: "error",
+            message: "Something went wrong !.",
+          });
           setLoading("rejected");
         }
       })
       .catch(() => {
-        notification.error({ message: "Something went wrong !." });
+        openNotification({
+          status: "error",
+          message: "Something went wrong !.",
+        });
         setLoading("rejected");
       });
   };
 
   return (
-    <Flex justify="center" align="center" className="login-container">
-      <Flex vertical gap={24} className="login-sub-container" align="center">
-        <Image
-          src={logo}
-          priority={true}
-          alt="lowzoom-logo"
-          height={"10%"}
-          width={"20%"}
-        />
-        <Title className="main-heading-text" level={1}>
-          Sign up
-        </Title>
-        <Form
-          size="large"
-          style={{ width: "75%" }}
-          layout="vertical"
-          onFinish={handleSubmitUserDetail}
-        >
-          <Form.Item
-            label="Name"
-            name="name"
-            rules={[{ required: true, message: "Please enter your email id" }]}
+    <>
+      {contextHolder}
+      <Flex justify="center" align="center" className="login-container">
+        <Flex vertical gap={24} className="login-sub-container" align="center">
+          <Image
+            src={logo}
+            priority={true}
+            alt="lowzoom-logo"
+            height={"10%"}
+            width={"20%"}
+          />
+          <Title className="main-heading-text" level={1}>
+            Sign up
+          </Title>
+          <Form
+            size="large"
+            style={{ width: "75%" }}
+            layout="vertical"
+            onFinish={handleSubmitUserDetail}
           >
-            <Input
-              placeholder="your name"
-              prefix={
-                <Icon
-                  icon="fluent:person-24-regular"
-                  height={ICON_HEIGHT}
-                  width={ICON_WIDTH}
-                />
-              }
-            />
-          </Form.Item>
-          <Form.Item
-            label="Email"
-            name="email"
-            rules={[{ required: true, message: "Please enter your email id" }]}
-          >
-            <Input
-              placeholder="example@email.com"
-              prefix={
-                <Icon
-                  icon="fluent:mail-24-regular"
-                  height={ICON_HEIGHT}
-                  width={ICON_WIDTH}
-                />
-              }
-            />
-          </Form.Item>
-
-          <Form.Item valuePropName="checked">
-            <Flex gap={4}>
-              <Checkbox>Remember me.</Checkbox>{" "}
-              <Text>Already have an account ?</Text>
-              <Link href={"/login"} className="text-blue-700">
-                Login
-              </Link>
-            </Flex>
-          </Form.Item>
-          <Form.Item>
-            <Button
-              type="primary"
-              htmlType="submit"
-              loading={loading === "pending" ? true : false}
-              style={{ width: "100%" }}
+            <Form.Item
+              label="Name"
+              name="name"
+              rules={[
+                { required: true, message: "Please enter your email id" },
+              ]}
             >
-              Genrate otp
-            </Button>
-          </Form.Item>
-        </Form>
+              <Input
+                placeholder="your name"
+                prefix={
+                  <Icon
+                    icon="fluent:person-24-regular"
+                    height={ICON_HEIGHT}
+                    width={ICON_WIDTH}
+                  />
+                }
+              />
+            </Form.Item>
+            <Form.Item
+              label="Email"
+              name="email"
+              rules={[
+                { required: true, message: "Please enter your email id" },
+              ]}
+            >
+              <Input
+                placeholder="example@email.com"
+                prefix={
+                  <Icon
+                    icon="fluent:mail-24-regular"
+                    height={ICON_HEIGHT}
+                    width={ICON_WIDTH}
+                  />
+                }
+              />
+            </Form.Item>
+
+            <Form.Item valuePropName="checked">
+              <Flex gap={4}>
+                <Checkbox>Remember me.</Checkbox>{" "}
+                <Text>Already have an account ?</Text>
+                <Link href={"/login"} className="text-blue-700">
+                  Login
+                </Link>
+              </Flex>
+            </Form.Item>
+            <Form.Item>
+              <Button
+                type="primary"
+                htmlType="submit"
+                loading={loading === "pending" ? true : false}
+                style={{ width: "100%" }}
+              >
+                Genrate otp
+              </Button>
+            </Form.Item>
+          </Form>
+        </Flex>
       </Flex>
-    </Flex>
+    </>
   );
 };
 

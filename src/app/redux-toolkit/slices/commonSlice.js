@@ -1,4 +1,4 @@
-import api from "@/app/httpRequest";
+import { api, authApi, complianceApi } from "@/app/httpRequest";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 export const createEnquiry = createAsyncThunk("createEnquiry", async (data) => {
@@ -7,7 +7,7 @@ export const createEnquiry = createAsyncThunk("createEnquiry", async (data) => {
 });
 
 export const getAllRoles = createAsyncThunk("getAllRoles", async () => {
-  const response = await api.get(`api/auth/role/getAllRoles`);
+  const response = await authApi.get(`api/auth/role/getAllRoles`);
   return response.data;
 });
 
@@ -18,14 +18,14 @@ export const createRole=createAsyncThunk('createRole',async({role})=>{
 
 
 export const getAllCountries = createAsyncThunk("getAllCountries", async () => {
-  const response = await api.get(`api/auth/countries/fetch-all-countries`);
+  const response = await api.get(`/api/compliance/countries/fetch-all-countries`);
   return response.data;
 });
 
 export const getStatesByCountryId = createAsyncThunk(
   "getStatesByCountryId",
   async (id) => {
-    const response = await api.get(`api/auth/states/fetch-all-states?countryId=${id}`);
+    const response = await api.get(`/api/compliance/states/fetch-all-states?countryId=${id}`);
     return response.data;
   }
 );
@@ -33,28 +33,28 @@ export const getStatesByCountryId = createAsyncThunk(
 export const getCitiesByStateId = createAsyncThunk(
   "getCitiesByStateId",
   async (id) => {
-    const response = await api.get(`api/auth/city/get-all-cities?stateId=${id}`);
+    const response = await api.get(`/api/compliance/city/get-all-cities?stateId=${id}`);
     return response.data;
   }
 );
 
 export const createCountry = createAsyncThunk("createCountry", async (data) => {
-  const response = await api.post(
-    `api/auth/countries/create-country?countryName=${data?.countryName}&countryCode=${data?.countryCode}`
+  const response = await complianceApi.post(
+    `/api/compliance/countries/create-country?countryName=${data?.countryName}&countryCode=${data?.countryCode}`
   );
   return response.data;
 });
 
 export const updateCountry = createAsyncThunk("updateCountry", async (data) => {
-  const response = await api.put(`api/auth/countries/update-country`, data);
+  const response = await api.put(`/api/compliance/countries/update-country`, data);
   return response.data;
 });
 
 export const createStatesForCountry = createAsyncThunk(
   "createStatesForCountry",
   async (data) => {
-    const response = await api.post(
-      `api/auth/states/create-state?countryId=${data?.countryId}&stateName=${data?.stateName}`
+    const response = await complianceApi.post(
+      `/api/compliance/states/create-state?countryId=${data?.countryId}&stateName=${data?.stateName}`
     );
     return response.data;
   }
@@ -69,19 +69,19 @@ export const updateStatesForCountry = createAsyncThunk(
 );
 
 export const createCities = createAsyncThunk("createCities", async (data) => {
-  const response = await api.post(
-    `api/auth/city/save-cities?cityName=${data?.cityName}&cityCode=${data?.cityCode}&stateId=${data?.stateId}`
+  const response = await complianceApi.post(
+    `/api/compliance/city/save-cities?cityName=${data?.cityName}&cityCode=${data?.cityCode}&stateId=${data?.stateId}`
   );
   return response.data;
 });
 
 export const updateCities = createAsyncThunk("updateCities", async (data) => {
-  const response = await api.put(`api/auth/city/update-city`, data);
+  const response = await api.put(`/api/compliance/city/update-city`, data);
   return response.data;
 });
 
-export const deleteCitiesById = createAsyncThunk("", async (id) => {
-  const response = await api.delete(`api/auth/city/softDeleteCity?id=${id}`);
+export const deleteCitiesById = createAsyncThunk("deleteCitiesById", async (id) => {
+  const response = await api.delete(`/api/compliance/city/softDeleteCity?id=${id}`);
   return response.data;
 });
 
@@ -111,7 +111,7 @@ const commonSlice = createSlice({
     });
     builder.addCase(getAllRoles.fulfilled, (state, action) => {
       state.enquiryLoading = "success";
-      state.allRoles = action?.payload?.body;
+      state.allRoles = action?.payload;
     });
     builder.addCase(getAllRoles.rejected, (state, action) => {
       state.enquiryLoading = "rejected";

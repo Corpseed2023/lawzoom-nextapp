@@ -31,6 +31,13 @@ const Cities = ({ data, userId, stateId, countryId }) => {
   const [form] = Form.useForm();
   const [openModal, setOpenModal] = useState(false);
   const [editData, setEditData] = useState(null);
+  const [api, contextHolder] = notification.useNotification();
+
+  const openNotification = (resp) => {
+    api[resp.status]({
+      message: resp.message,
+    });
+  };
 
   const handleEdit = (data) => {
     form.setFieldsValue({
@@ -45,13 +52,24 @@ const Cities = ({ data, userId, stateId, countryId }) => {
     dispatch(deleteCitiesById(data?.id))
       .then((resp) => {
         if (resp.meta.requestStatus === "fulfilled") {
-          notification.success({ message: "City deleted successfully !." });
+          openNotification({
+            status: "success",
+            message: "City deleted successfully !.",
+          });
           router.refresh();
         } else {
-          notification.error({ message: "Something went wrong !." });
+          openNotification({
+            status: "error",
+            message: "Something went wrong !.",
+          });
         }
       })
-      .catch(() => notification.error({ message: "Something went wrong !." }));
+      .catch(() =>
+        openNotification({
+          status: "error",
+          message: "Something went wrong !.",
+        })
+      );
   };
 
   const columns = [
@@ -95,37 +113,56 @@ const Cities = ({ data, userId, stateId, countryId }) => {
       dispatch(updateCities({ ...values, stateId, id: editData?.id }))
         .then((resp) => {
           if (resp.meta.requestStatus === "fulfilled") {
-            notification.success({
+            openNotification({
+              status: "success",
               message: "Cities updated successfully !",
             });
             setOpenModal(false);
             form.resetFields();
             router.refresh();
           } else {
-            notification.error({ message: "Something went wrong !" });
+            openNotification({
+              status: "error",
+              message: "Something went wrong !",
+            });
           }
         })
-        .catch(() => notification.error({ message: "Something went wrong !" }));
+        .catch(() =>
+          openNotification({
+            status: "error",
+            message: "Something went wrong !",
+          })
+        );
     } else {
       dispatch(createCities({ ...values, stateId: stateId }))
         .then((resp) => {
           if (resp.meta.requestStatus === "fulfilled") {
-            notification.success({
+            openNotification({
+              status: "success",
               message: "City created successfully !",
             });
             setOpenModal(false);
             form.resetFields();
             router.refresh();
           } else {
-            notification.error({ message: "Something went wrong !" });
+            openNotification({
+              status: "error",
+              message: "Something went wrong !",
+            });
           }
         })
-        .catch(() => notification.error({ message: "Something went wrong !" }));
+        .catch(() =>
+          openNotification({
+            status: "error",
+            message: "Something went wrong !",
+          })
+        );
     }
   };
 
   return (
     <>
+      {contextHolder}
       <Flex justify="space-between" align="center" className="mb-2">
         <Title level={4}>Cities list</Title>
         <Button type="primary" onClick={() => setOpenModal(true)}>

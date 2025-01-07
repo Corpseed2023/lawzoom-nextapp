@@ -23,7 +23,7 @@ import dynamic from "next/dynamic";
 import Loading from "@/app/loading";
 const { Text, Title } = Typography;
 const CommonTable = dynamic(() => import("@/app/common/CommonTable"), {
-  loading: <Loading />,
+  loading: () => <Loading />,
 });
 
 const Department = ({ data, userId }) => {
@@ -32,6 +32,13 @@ const Department = ({ data, userId }) => {
   const [form] = Form.useForm();
   const [openModal, setOpenModal] = useState(false);
   const [editData, setEditData] = useState(null);
+  const [api, contextHolder] = notification.useNotification();
+
+  const openNotification = (resp) => {
+    api[resp.status]({
+      message: resp.message,
+    });
+  };
 
   const handleFinish = (values) => {
     if (editData) {
@@ -44,7 +51,8 @@ const Department = ({ data, userId }) => {
       )
         .then((resp) => {
           if (resp.meta.requestStatus === "fulfilled") {
-            notification.success({
+            openNotification({
+              status: "success",
               message: "Department updated successfully!",
             });
             setOpenModal(false);
@@ -52,25 +60,42 @@ const Department = ({ data, userId }) => {
             router.refresh();
             editData(null);
           } else {
-            notification.error({ message: "Something went wrong!" });
+            openNotification({
+              status: "error",
+              message: "Something went wrong !.",
+            });
           }
         })
-        .catch(() => notification.error({ message: "Something went wrong!" }));
+        .catch(() =>
+          openNotification({
+            status: "error",
+            message: "Something went wrong !.",
+          })
+        );
     } else {
       dispatch(createDepartment({ ...values, userId }))
         .then((resp) => {
           if (resp.meta.requestStatus === "fulfilled") {
-            notification.success({
+            openNotification({
+              status: "success",
               message: "Department added successfully!",
             });
             setOpenModal(false);
             form.resetFields();
             router.refresh();
           } else {
-            notification.error({ message: "Something went wrong!" });
+            openNotification({
+              status: "error",
+              message: "Something went wrong !.",
+            });
           }
         })
-        .catch(() => notification.error({ message: "Something went wrong!" }));
+        .catch(() =>
+          openNotification({
+            status: "error",
+            message: "Something went wrong !.",
+          })
+        );
     }
   };
 
@@ -78,15 +103,24 @@ const Department = ({ data, userId }) => {
     dispatch(deleteDepartment(id))
       .then((resp) => {
         if (resp.meta.requestStatus === "fulfilled") {
-          notification.success({
+          openNotification({
+            status: "success",
             message: "Department deleted successfully !.",
           });
           router.refresh();
         } else {
-          notification.error({ message: "Something went wrong !." });
+          openNotification({
+            status: "error",
+            message: "Something went wrong !.",
+          });
         }
       })
-      .catch(() => notification.error({ message: "Something went wrong !." }));
+      .catch(() =>
+        openNotification({
+          status: "error",
+          message: "Something went wrong !.",
+        })
+      );
   };
 
   const handleEdit = (data) => {
@@ -136,6 +170,7 @@ const Department = ({ data, userId }) => {
 
   return (
     <>
+      {contextHolder}
       <Flex justify="space-between" align="center" className="mb-2">
         <Title level={4}>Department List</Title>
         <Button
@@ -152,7 +187,7 @@ const Department = ({ data, userId }) => {
       <CommonTable
         data={data}
         columns={columns}
-        rowKey={(row) => row?.designationId}
+        rowKey={(row) => row?.id}
         scroll={{ y: 600 }}
       />
       <Modal

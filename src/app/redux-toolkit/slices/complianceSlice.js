@@ -1,4 +1,4 @@
-import api from "@/app/httpRequest";
+import {api} from "@/app/httpRequest";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
@@ -56,6 +56,12 @@ export const getComplianceById=createAsyncThunk('getComplianceById',async(id)=>{
   const response=await api.get(`/api/compliance/compliance/fetch-compliance?complianceId=${id}`)
   return response.data
 })
+
+export const getAllTask=createAsyncThunk('getAllTask',async(id)=>{
+  const response=await api.get(`/api/compliance/tasks/fetch?milestoneId=${id}`)
+  return response.data
+})
+
 
 const complianceSlice = createSlice({
   name: "compliance",

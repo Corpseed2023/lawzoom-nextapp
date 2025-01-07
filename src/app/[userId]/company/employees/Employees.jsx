@@ -1,14 +1,18 @@
 "use client";
-import CommonTable from "@/app/common/CommonTable";
 import { selectFilter } from "@/app/commons";
+import { SUBSCRIPTION_ID } from "@/app/constants";
+import Loading from "@/app/loading";
 import { getAllRoles } from "@/app/redux-toolkit/slices/commonSlice";
 import {
   addEmployee,
+  createTeamMember,
+  getAllEmployeesByUserId,
   updateEmployee,
 } from "@/app/redux-toolkit/slices/employeesSlice";
 import {
   getAllDepartmentList,
   getAllDesiginations,
+  getAllResourceType,
 } from "@/app/redux-toolkit/slices/settingSlice";
 import { Icon } from "@iconify/react";
 import {
@@ -21,28 +25,45 @@ import {
   Select,
   Typography,
 } from "antd";
-import { useRouter } from "next/navigation";
+import dynamic from "next/dynamic";
+import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 const { Title } = Typography;
+const CommonTable = dynamic(() => import("@/app/common/CommonTable"), {
+  loading: () => <Loading />,
+});
 
 const Employees = ({ data, userId }) => {
   const [form] = Form.useForm();
   const router = useRouter();
   const dispatch = useDispatch();
   const allRoles = useSelector((state) => state.common.allRoles);
-  const departmentList = useSelector((state) => state.common.departmentList);
+  const departmentList = useSelector((state) => state.setting.departmentList);
+  const resourceTypeList = useSelector(
+    (state) => state.setting.resourceTypeList
+  );
   const desiginationList = useSelector(
-    (state) => state.common.desiginationList
+    (state) => state.setting.desiginationList
   );
   const [openModal, setOpenModal] = useState(false);
   const [editData, setEditData] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredData, setFilteredData] = useState([]);
+  const [api, contextHolder] = notification.useNotification();
+
+  const openNotification = (resp) => {
+    api[resp.status]({
+      message: resp.message,
+    });
+  };
+
+  console.log("jsbvkajsdhbjshg", departmentList);
 
   useEffect(() => {
     dispatch(getAllDepartmentList());
     dispatch(getAllRoles());
+    dispatch(getAllResourceType());
   }, [dispatch]);
 
   useEffect(() => {
@@ -80,10 +101,10 @@ const Employees = ({ data, userId }) => {
     {
       dataIndex: "id",
       title: "Id",
-      width:80
+      width: 80,
     },
     {
-      dataIndex: "memberName",
+      dataIndex: "name",
       title: "Employee name",
     },
     {
@@ -91,19 +112,19 @@ const Employees = ({ data, userId }) => {
       title: "Email",
     },
     {
-      dataIndex: "memberMobile",
+      dataIndex: "mobile",
       title: "Phone no.",
     },
     {
-      dataIndex: "role",
+      dataIndex: "roleName",
       title: "Role",
     },
     {
-      dataIndex: "department",
+      dataIndex: "departmentName",
       title: "Department,",
     },
     {
-      dataIndex: "designation",
+      dataIndex: "designationName",
       title: "Designation,",
     },
     {
@@ -122,39 +143,85 @@ const Employees = ({ data, userId }) => {
       dispatch(updateEmployee(values))
         .then((resp) => {
           if (resp.meta.requestStatus === "fulfilled") {
-            notification.success({
+            openNotification({
+              status: "success",
               message: "Employee updated successfully !.",
             });
             setOpenModal(false);
             form.resetFields();
             router.refresh();
           } else {
-            notification.error({ message: "Something went wrong !." });
+            openNotification({
+              status: "success",
+              message: "Something went wrong !.",
+            });
           }
         })
         .catch(() =>
-          notification.error({ message: "Something went wrong !." })
+          openNotification({
+            status: "success",
+            message: "Something went wrong !.",
+          })
         );
     } else {
-      dispatch(addEmployee(values))
+      dispatch(
+        addEmployee({ ...values, userId, subscribedId: SUBSCRIPTION_ID })
+      )
         .then((resp) => {
           if (resp.meta.requestStatus === "fulfilled") {
-            notification.success({ message: "Employee added successfully !." });
+            openNotification({
+              status: "success",
+              message: "Employee added successfully !.",
+            });
+            dispatch(
+              createTeamMember({
+                ...values,
+                userId,
+                subscribedId: SUBSCRIPTION_ID,
+              })
+            )
+              .then((res) => {
+                if (res.meta.requestStatus === "fulfilled") {
+                  openNotification({
+                    status: "success",
+                    message: "Employee added successfully in compliance !.",
+                  });
+                  router.refresh();
+                } else {
+                  openNotification({
+                    status: "success",
+                    message: "Something went wrong in compliance !.",
+                  });
+                }
+              })
+              .catch(() =>
+                openNotification({
+                  status: "success",
+                  message: "Something went wrong in compliance !.",
+                })
+              );
             setOpenModal(false);
             form.resetFields();
             router.refresh();
           } else {
-            notification.error({ message: "Something went wrong !." });
+            openNotification({
+              status: "success",
+              message: "Something went wrong !.",
+            });
           }
         })
         .catch(() =>
-          notification.error({ message: "Something went wrong !." })
+          openNotification({
+            status: "success",
+            message: "Something went wrong !.",
+          })
         );
     }
   };
 
   return (
     <>
+      {contextHolder}
       <Flex justify="space-between" align="center" className="mb-2">
         <Title level={4}>Employees List</Title>
       </Flex>
@@ -183,27 +250,33 @@ const Employees = ({ data, userId }) => {
         data={filteredData}
         columns={columns}
         rowKey={(row) => row?.id}
-        scroll={{ y: 600 }}
+        scroll={{ y: "60vh", x: 1800 }}
       />
       <Modal
         title={editData ? "Edit employee detail" : "Create employee"}
         open={openModal}
+        centered
         onCancel={() => setOpenModal(false)}
         onClose={() => setOpenModal(false)}
         okText="Submit"
         onOk={() => form.submit()}
       >
-        <Form layout="vertical" form={form} onFinish={handleFinish}>
+        <Form
+          layout="vertical"
+          form={form}
+          onFinish={handleFinish}
+          className="[max-height:80vh] overflow-auto w-full"
+        >
           <Form.Item
             label="Employee name"
-            name="memberName"
+            name="name"
             rules={[{ required: true, message: "Please enter employee name" }]}
           >
             <Input />
           </Form.Item>
           <Form.Item
             label="Employee email"
-            name="memberMail"
+            name="email"
             rules={[
               {
                 required: true,
@@ -216,16 +289,15 @@ const Employees = ({ data, userId }) => {
           </Form.Item>
           <Form.Item
             label="Employee mobile number"
-            name="memberMobile"
+            name="mobile"
             rules={[
               {
                 required: true,
-                type: "number",
                 message: "Please enter employee mobile number",
               },
             ]}
           >
-            <Input />
+            <Input maxLength={10} />
           </Form.Item>
           <Form.Item
             label="Department"
@@ -300,19 +372,43 @@ const Employees = ({ data, userId }) => {
           <Form.Item
             label="Reporting manager"
             name="reportingManagerId"
-            rules={[
-              {
-                required: true,
-                message: "Please select role",
-              },
-            ]}
+            // rules={[
+            //   {
+            //     required: true,
+            //     message: "Please select role",
+            //   },
+            // ]}
+          >
+            <Select
+              showSearch
+              options={[
+                { label: "None", value: 0 },
+                ...(data?.length > 0
+                  ? data?.map((item) => ({
+                      label: item?.name,
+                      value: item?.id,
+                    }))
+                  : []),
+              ]}
+              filterOption={selectFilter}
+            />
+          </Form.Item>
+          <Form.Item
+            label="Resource type"
+            name="typeOfResource"
+            // rules={[
+            //   {
+            //     required: true,
+            //     message: "Please select role",
+            //   },
+            // ]}
           >
             <Select
               showSearch
               options={
-                data?.length > 0
-                  ? data?.map((item) => ({
-                      label: item?.memberName,
+                resourceTypeList?.length > 0
+                  ? resourceTypeList?.map((item) => ({
+                      label: item?.typeOfResourceName,
                       value: item?.id,
                     }))
                   : []

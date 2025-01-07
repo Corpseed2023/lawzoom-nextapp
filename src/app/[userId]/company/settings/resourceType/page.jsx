@@ -1,7 +1,11 @@
 import React from "react";
-import ResourceType from "./ResourceType";
 import store from "@/app/redux-toolkit/store";
 import { getAllResourceType } from "@/app/redux-toolkit/slices/settingSlice";
+import dynamic from "next/dynamic";
+import Loading from "@/app/loading";
+const ResourceType = dynamic(() => import("./ResourceType"), {
+  loading: () => <Loading />,
+});
 
 const fetchResourceType = async () => {
   let data = [];

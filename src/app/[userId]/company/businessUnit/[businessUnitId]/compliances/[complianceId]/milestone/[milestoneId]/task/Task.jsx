@@ -1,5 +1,6 @@
 "use client";
 import Loading from "@/app/loading";
+import { createTask } from "@/app/redux-toolkit/slices/complianceSlice";
 import { Icon } from "@iconify/react";
 import {
   Button,
@@ -8,23 +9,33 @@ import {
   Flex,
   Form,
   Input,
-  InputNumber,
   Modal,
+  notification,
   Row,
   Select,
   Typography,
 } from "antd";
 import dynamic from "next/dynamic";
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
 const { Title, Text } = Typography;
 const CommonTable = dynamic(() => import("@/app/common/CommonTable"), {
   loading: () => <Loading />,
 });
 
-const Task = ({ data }) => {
+const Task = ({ data,milestoneId, userId }) => {
   const [form] = Form.useForm();
+  const dispatch = useDispatch();
   const [openModal, setOpenModal] = useState(false);
   const [editData, setEditData] = useState(null);
+  const [api, contextHolder] = notification.useNotification();
+
+  const openNotification = (resp) => {
+    api[resp.status]({
+      message: resp.message,
+    });
+  };
+
   const columns = [
     { dataIndex: "id", title: "Id" },
     { dataIndex: "task", title: "Task" },
@@ -36,10 +47,36 @@ const Task = ({ data }) => {
     { dataIndex: "remark", title: "Remark" },
   ];
 
-  const handleFinish = (values) => {};
+  const handleFinish = (values) => {
+    dispatch(createTask({...values,milestoneId}))
+      .then((resp) => {
+        if (resp.meta.requestStatus === "fulfilled") {
+          openNotification({
+            status: "success",
+            message: "Task created successfully !.",
+          });
+          form.resetFields();
+          setOpenModal(false);
+        } else {
+          openNotification({
+            status: "error",
+            message: "Something went wrong !.",
+          });
+        }
+      })
+      .catch(() =>
+        openNotification({
+          status: "error",
+          message: "Something went wrong !.",
+        })
+      );
+  };
+
+
 
   return (
     <>
+      {contextHolder}
       <Flex justify="space-between" align="center" className="mb-2">
         <Title level={4}>Task list</Title>
       </Flex>

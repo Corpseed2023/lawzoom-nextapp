@@ -1,11 +1,11 @@
-import api from "@/app/httpRequest";
+import { api, authApi, complianceApi } from "@/app/httpRequest";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 export const getAllDesiginations = createAsyncThunk(
   "getAllDesiginations",
   async (id) => {
     const response = await api.get(
-      `api/auth/designation/designation-list?departmentId=${id}`
+      `/api/compliance/designation/list?departmentId=${id}`
     );
     return response.data;
   }
@@ -14,7 +14,10 @@ export const getAllDesiginations = createAsyncThunk(
 export const createDesiginations = createAsyncThunk(
   "createDesiginations",
   async (data) => {
-    const response = await api.post(`api/auth/designation/createDesignation`, data);
+    const response = await complianceApi.post(
+      `/api/compliance/designation/create`,
+      data
+    );
     return response.data;
   }
 );
@@ -22,7 +25,7 @@ export const createDesiginations = createAsyncThunk(
 export const deleteDesigination = createAsyncThunk(
   "deleteDesigination",
   async (data) => {
-    const response = await api.delete(
+    const response = await authApi.delete(
       `api/auth/designation/delete-designation?designationId=${data?.id}&userId=${data?.userId}`
     );
     return response.data;
@@ -32,7 +35,10 @@ export const deleteDesigination = createAsyncThunk(
 export const editDesigination = createAsyncThunk(
   "editDesigination",
   async (data) => {
-    const response = await api.put(`api/auth/designation/update-designation`, data);
+    const response = await complianceApi.put(
+      `/api/compliance/designation/update`,
+      data
+    );
     return response.data;
   }
 );
@@ -40,7 +46,9 @@ export const editDesigination = createAsyncThunk(
 export const getAllIndustries = createAsyncThunk(
   "getAllIndustries",
   async () => {
-    const response = await api.get(`api/auth/industry-category/fetch-all-industry`);
+    const response = await authApi.get(
+      `api/auth/industry-category/fetch-all-industry`
+    );
     return response.data;
   }
 );
@@ -48,7 +56,7 @@ export const getAllIndustries = createAsyncThunk(
 export const createIndustry = createAsyncThunk(
   "createIndustry",
   async (data) => {
-    const response = await api.post(
+    const response = await authApi.post(
       `api/auth/industry-category/create-industry?industryName=${data?.industryName}&userId=${data?.userId}`
     );
     return response.data;
@@ -58,7 +66,10 @@ export const createIndustry = createAsyncThunk(
 export const updateIndustry = createAsyncThunk(
   "updateIndustry",
   async (data) => {
-    const response = await api.put(`api/auth/industry-category/update-industry`, data);
+    const response = await authApi.put(
+      `api/auth/industry-category/update-industry`,
+      data
+    );
     return response.data;
   }
 );
@@ -66,7 +77,7 @@ export const updateIndustry = createAsyncThunk(
 export const getSubIndustryById = createAsyncThunk(
   "getSubIndustryById",
   async (id) => {
-    const response = await api.get(
+    const response = await authApi.get(
       `api/auth/sub-industry-category/fetch-all-enabled?industryCategoryId=${id}`
     );
     return response.data;
@@ -76,7 +87,7 @@ export const getSubIndustryById = createAsyncThunk(
 export const updateSubIndustryById = createAsyncThunk(
   "updateSubIndustryById",
   async (data) => {
-    const response = await api.put(
+    const response = await authApi.put(
       `api/auth/sub-industry-category/update-sub-industry`,
       data
     );
@@ -87,7 +98,7 @@ export const updateSubIndustryById = createAsyncThunk(
 export const createSubIndustry = createAsyncThunk(
   "createSubIndustry",
   async (data) => {
-    const response = await api.post(
+    const response = await authApi.post(
       `api/auth/sub-industry-category/create-sub-industry?industrySubCategoryName=${data?.industrySubCategoryName}&industryCategoryId=${data?.industryCategoryId}&userId=${data?.userId}`
     );
     return response.data;
@@ -97,7 +108,7 @@ export const createSubIndustry = createAsyncThunk(
 export const deleteSubIndustry = createAsyncThunk(
   "deleteSubIndustry",
   async (id) => {
-    const response = await api.delete(
+    const response = await authApi.delete(
       `api/auth/sub-industry-category/soft-delete?id=${id}`
     );
     return response.data;
@@ -107,7 +118,7 @@ export const deleteSubIndustry = createAsyncThunk(
 export const createBusinessActivity = createAsyncThunk(
   "createBusinessActivity",
   async (data) => {
-    const response = await api.post(
+    const response = await authApi.post(
       `api/auth/business-activity/create-activity?businessActivityName=${data?.businessActivityName}&userId=${data?.userId}&industrySubCategoryId=${data?.industrySubCategoryId}`
     );
     return response.data;
@@ -117,7 +128,7 @@ export const createBusinessActivity = createAsyncThunk(
 export const getBusinessActivityBySubIndustryId = createAsyncThunk(
   "getBusinessActivityBySubIndustryId",
   async (id) => {
-    const response = await api.get(
+    const response = await authApi.get(
       `api/auth/business-activity/list-activity?industrySubCategoryId=${id}`
     );
     return response.data;
@@ -127,7 +138,10 @@ export const getBusinessActivityBySubIndustryId = createAsyncThunk(
 export const updateBusinessActivityBySubIndustryAndId = createAsyncThunk(
   "updateBusinessActivityBySubIndustryAndId",
   async (data) => {
-    const response = await api.put(`api/auth/business-activity/update-activity`, data);
+    const response = await authApi.put(
+      `api/auth/business-activity/update-activity`,
+      data
+    );
     return response.data;
   }
 );
@@ -135,7 +149,7 @@ export const updateBusinessActivityBySubIndustryAndId = createAsyncThunk(
 export const deleteBusinessActivity = createAsyncThunk(
   "deleteBusinessActivity",
   async (id) => {
-    const response = await api.delete(
+    const response = await authApi.delete(
       `api/auth/business-activity/soft-delete?id=${id}`
     );
     return response.data;
@@ -145,7 +159,9 @@ export const deleteBusinessActivity = createAsyncThunk(
 export const getAllCompanyType = createAsyncThunk(
   "getAllCompanyType",
   async () => {
-    const response = await api.get(`api/auth/company/getAllCompanyTypeNames`);
+    const response = await authApi.get(
+      `api/auth/company/getAllCompanyTypeNames`
+    );
     return response.data;
   }
 );
@@ -153,7 +169,7 @@ export const getAllCompanyType = createAsyncThunk(
 export const editCompanyType = createAsyncThunk(
   "editCompanyType",
   async (data) => {
-    const response = await api.put(
+    const response = await authApi.put(
       `api/auth/company/updateCompanyType?id=${data?.id}`,
       data?.data
     );
@@ -164,7 +180,10 @@ export const editCompanyType = createAsyncThunk(
 export const createCompanyType = createAsyncThunk(
   "createCompanyType",
   async (data) => {
-    const response = await api.post(`api/auth/company/createCompanyType`, data);
+    const response = await authApi.post(
+      `api/auth/company/createCompanyType`,
+      data
+    );
     return response.data;
   }
 );
@@ -172,7 +191,9 @@ export const createCompanyType = createAsyncThunk(
 export const deleteCompanyType = createAsyncThunk(
   "deleteCompanyType",
   async (id) => {
-    const response = await api.delete(`api/auth/company/deleteCompanyType?id=${id}`);
+    const response = await authApi.delete(
+      `api/auth/company/deleteCompanyType?id=${id}`
+    );
     return response.data;
   }
 );
@@ -180,20 +201,23 @@ export const deleteCompanyType = createAsyncThunk(
 export const createdLocatedAt = createAsyncThunk(
   "createdLocatedAt",
   async (data) => {
-    const response = await api.post(`api/auth/located-at/create-locatedAt`, data);
+    const response = await authApi.post(
+      `api/auth/located-at/create-locatedAt`,
+      data
+    );
     return response.data;
   }
 );
 
 export const getAllLocatedAt = createAsyncThunk("getAllLocatedAt", async () => {
-  const response = await api.get(`api/auth/located-at/get-all-locatedAt`);
+  const response = await authApi.get(`api/auth/located-at/get-all-locatedAt`);
   return response.data;
 });
 
 export const updateLocatedAt = createAsyncThunk(
   "updateLocatedAt",
   async (data) => {
-    const response = await api.put(
+    const response = await authApi.put(
       `api/auth/located-at/update-locatedAt?id=${data?.id}`,
       data?.data
     );
@@ -204,7 +228,9 @@ export const updateLocatedAt = createAsyncThunk(
 export const deleteLocatedAt = createAsyncThunk(
   "deleteLocatedAt",
   async (id) => {
-    const response = await api.delete(`api/auth/located-at/locatedAt-delete?id=${id}`);
+    const response = await authApi.delete(
+      `api/auth/located-at/locatedAt-delete?id=${id}`
+    );
     return response.data;
   }
 );
@@ -212,7 +238,7 @@ export const deleteLocatedAt = createAsyncThunk(
 export const getAllBusinessActivity = createAsyncThunk(
   "getAllBusinessActivity",
   async (searchText) => {
-    const response = await api.get(
+    const response = await authApi.get(
       `api/auth/business-activity/active-business-activities?searchTerm=${searchText}`
     );
     return response.data;
@@ -222,8 +248,8 @@ export const getAllBusinessActivity = createAsyncThunk(
 export const createDepartment = createAsyncThunk(
   "createDepartment",
   async (data) => {
-    const response = await api.post(
-      `api/auth/department/createDepartment?departmentName=${data?.departmentName}&userId=${data?.userId}`
+    const response = await complianceApi.post(
+      `/api/compliance/department/create?departmentName=${data?.departmentName}&userId=${data?.userId}`
     );
     return response.data;
   }
@@ -232,7 +258,7 @@ export const createDepartment = createAsyncThunk(
 export const getAllDepartmentList = createAsyncThunk(
   "getAllDepartment",
   async () => {
-    const response = await api.get(`api/auth/department/department-list`);
+    const response = await api.get(`/api/compliance/department/list`);
     return response.data;
   }
 );
@@ -240,8 +266,8 @@ export const getAllDepartmentList = createAsyncThunk(
 export const deleteDepartment = createAsyncThunk(
   "deleteDepartment",
   async (id) => {
-    const response = await api.get(
-      `api/auth/department/delete-department?departmentId=${id}`
+    const response = await authApi.get(
+      `/api/compliance/department/delete?departmentId=${id}`
     );
     return response.data;
   }
@@ -250,7 +276,10 @@ export const deleteDepartment = createAsyncThunk(
 export const updateDepartment = createAsyncThunk(
   "updateDepartment",
   async (data) => {
-    const response = await api.get(`api/auth/department/update-department`, data);
+    const response = await complianceApi.get(
+      `/api/compliance/department/update`,
+      data
+    );
     return response.data;
   }
 );
@@ -258,7 +287,7 @@ export const updateDepartment = createAsyncThunk(
 export const getAllResourceType = createAsyncThunk(
   "getAllResourceType",
   async () => {
-    const response = await api.get(`api/auth/resource-type/get-all`);
+    const response = await authApi.get(`api/auth/resource-type/get-all`);
     return response.data;
   }
 );
@@ -266,7 +295,7 @@ export const getAllResourceType = createAsyncThunk(
 export const createResourceType = createAsyncThunk(
   "createResourceType",
   async ({ typeOfResourceName }) => {
-    const response = await api.post(
+    const response = await authApi.post(
       `api/auth/resource-type/create?typeOfResourceName=${typeOfResourceName}`
     );
     return response.data;
@@ -275,8 +304,11 @@ export const createResourceType = createAsyncThunk(
 
 export const updateResourceType = createAsyncThunk(
   "updateResourceType",
-  async ({id,data}) => {
-    const response = await api.put(`api/auth/resource-type/update?id=${id}`, data);
+  async ({ id, data }) => {
+    const response = await authApi.put(
+      `api/auth/resource-type/update?id=${id}`,
+      data
+    );
     return response.data;
   }
 );
@@ -284,7 +316,9 @@ export const updateResourceType = createAsyncThunk(
 export const deleteResourceType = createAsyncThunk(
   "deleteResourceType",
   async (id) => {
-    const response = await api.delete(`api/auth/resource-type/delete?id=${id}`);
+    const response = await authApi.delete(
+      `api/auth/resource-type/delete?id=${id}`
+    );
     return response.data;
   }
 );

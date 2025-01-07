@@ -20,7 +20,9 @@ import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 const { Text, Title } = Typography;
-const CommonTable=dynamic(()=>import('@/app/common/CommonTable'),{loading:()=><Loading/>})
+const CommonTable = dynamic(() => import("@/app/common/CommonTable"), {
+  loading: () => <Loading />,
+});
 
 const Countries = ({ data, userId }) => {
   const router = useRouter();
@@ -28,6 +30,13 @@ const Countries = ({ data, userId }) => {
   const dispatch = useDispatch();
   const [openModal, setOpenModal] = useState(false);
   const [editData, setEditData] = useState(null);
+  const [api, contextHolder] = notification.useNotification();
+
+  const openNotification = (resp) => {
+    api[resp.status]({
+      message: resp.message,
+    });
+  };
 
   const handleUpdateCountries = (data) => {
     form.setFieldsValue({
@@ -70,41 +79,56 @@ const Countries = ({ data, userId }) => {
       dispatch(updateCountry({ ...values, id: editData?.id }))
         .then((resp) => {
           if (resp.meta.requestStatus === "fulfilled") {
-            notification.success({
+            openNotification({
+              status: "success",
               message: "Country updated successfully !.",
             });
             setOpenModal(false);
             form.resetFields();
             router.refresh();
           } else {
-            notification.error({ message: "Something went wrong !." });
+            openNotification({
+              status: "error",
+              message: "Something went wrong !.",
+            });
           }
         })
         .catch(() =>
-          notification.error({ message: "Something went wrong !." })
+          openNotification({
+            status: "error",
+            message: "Something went wrong !.",
+          })
         );
     } else {
       dispatch(createCountry(values))
         .then((resp) => {
           if (resp.meta.requestStatus === "fulfilled") {
-            notification.success({
+            openNotification({
+              status: "success",
               message: "Country created successfully !.",
             });
             setOpenModal(false);
             form.resetFields();
             router.refresh();
           } else {
-            notification.error({ message: "Something went wrong !." });
+            openNotification({
+              status: "error",
+              message: "Something went wrong !.",
+            });
           }
         })
         .catch(() =>
-          notification.error({ message: "Something went wrong !." })
+          openNotification({
+            status: "error",
+            message: "Something went wrong !.",
+          })
         );
     }
   };
 
   return (
     <>
+      {contextHolder}
       <Flex justify="space-between" align="center" className="mb-2">
         <Title level={4}>Country list</Title>
         <Button type="primary" onClick={() => setOpenModal(true)}>

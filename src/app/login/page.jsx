@@ -39,12 +39,14 @@ const Login = () => {
     setLoading("pending");
     dispatch(loginUser(values))
       .then((resp) => {
+        console.log("dskjhvakjsdhbkjs", resp);
         if (resp.meta.requestStatus === "fulfilled") {
           openNotification({
             status: "success",
             message: "User logged in successfully !.",
           });
           router.push(`/${resp?.payload?.body?.id}/company/dashboard`);
+          localStorage.setItem("loginUser", resp?.payload?.body);
           setLoading("success");
         } else {
           openNotification({
@@ -84,82 +86,88 @@ const Login = () => {
   };
 
   return (
-    <Flex justify="center" align="center" className="login-container">
-      <Flex vertical gap={24} className="login-sub-container" align="center">
-        <Image
-          src={logo}
-          priority={true}
-          alt="lowzoom-logo"
-          height={"10%"}
-          width={"20%"}
-        />
-        <Title className="main-heading-text" level={1}>
-          Sign in
-        </Title>
-        <Form
-          size="large"
-          style={{ width: "70%" }}
-          layout="vertical"
-          onFinish={handleSubmitUserDetail}
-          form={form}
-        >
-          <Form.Item
-            label="Email"
-            name="username"
-            rules={[{ required: true, message: "Please enter your email id" }]}
-          >
-            <Input
-              placeholder="example@email.com"
-              prefix={
-                <Icon
-                  icon="fluent:mail-24-regular"
-                  height={ICON_HEIGHT}
-                  width={ICON_WIDTH}
-                />
-              }
-            />
-          </Form.Item>
-          <Form.Item
-            label="Password (min 8 character)"
-            name="password"
-            rules={[{ required: true, message: "Please enter your password" }]}
-          >
-            <Input.Password
-              placeholder="password"
-              prefix={
-                <Icon
-                  icon="fluent:lock-closed-24-regular"
-                  height={ICON_HEIGHT}
-                  width={ICON_WIDTH}
-                />
-              }
-            />
-          </Form.Item>
-          <Form.Item valuePropName="checked">
-            <Flex gap={4}>
-              <Checkbox>Remember me.</Checkbox>{" "}
-              <Link href={"/"} className="text-blue-700">
-                Forget Password ?
-              </Link>
-              <Link href={"/signup-otp"} className="text-blue-700">
-                Sign up
-              </Link>
-            </Flex>
-          </Form.Item>
-          <Form.Item>
-            <Button
-              type="primary"
-              htmlType="submit"
-              loading={loading === "pending" ? true : false}
-              style={{ width: "100%" }}
-            >
-              Submit
-            </Button>
-          </Form.Item>
-        </Form>
-      </Flex>
+    <>
       {contextHolder}
-    </Flex>
+      <Flex justify="center" align="center" className="login-container">
+        <Flex vertical gap={24} className="login-sub-container" align="center">
+          <Image
+            src={logo}
+            priority={true}
+            alt="lowzoom-logo"
+            height={"10%"}
+            width={"20%"}
+          />
+          <Title className="main-heading-text" level={1}>
+            Sign in
+          </Title>
+          <Form
+            size="large"
+            style={{ width: "70%" }}
+            layout="vertical"
+            onFinish={handleSubmitUserDetail}
+            form={form}
+          >
+            <Form.Item
+              label="Email"
+              name="username"
+              rules={[
+                { required: true, message: "Please enter your email id" },
+              ]}
+            >
+              <Input
+                placeholder="example@email.com"
+                prefix={
+                  <Icon
+                    icon="fluent:mail-24-regular"
+                    height={ICON_HEIGHT}
+                    width={ICON_WIDTH}
+                  />
+                }
+              />
+            </Form.Item>
+            <Form.Item
+              label="Password (min 8 character)"
+              name="password"
+              rules={[
+                { required: true, message: "Please enter your password" },
+              ]}
+            >
+              <Input.Password
+                placeholder="password"
+                prefix={
+                  <Icon
+                    icon="fluent:lock-closed-24-regular"
+                    height={ICON_HEIGHT}
+                    width={ICON_WIDTH}
+                  />
+                }
+              />
+            </Form.Item>
+            <Form.Item valuePropName="checked">
+              <Flex gap={4}>
+                <Checkbox>Remember me.</Checkbox>{" "}
+                <Link href={"/"} className="text-blue-700">
+                  Forget Password ?
+                </Link>
+                <Link href={"/signup-otp"} className="text-blue-700">
+                  Sign up
+                </Link>
+              </Flex>
+            </Form.Item>
+            <Form.Item>
+              <Button
+                type="primary"
+                htmlType="submit"
+                loading={loading === "pending" ? true : false}
+                style={{ width: "100%" }}
+              >
+                Submit
+              </Button>
+            </Form.Item>
+          </Form>
+        </Flex>
+      </Flex>
+    </>
   );
 };
 

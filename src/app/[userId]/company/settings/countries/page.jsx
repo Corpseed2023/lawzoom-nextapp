@@ -8,12 +8,12 @@ const Countries = dynamic(() => import("./Countries"), {
 });
 
 const CountriesPage = async ({ params }) => {
-  const { userId } = params;
+  const { userId } = await params;
   let data = [];
   try {
     const response = await store.dispatch(getAllCountries());
     data = response.payload;
-    console.log("jhsbajkcbkjbsjbd", data);
+    console.log("jhsbajkcbkjbsjbd", response);
   } catch (err) {
     console.log("Error in countries", err);
   }

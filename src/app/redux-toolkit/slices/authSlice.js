@@ -1,23 +1,18 @@
-import api from "@/app/httpRequest";
+import { api, authApi } from "@/app/httpRequest";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import axios from "axios";
 
 export const loginUser = createAsyncThunk("loginUser", async (data) => {
-  const response = await axios.post(
-    `${process.env.NEXT_PUBLIC_BASE_URL_LOGIN}/api/auth/token`,
-    data,
-    { headers: { "Content-Type": "application/json" } }
-  );
+  const response = await authApi.post(`/api/auth/token`, data);
   return response.data;
 });
 
-export const signupUser = createAsyncThunk("", async (data) => {
-  const response = await api.post(`api/auth/signup`, data);
+export const signupUser = createAsyncThunk("signupUser", async (data) => {
+  const response = await authApi.post(`api/auth/signup`, data);
   return response.data;
 });
 
 export const genrateOpt = createAsyncThunk("genrateOpt", async (data) => {
-  const response = await api.post(`api/auth/otp/generateOTP`, data);
+  const response = await authApi.post(`api/auth/otp/generateOTP`, data);
   return response.data;
 });
 

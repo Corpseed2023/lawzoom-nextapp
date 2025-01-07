@@ -22,6 +22,7 @@ import Link from "next/link";
 import "../login/login.css";
 import { signupUser } from "../redux-toolkit/slices/authSlice";
 import { getAllRoles } from "../redux-toolkit/slices/commonSlice";
+import { createSignupUser } from "../redux-toolkit/slices/employeesSlice";
 const { Title, Text } = Typography;
 
 const Signup = () => {
@@ -31,6 +32,13 @@ const Signup = () => {
   const allRoles = useSelector((state) => state.common.allRoles);
   const otpDetail = useSelector((state) => state.auth.otpResponse);
   const [loading, setLoading] = useState("");
+  const [api, contextHolder] = notification.useNotification();
+
+  const openNotification = (resp) => {
+    api?.[resp.status]({
+      message: resp.message,
+    });
+  };
 
   useEffect(() => {
     dispatch(getAllRoles());
@@ -40,7 +48,7 @@ const Signup = () => {
     if (Object.keys(otpDetail)?.length > 0) {
       form.setFieldsValue({
         name: otpDetail?.name,
-        username: otpDetail?.email,
+        email: otpDetail?.email,
       });
     }
   }, [otpDetail, form]);
@@ -49,174 +57,213 @@ const Signup = () => {
     setLoading("pending");
     dispatch(signupUser(values))
       .then((resp) => {
+        console.log("sdkvjbsjbsdvljb", resp);
         if (resp.meta.requestStatus === "fulfilled") {
-          notification.success({ message: "User signup successfully !." });
-          router.push(`/login`);
-          setLoading("success");
+          openNotification({
+            status: "success",
+            message: "User signup successfully !.",
+          });
+          const signupdata = resp.payload.body;
+          dispatch(
+            createSignupUser({
+              superAdminId: signupdata?.userId,
+              ...signupdata,
+            })
+          )
+            .then((info) => {
+              if (info.meta.requestStatus === "fulfilled") {
+                openNotification({
+                  status: "success",
+                  message: "User created in compliance successfully !.",
+                });
+                router.push(`/login`);
+                setLoading("success");
+              } else {
+                openNotification({
+                  status: "error",
+                  message: "Something went wrong !.",
+                });
+                setLoading("rejected");
+              }
+            })
+            .catch(() =>
+              openNotification({
+                status: "error",
+                message: "Something went wrong !.",
+              })
+            );
         } else {
-          notification.error({ message: "Something went wrong !." });
+          openNotification({
+            status: "error",
+            message: "Something went wrong !.",
+          });
           setLoading("rejected");
         }
       })
       .catch(() => {
-        notification.error({ message: "Something went wrong !." });
+        openNotification({
+          status: "error",
+          message: "Something went wrong !.",
+        });
         setLoading("rejected");
       });
   };
   return (
-    <Flex justify="center" align="center" className="login-container">
-      <Flex
-        vertical
-        gap={12}
-        className="w-3/5 shadow-form-shadow p-12"
-        align="center"
-      >
-        <Image
-          src={logo}
-          priority={true}
-          alt="lowzoom-logo"
-          height={"10%"}
-          width={"20%"}
-        />
-        <Title className="main-heading-text" level={1}>
-          Sign up
-        </Title>
-        <Flex className="w-full max-h-80-vh" justify="center">
-          <Form
-            style={{ width: "80%" }}
-            size="large"
-            layout="vertical"
-            form={form}
-            onFinish={handleSubmitUserDetail}
-          >
-            <Row gutter={16}>
-              <Col span={12}>
-                {" "}
-                <Form.Item
-                  label="Name"
-                  name="name"
-                  rules={[
-                    { required: true, message: "Please enter your email id" },
-                  ]}
-                >
-                  <Input
-                    placeholder="your name"
-                    prefix={
-                      <Icon
-                        icon="fluent:person-24-regular"
-                        height={ICON_HEIGHT}
-                        width={ICON_WIDTH}
-                      />
-                    }
-                  />
-                </Form.Item>
-              </Col>
+    <>
+      {contextHolder}
+      <Flex justify="center" align="center" className="login-container">
+        <Flex
+          vertical
+          gap={12}
+          className="w-3/5 shadow-form-shadow p-12"
+          align="center"
+        >
+          <Image
+            src={logo}
+            priority={true}
+            alt="lowzoom-logo"
+            height={"10%"}
+            width={"20%"}
+          />
+          <Title className="main-heading-text" level={1}>
+            Sign up
+          </Title>
+          <Flex className="w-full max-h-80-vh" justify="center">
+            <Form
+              style={{ width: "80%" }}
+              size="large"
+              layout="vertical"
+              form={form}
+              onFinish={handleSubmitUserDetail}
+            >
+              <Row gutter={16}>
+                <Col span={12}>
+                  {" "}
+                  <Form.Item
+                    label="Name"
+                    name="name"
+                    rules={[
+                      { required: true, message: "Please enter your email id" },
+                    ]}
+                  >
+                    <Input
+                      placeholder="your name"
+                      prefix={
+                        <Icon
+                          icon="fluent:person-24-regular"
+                          height={ICON_HEIGHT}
+                          width={ICON_WIDTH}
+                        />
+                      }
+                    />
+                  </Form.Item>
+                </Col>
 
-              <Col span={12}>
-                {" "}
-                <Form.Item
-                  label="Email"
-                  name="username"
-                  rules={[
-                    {
-                      required: true,
-                      type: "email",
-                      message: "Please enter your email id",
-                    },
-                  ]}
-                >
-                  <Input
-                    placeholder="example@email.com"
-                    prefix={
-                      <Icon
-                        icon="fluent:mail-24-regular"
-                        height={ICON_HEIGHT}
-                        width={ICON_WIDTH}
-                      />
-                    }
-                  />
-                </Form.Item>
-              </Col>
-            </Row>
-            <Row gutter={16}>
-              <Col span={12}>
-                {" "}
-                <Form.Item
-                  label="Select roles"
-                  name="roleList"
-                  rules={[{ required: true, message: "please select roles" }]}
-                >
-                  <Select
-                    mode="multiple"
-                    placeholder='Select role'
-                    options={
-                      allRoles?.map((item) => ({
-                        label: item?.role,
-                        value: item?.role,
-                      })) || []
-                    }
-                  />
-                </Form.Item>
-              </Col>
-              <Col span={12}>
-                <Form.Item
-                  label="Set password (min 8 character)"
-                  name="password"
-                  rules={[
-                    { required: true, message: "Please enter your password" },
-                  ]}
-                >
-                  <Input.Password
-                    placeholder="password"
-                    prefix={
-                      <Icon
-                        icon="fluent:lock-closed-24-regular"
-                        height={ICON_HEIGHT}
-                        width={ICON_WIDTH}
-                      />
-                    }
-                  />
-                </Form.Item>
-              </Col>
-            </Row>
-            <Row gutter={16}>
-              <Col span={24}>
-                {" "}
-                <Form.Item
-                  label="OTP"
-                  name="otp"
-                  rules={[{ required: true, message: "please enter otp" }]}
-                >
-                  <Input.OTP />
-                </Form.Item>
-              </Col>
-            </Row>
+                <Col span={12}>
+                  {" "}
+                  <Form.Item
+                    label="Email"
+                    name="email"
+                    rules={[
+                      {
+                        required: true,
+                        type: "email",
+                        message: "Please enter your email id",
+                      },
+                    ]}
+                  >
+                    <Input
+                      placeholder="example@email.com"
+                      prefix={
+                        <Icon
+                          icon="fluent:mail-24-regular"
+                          height={ICON_HEIGHT}
+                          width={ICON_WIDTH}
+                        />
+                      }
+                    />
+                  </Form.Item>
+                </Col>
+              </Row>
+              <Row gutter={16}>
+                <Col span={12}>
+                  {" "}
+                  <Form.Item
+                    label="Select roles"
+                    name="role"
+                    rules={[{ required: true, message: "please select roles" }]}
+                  >
+                    <Select
+                      placeholder="Select role"
+                      options={
+                        allRoles?.map((item) => ({
+                          label: item?.role,
+                          value: item?.role,
+                        })) || []
+                      }
+                    />
+                  </Form.Item>
+                </Col>
+                <Col span={12}>
+                  <Form.Item
+                    label="Set password (min 8 character)"
+                    name="password"
+                    rules={[
+                      { required: true, message: "Please enter your password" },
+                    ]}
+                  >
+                    <Input.Password
+                      placeholder="password"
+                      prefix={
+                        <Icon
+                          icon="fluent:lock-closed-24-regular"
+                          height={ICON_HEIGHT}
+                          width={ICON_WIDTH}
+                        />
+                      }
+                    />
+                  </Form.Item>
+                </Col>
+              </Row>
+              <Row gutter={16}>
+                <Col span={24}>
+                  {" "}
+                  <Form.Item
+                    label="OTP"
+                    name="otp"
+                    rules={[{ required: true, message: "please enter otp" }]}
+                  >
+                    <Input.OTP />
+                  </Form.Item>
+                </Col>
+              </Row>
 
-            <Form.Item valuePropName="checked">
-              <Flex gap={4}>
-                <Checkbox>Remember me.</Checkbox>{" "}
-                <Link href={"/"} className="text-blue-700">
-                  Forget Password ?
-                </Link>
-                <Link href={"/login"} className="text-blue-700">
-                  login
-                </Link>
-              </Flex>
-            </Form.Item>
-            <Form.Item>
-              <Button
-                type="primary"
-                htmlType="submit"
-                loading={loading === "pending" ? true : false}
-                style={{ width: "100%" }}
-              >
-                Submit
-              </Button>
-            </Form.Item>
-          </Form>
+              <Form.Item valuePropName="checked">
+                <Flex gap={4}>
+                  <Checkbox>Remember me.</Checkbox>{" "}
+                  <Link href={"/"} className="text-blue-700">
+                    Forget Password ?
+                  </Link>
+                  <Link href={"/login"} className="text-blue-700">
+                    login
+                  </Link>
+                </Flex>
+              </Form.Item>
+              <Form.Item>
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  loading={loading === "pending" ? true : false}
+                  style={{ width: "100%" }}
+                >
+                  Submit
+                </Button>
+              </Form.Item>
+            </Form>
+          </Flex>
         </Flex>
       </Flex>
-    </Flex>
+    </>
   );
 };
 

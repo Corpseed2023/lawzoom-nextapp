@@ -1,4 +1,4 @@
-import api from "@/app/httpRequest"
+import {api} from "@/app/httpRequest"
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 
 export const addPeoples=createAsyncThunk('addPeoples',async(data)=>{

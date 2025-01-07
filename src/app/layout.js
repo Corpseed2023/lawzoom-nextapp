@@ -1,3 +1,4 @@
+import "@ant-design/v5-patch-for-react-19";
 import "./globals.css";
 import { ConfigProvider } from "antd";
 import dynamic from "next/dynamic";

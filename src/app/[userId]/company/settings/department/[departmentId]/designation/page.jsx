@@ -4,7 +4,7 @@ import { getAllDesiginations } from "@/app/redux-toolkit/slices/settingSlice";
 import dynamic from "next/dynamic";
 import Loading from "@/app/loading";
 const Designation = dynamic(() => import("./Designation"), {
-  loading: <Loading />,
+  loading: ()=><Loading />,
 });
 
 export const fetchDesiginations = async (id) => {
@@ -20,7 +20,7 @@ export const fetchDesiginations = async (id) => {
 };
 
 const DesignationPage = async ({ params }) => {
-  const { departmentId, userId } = params;
+  const { departmentId, userId } = await params;
   const data = await fetchDesiginations(departmentId);
   console.log("Desigination =======================>", data);
 

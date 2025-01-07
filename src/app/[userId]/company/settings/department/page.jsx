@@ -14,8 +14,10 @@ export async function getAllDepartment() {
 }
 
 const DepartmentPage = async ({ params }) => {
-  const { userId, departmentId } = params;
+  const { userId, departmentId } = await params;
   const data = await getAllDepartment();
+
+  console.log('asd;kjhvlsdkah',data)
   return (
     <>
       <Department data={data} userId={userId} departmentId={departmentId} />
