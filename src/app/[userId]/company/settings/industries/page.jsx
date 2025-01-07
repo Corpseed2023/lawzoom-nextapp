@@ -1,10 +1,14 @@
 import React from "react";
-import Industries from "./Industries";
 import store from "@/app/redux-toolkit/store";
 import { getAllIndustries } from "@/app/redux-toolkit/slices/settingSlice";
+import dynamic from "next/dynamic";
+import Loading from "@/app/loading";
+const Industries = dynamic(() => import("./Industries"), {
+  loading: () => <Loading />,
+});
 
-const IndustriesPage = async ({params}) => {
-  const { userId } = params;
+const IndustriesPage = async ({ params }) => {
+  const { userId } = await params;
   let data = [];
   try {
     const response = await store.dispatch(getAllIndustries());

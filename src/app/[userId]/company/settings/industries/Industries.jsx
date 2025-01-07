@@ -1,5 +1,5 @@
 "use client";
-import CommonTable from "@/app/common/CommonTable";
+import Loading from "@/app/loading";
 import {
   createIndustry,
   updateIndustry,
@@ -15,12 +15,16 @@ import {
   Popconfirm,
   Typography,
 } from "antd";
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 const { Text, Title } = Typography;
 const { Search } = Input;
+const CommonTable = dynamic(() => import("@/app/common/CommonTable"), {
+  loading: () => <Loading />,
+});
 
 const Industries = ({ data, userId }) => {
   const dispatch = useDispatch();
@@ -28,6 +32,13 @@ const Industries = ({ data, userId }) => {
   const [form] = Form.useForm();
   const [openModal, setOpenModal] = useState(false);
   const [editData, setEditData] = useState(null);
+  const [api, contextHolder] = notification.useNotification();
+
+  const openNotification = (resp) => {
+    api[resp.status]({
+      message: resp.message,
+    });
+  };
 
   const handleEdit = (data) => {
     form.setFieldsValue({
@@ -94,41 +105,60 @@ const Industries = ({ data, userId }) => {
       dispatch(updateIndustry({ ...values, userId, id: editData?.id }))
         .then((resp) => {
           if (resp.meta.requestStatus === "fulfilled") {
-            notification.success({
-              message: "Industry updated successfully !",
+            openNotification({
+              status: "success",
+              message: "Industry updated successfully !.",
             });
             setOpenModal(false);
             form.resetFields();
             router.refresh();
             setEditData(null);
           } else {
-            notification.error({ message: "Something went wrong !" });
+            openNotification({
+              status: "error",
+              message: "Something went wrong !.",
+            });
           }
         })
-        .catch(() => notification.error({ message: "Something went wrong !" }));
+        .catch(() =>
+          openNotification({
+            status: "error",
+            message: "Something went wrong !.",
+          })
+        );
     } else {
       dispatch(createIndustry({ ...values, userId }))
         .then((resp) => {
           if (resp.meta.requestStatus === "fulfilled") {
-            notification.success({
-              message: "Industry created successfully !",
+            openNotification({
+              status: "success",
+              message: "Industry created successfully !.",
             });
             setOpenModal(false);
             form.resetFields();
             router.refresh();
           } else {
-            notification.error({ message: "Something went wrong !" });
+            openNotification({
+              status: "error",
+              message: "Something went wrong !.",
+            });
           }
         })
-        .catch(() => notification.error({ message: "Something went wrong !" }));
+        .catch(() =>
+          openNotification({
+            status: "error",
+            message: "Something went wrong !.",
+          })
+        );
     }
   };
   return (
     <>
+      {contextHolder}
       <Flex justify="space-between" align="center" className="mb-2">
         <Title level={4}>Industries list</Title>
       </Flex>
-      <Flex className="w-full mb-2" justify='space-between'>
+      <Flex className="w-full mb-2" justify="space-between">
         <Search
           className="w-1/3"
           enterButton="Search"

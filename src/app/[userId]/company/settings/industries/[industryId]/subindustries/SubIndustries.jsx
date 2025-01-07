@@ -20,7 +20,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-const { Text,Title } = Typography;
+const { Text, Title } = Typography;
 
 const SubIndustries = ({ data, userId, industryId }) => {
   const dispatch = useDispatch();
@@ -28,6 +28,13 @@ const SubIndustries = ({ data, userId, industryId }) => {
   const [form] = Form.useForm();
   const [openModal, setOpenModal] = useState(false);
   const [editData, setEditData] = useState(null);
+  const [api, contextHolder] = notification.useNotification();
+
+  const openNotification = (resp) => {
+    api[resp.status]({
+      message: resp.message,
+    });
+  };
 
   const handleEdit = (data) => {
     form.setFieldsValue({
@@ -41,15 +48,24 @@ const SubIndustries = ({ data, userId, industryId }) => {
     dispatch(deleteSubIndustry(data?.id))
       .then((resp) => {
         if (resp.meta.requestStatus === "fulfilled") {
-          notification.success({
+          openNotification({
+            status: "success",
             message: "Sub industry deleted successfully !.",
           });
           router.refresh();
         } else {
-          notification.error({ message: "Something went wrong !." });
+          openNotification({
+            status: "error",
+            message: "Something went wrong !.",
+          });
         }
       })
-      .catch(() => notification.error({ message: "Something went wrong !." }));
+      .catch(() =>
+        openNotification({
+          status: "error",
+          message: "Something went wrong !.",
+        })
+      );
   };
 
   const columns = [
@@ -103,35 +119,53 @@ const SubIndustries = ({ data, userId, industryId }) => {
       )
         .then((resp) => {
           if (resp.meta.requestStatus === "fulfilled") {
-            notification.success({
-              message: "Industry updated successfully !",
+            openNotification({
+              status: "success",
+              message: "Industry updated successfully !.",
             });
             setOpenModal(false);
             form.resetFields();
             router.refresh();
             setEditData(null);
           } else {
-            notification.error({ message: "Something went wrong !" });
+            openNotification({
+              status: "error",
+              message: "Something went wrong !.",
+            });
           }
         })
-        .catch(() => notification.error({ message: "Something went wrong !" }));
+        .catch(() =>
+          openNotification({
+            status: "error",
+            message: "Something went wrong !.",
+          })
+        );
     } else {
       dispatch(
         createSubIndustry({ ...values, industryCategoryId: industryId, userId })
       )
         .then((resp) => {
           if (resp.meta.requestStatus === "fulfilled") {
-            notification.success({
-              message: "Industry created successfully !",
+            openNotification({
+              status: "error",
+              message: "Industry created successfully !.",
             });
             setOpenModal(false);
             form.resetFields();
             router.refresh();
           } else {
-            notification.error({ message: "Something went wrong !" });
+            openNotification({
+              status: "error",
+              message: "Something went wrong !.",
+            });
           }
         })
-        .catch(() => notification.error({ message: "Something went wrong !" }));
+        .catch(() =>
+          openNotification({
+            status: "error",
+            message: "Something went wrong !.",
+          })
+        );
     }
   };
   return (

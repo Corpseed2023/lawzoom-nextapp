@@ -1,9 +1,9 @@
-import { api } from "@/app/httpRequest";
+import { api, complianceApi } from "@/app/httpRequest";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 export const createCompany = createAsyncThunk("createCompany", async (data) => {
-  const response = await api.post(
-    `api/auth/company/addCompany?userId=${data?.userId}`,
+  const response = await complianceApi.post(
+    `/api/compliance/company/addCompany?userId=${data?.userId}`,
     data
   );
   return response.data;
@@ -12,7 +12,7 @@ export const createCompany = createAsyncThunk("createCompany", async (data) => {
 export const getAllCompanies = createAsyncThunk(
   "getAllCompanies",
   async ({ userId, subscriptionId }) => {
-    const response = await api.get(
+    const response = await complianceApi.get(
       `/api/compliance/company/fetch-all-companies?userId=${userId}&subscriptionId=${subscriptionId}`
     );
     return response.data;
@@ -20,7 +20,7 @@ export const getAllCompanies = createAsyncThunk(
 );
 
 export const addGstDetails = createAsyncThunk("addGstDetails", async (data) => {
-  const response = await api.post(`api/auth/gst-details/add-gstDetails`, data);
+  const response = await complianceApi.post(`/api/compliance/gst-details/add-gstDetails`, data);
   return response.data;
 });
 
@@ -28,7 +28,7 @@ export const deleteCompanyById = createAsyncThunk(
   "deleteCompanyById",
   async ({ id, userId }) => {
     const response = await api.delete(
-      `api/auth/company/removeCompany?id=${id}&userId=${userId}`
+      `/api/compliance/company/disableCompany?companyId=${id}&userId=${userId}`
     );
     return response.data;
   }
@@ -37,8 +37,8 @@ export const deleteCompanyById = createAsyncThunk(
 export const fetchAllGstDetails = createAsyncThunk(
   "fetchAllGstDetails",
   async ({ companyId, userId, subscriptionId }) => {
-    const response = await api.get(
-      `api/auth/gst-details/fetch-company-gstDetails?companyId=${companyId}&userId=${userId}&subscriptionId=${subscriptionId}`
+    const response = await complianceApi.get(
+      `/api/compliance/gst-details/fetch-company-gstDetails?companyId=${companyId}&userId=${userId}&subscriptionId=${subscriptionId}`
     );
     return response.data;
   }
@@ -47,16 +47,16 @@ export const fetchAllGstDetails = createAsyncThunk(
 export const fetchSingleCompanyDetail = createAsyncThunk(
   "getSingleCompany",
   async ({ userId, subscriptionId, companyId }) => {
-    const response = await api.get(
-      `api/auth/company/fetch-company?userId=${userId}&subscriptionId=${subscriptionId}&companyId=${companyId}`
+    const response = await complianceApi.get(
+      `/api/compliance/company/fetch-company?companyId=${companyId}&userId=${userId}&subscriberId=${subscriptionId}`
     );
     return response.data;
   }
 );
 
 export const updateCompany = createAsyncThunk("updateCompany", async (data) => {
-  const response = await api.put(
-    `api/auth/company/update-company?companyId=${data?.companyId}&userId=${data?.userId}`,
+  const response = await complianceApi.put(
+    `/api/compliance/company/updateCompany?companyId=${data?.companyId}&userId=${data?.userId}`,
     data?.formData
   );
   return response.data;
@@ -65,8 +65,8 @@ export const updateCompany = createAsyncThunk("updateCompany", async (data) => {
 export const updateGstDetails = createAsyncThunk(
   "updateGstDetails",
   async (data) => {
-    const response = await api.put(
-      `api/auth/gst-details/update-gst-details?id=${data?.gstId}`
+    const response = await complianceApi.put(
+      `/api/compliance/gst-details/update?id=${data?.gstId}`
     );
     return response.data;
   }
@@ -75,8 +75,8 @@ export const updateGstDetails = createAsyncThunk(
 export const createBusinessUnit = createAsyncThunk(
   "createBusinessUnit",
   async (data) => {
-    const response = await api.post(
-      `api/auth/business-unit/saveBusinessUnit?gstDetailsId=${data?.gstDetailsId}`,
+    const response = await complianceApi.post(
+      `/api/compliance/business-unit/saveBusinessUnit?gstDetailsId=${data?.gstDetailsId}`,
       data?.data
     );
     return response.data;
@@ -86,8 +86,8 @@ export const createBusinessUnit = createAsyncThunk(
 export const updateBusinessUnit = createAsyncThunk(
   "updateBusinessUnit",
   async ({ data, businessUnitId }) => {
-    const response = await api.put(
-      `api/auth/business-unit/updateBusinessUnit?businessUnitId=${businessUnitId}`,
+    const response = await complianceApi.put(
+      `/api/compliance/business-unit/updateBusinessUnit?businessUnitId=${businessUnitId}`,
       data
     );
     return response.data;
