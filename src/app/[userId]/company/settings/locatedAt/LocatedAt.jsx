@@ -27,20 +27,36 @@ const LocatedAt = ({ data, userId }) => {
   const [form] = Form.useForm();
   const [openModal, setOpenModal] = useState(false);
   const [editData, setEditData] = useState(null);
+  const [api, contextHolder] = notification.useNotification();
+
+  const openNotification = (resp) => {
+    api[resp.status]({
+      message: resp.message,
+    });
+  };
 
   const handleDelete = (id) => {
     dispatch(deleteLocatedAt(id))
       .then((resp) => {
         if (resp.meta.requestStatus === "fulfilled") {
-          notification.success({
+          openNotification({
+            status: "success",
             message: "Location deleted successfully !.",
           });
           router.refresh();
         } else {
-          notification.error({ message: "Something went wrong !." });
+          openNotification({
+            status: "error",
+            message: "Something went wrong !.",
+          });
         }
       })
-      .catch(() => notification.error({ message: "Something went wrong !." }));
+      .catch(() =>
+        openNotification({
+          status: "error",
+          message: "Something went wrong !.",
+        })
+      );
   };
 
   const handleEdit = (data) => {
@@ -100,35 +116,57 @@ const LocatedAt = ({ data, userId }) => {
             notification.success({
               message: "Location updated successfully!",
             });
+            openNotification({
+              status: "success",
+              message: "Location updated successfully !.",
+            });
             setOpenModal(false);
             form.resetFields();
             router.refresh();
             setEditData(null);
           } else {
-            notification.error({ message: "Something went wrong!" });
+            openNotification({
+              status: "error",
+              message: "Something went wrong !.",
+            });
           }
         })
-        .catch(() => notification.error({ message: "Something went wrong!" }));
+        .catch(() =>
+          openNotification({
+            status: "error",
+            message: "Something went wrong !.",
+          })
+        );
     } else {
       dispatch(createdLocatedAt({ ...values, userId }))
         .then((resp) => {
           if (resp.meta.requestStatus === "fulfilled") {
-            notification.success({
-              message: "Location added successfully!",
+            openNotification({
+              status: "success",
+              message: "Location added successfully !.",
             });
             setOpenModal(false);
             form.resetFields();
             router.refresh();
           } else {
-            notification.error({ message: "Something went wrong!" });
+            openNotification({
+              status: "error",
+              message: "Something went wrong !.",
+            });
           }
         })
-        .catch(() => notification.error({ message: "Something went wrong!" }));
+        .catch(() =>
+          openNotification({
+            status: "error",
+            message: "Something went wrong !.",
+          })
+        );
     }
   };
 
   return (
     <>
+      {contextHolder}
       <Flex justify="space-between" align="center" className="mb-2">
         <Title level={4}>Locations list</Title>
         <Button

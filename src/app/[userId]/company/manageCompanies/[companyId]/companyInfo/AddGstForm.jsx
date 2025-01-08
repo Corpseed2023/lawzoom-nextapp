@@ -24,7 +24,7 @@ import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-const AddGstForm = ({ edit, companyId, editData, userId }) => {
+const AddGstForm = ({ edit, companyId, editData, userId, subscriberId }) => {
   const [form] = Form.useForm();
   const dispatch = useDispatch();
   const router = useRouter();
@@ -32,6 +32,13 @@ const AddGstForm = ({ edit, companyId, editData, userId }) => {
   const statesList = useSelector((state) => state.common.statesList);
   const [openModal, setOpenModal] = useState(false);
   const [gstId, setGstId] = useState(null);
+  const [api, contextHolder] = notification.useNotification();
+
+  const openNotification = (resp) => {
+    api[resp.status]({
+      message: resp.message,
+    });
+  };
 
   const handleEdit = () => {
     if (editData) {
@@ -57,23 +64,30 @@ const AddGstForm = ({ edit, companyId, editData, userId }) => {
           ...values,
           gstId,
           userId,
-          subscriptionId: SUBSCRIPTION_ID,
+          subscriptionId: subscriberId,
         })
       )
         .then((resp) => {
           if (resp.meta.requestStatus === "fulfilled") {
-            notification.success({
+            openNotification({
+              status: "success",
               message: "GST details updated successfully !.",
             });
             form.resetFields();
             setOpenModal(false);
             router.refresh();
           } else {
-            notification.error({ message: "Something went wrong !." });
+            openNotification({
+              status: "error",
+              message: "Something went wrong !.",
+            });
           }
         })
         .catch(() =>
-          notification.error({ message: "Something went wrong !." })
+          openNotification({
+            status: "error",
+            message: "Something went wrong !.",
+          })
         );
     } else {
       dispatch(
@@ -81,28 +95,36 @@ const AddGstForm = ({ edit, companyId, editData, userId }) => {
           ...values,
           companyId,
           userId,
-          subscriptionId: SUBSCRIPTION_ID,
+          subscriberId: subscriberId,
         })
       )
         .then((resp) => {
           if (resp.meta.requestStatus === "fulfilled") {
-            notification.success({
+            openNotification({
+              status: "success",
               message: "GST details added successfully !.",
             });
             form.resetFields();
             setOpenModal(false);
             router.refresh();
           } else {
-            notification.error({ message: "Something went wrong !." });
+            openNotification({
+              status: "error",
+              message: "Something went wrong !.",
+            });
           }
         })
         .catch(() =>
-          notification.error({ message: "Something went wrong !." })
+          openNotification({
+            status: "error",
+            message: "Something went wrong !.",
+          })
         );
     }
   };
   return (
     <>
+      {contextHolder}
       {edit ? (
         <Button
           size="small"

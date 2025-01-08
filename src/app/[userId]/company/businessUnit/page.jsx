@@ -4,6 +4,7 @@ import { getAllCompliances } from "@/app/redux-toolkit/slices/complianceSlice";
 import { SUBSCRIPTION_ID } from "@/app/constants";
 import dynamic from "next/dynamic";
 import Loading from "@/app/loading";
+import { userSubscriberId } from "@/app/commonConstants";
 
 const BusinessUnit=dynamic(()=>import('./BusinessUnit'),{loading:()=><Loading/>})
 
@@ -24,7 +25,8 @@ const fetchCompliances = async (userId, subscriberId) => {
 
 const BusinessUnitPage = async ({ params }) => {
   const { userId } = await params;
-  const data = await fetchCompliances(userId, SUBSCRIPTION_ID);
+  const subscriberId= await userSubscriberId()
+  const data = await fetchCompliances(userId, subscriberId);
 
   console.log("jfbvkjashbdvkjshbh", data, userId);
   return (

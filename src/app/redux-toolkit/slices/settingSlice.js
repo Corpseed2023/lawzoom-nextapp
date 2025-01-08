@@ -77,7 +77,7 @@ export const updateIndustry = createAsyncThunk(
 export const getSubIndustryById = createAsyncThunk(
   "getSubIndustryById",
   async (id) => {
-    const response = await api.get(
+    const response = await complianceApi.get(
       `/api/compliance/sub-industry-category/fetch-all-enabled?industryCategoryId=${id}`
     );
     return response.data;

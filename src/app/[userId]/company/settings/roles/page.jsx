@@ -1,7 +1,9 @@
 import React from "react";
-import Roles from "./Roles";
 import store from "@/app/redux-toolkit/store";
 import { getAllRoles } from "@/app/redux-toolkit/slices/commonSlice";
+import dynamic from "next/dynamic";
+import Loading from "@/app/loading";
+const Roles = dynamic(() => import("./Roles"), { loading: () => <Loading /> });
 
 const fetchAllRoles = async () => {
   let data = [];

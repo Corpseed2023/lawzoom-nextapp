@@ -1,6 +1,6 @@
-"use client";
-import CommonTable from "@/app/common/CommonTable";
-import { createRole } from "@/app/redux-toolkit/slices/commonSlice";
+'use client'
+import Loading from "@/app/loading";
+import { createStatus } from "@/app/redux-toolkit/slices/commonSlice";
 import { Icon } from "@iconify/react";
 import {
   Button,
@@ -11,12 +11,16 @@ import {
   notification,
   Typography,
 } from "antd";
+import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-const { Title } = Typography;
+const { Title, Text } = Typography;
+const CommonTable = dynamic(() => import("@/app/common/CommonTable"), {
+  loading: () => <Loading />,
+});
 
-const Roles = ({ data }) => {
+const Status = ({data}) => {
   const [form] = Form.useForm();
   const router = useRouter();
   const dispatch = useDispatch();
@@ -54,18 +58,20 @@ const Roles = ({ data }) => {
       title: "Id",
     },
     {
-      dataIndex: "role",
-      title: "Roles",
+      dataIndex: "name",
+      title: "Staus",
     },
   ];
 
   const handleFinish = (values) => {
-    dispatch(createRole(values))
+
+    console.log('sdkjvbhalksdbvjk',values)
+    dispatch(createStatus(values))
       .then((resp) => {
         if (resp.meta.requestStatus === "fulfilled") {
           openNotification({
             status: "success",
-            message: "Resource type created successfully !.",
+            message: "Status created successfully !.",
           });
           setOpenModal(false);
           form.resetFields();
@@ -84,11 +90,12 @@ const Roles = ({ data }) => {
         })
       );
   };
+
   return (
     <>
       {contextHolder}
       <Flex justify="space-between" align="center" className="mb-2">
-        <Title level={4}>Roles list</Title>
+        <Title level={4}>Staus list</Title>
       </Flex>
       <Flex justify="space-between" className="mb-2">
         <Input
@@ -107,7 +114,7 @@ const Roles = ({ data }) => {
             form.resetFields();
           }}
         >
-          Create role
+          Add status
         </Button>
       </Flex>
       <CommonTable
@@ -117,7 +124,7 @@ const Roles = ({ data }) => {
         scroll={{ y: "75vh" }}
       />
       <Modal
-        title={"Create role"}
+        title={"Create status"}
         open={openModal}
         onCancel={() => setOpenModal(false)}
         onClose={() => setOpenModal(false)}
@@ -126,9 +133,9 @@ const Roles = ({ data }) => {
       >
         <Form layout="vertical" form={form} onFinish={handleFinish}>
           <Form.Item
-            label="Role name"
-            name="role"
-            rules={[{ required: true, message: "Please enter role" }]}
+            label="Status name"
+            name="status"
+            rules={[{ required: true, message: "Please enter status" }]}
           >
             <Input />
           </Form.Item>
@@ -138,4 +145,4 @@ const Roles = ({ data }) => {
   );
 };
 
-export default Roles;
+export default Status;

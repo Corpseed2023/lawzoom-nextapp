@@ -7,6 +7,8 @@ import Link from "next/link";
 import { Icon } from "@iconify/react";
 import { ICON_HEIGHT, ICON_WIDTH } from "@/app/constants";
 import { useParams, useRouter } from "next/navigation";
+import { logout } from "@/app/redux-toolkit/slices/authSlice";
+import { useDispatch } from "react-redux";
 const { Content, Sider } = Layout;
 
 const CompanyLayout = ({ children }) => {
@@ -15,6 +17,7 @@ const CompanyLayout = ({ children }) => {
   } = theme.useToken();
 
   const params = useParams();
+  const dispatch=useDispatch()
   const userId = params.userId; 
   
   const items = [
@@ -217,7 +220,7 @@ const CompanyLayout = ({ children }) => {
                 margin: "16px 0",
               }}
             />
-            <Button type="text" size="large">
+            <Button type="text" size="large" onClick={()=>dispatch(logout())}>
               <Icon icon="fluent:sign-out-24-regular" width="22" height="22" />{" "}
               Logout
             </Button>

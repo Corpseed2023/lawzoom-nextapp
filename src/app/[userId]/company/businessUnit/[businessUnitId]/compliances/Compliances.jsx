@@ -30,7 +30,7 @@ const CommonTable = dynamic(() => import("@/app/common/CommonTable"), {
   loading: () => <Loading />,
 });
 
-const Compliances = ({ data, businessUnitId, userId }) => {
+const Compliances = ({ data, businessUnitId, userId,subscriberId }) => {
   const router = useRouter();
   const [form] = Form.useForm();
   const dispatch = useDispatch();
@@ -95,7 +95,7 @@ const Compliances = ({ data, businessUnitId, userId }) => {
       createCompliance({
         userId,
         businessUnitId,
-        data: { subscriberId: SUBSCRIPTION_ID, ...values },
+        data: { subscriberId: subscriberId, ...values },
       })
     )
       .then((resp) => {

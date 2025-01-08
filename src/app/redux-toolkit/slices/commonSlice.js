@@ -11,21 +11,24 @@ export const getAllRoles = createAsyncThunk("getAllRoles", async () => {
   return response.data;
 });
 
-export const createRole=createAsyncThunk('createRole',async({role})=>{
-  const response=await api.post(`api/auth/role/createRole?role=${role}`)
-  return response.data
-})
-
+export const createRole = createAsyncThunk("createRole", async ({ role }) => {
+  const response = await api.post(`api/auth/role/createRole?role=${role}`);
+  return response.data;
+});
 
 export const getAllCountries = createAsyncThunk("getAllCountries", async () => {
-  const response = await api.get(`/api/compliance/countries/fetch-all-countries`);
+  const response = await complianceApi.get(
+    `/api/compliance/countries/fetch-all-countries`
+  );
   return response.data;
 });
 
 export const getStatesByCountryId = createAsyncThunk(
   "getStatesByCountryId",
   async (id) => {
-    const response = await api.get(`/api/compliance/states/fetch-all-states?countryId=${id}`);
+    const response = await complianceApi.get(
+      `/api/compliance/states/fetch-all-states?countryId=${id}`
+    );
     return response.data;
   }
 );
@@ -33,7 +36,9 @@ export const getStatesByCountryId = createAsyncThunk(
 export const getCitiesByStateId = createAsyncThunk(
   "getCitiesByStateId",
   async (id) => {
-    const response = await api.get(`/api/compliance/city/get-all-cities?stateId=${id}`);
+    const response = await complianceApi.get(
+      `/api/compliance/city/get-all-cities?stateId=${id}`
+    );
     return response.data;
   }
 );
@@ -46,7 +51,10 @@ export const createCountry = createAsyncThunk("createCountry", async (data) => {
 });
 
 export const updateCountry = createAsyncThunk("updateCountry", async (data) => {
-  const response = await api.put(`/api/compliance/countries/update-country`, data);
+  const response = await api.put(
+    `/api/compliance/countries/update-country`,
+    data
+  );
   return response.data;
 });
 
@@ -80,8 +88,25 @@ export const updateCities = createAsyncThunk("updateCities", async (data) => {
   return response.data;
 });
 
-export const deleteCitiesById = createAsyncThunk("deleteCitiesById", async (id) => {
-  const response = await api.delete(`/api/compliance/city/softDeleteCity?id=${id}`);
+export const deleteCitiesById = createAsyncThunk(
+  "deleteCitiesById",
+  async (id) => {
+    const response = await api.delete(
+      `/api/compliance/city/softDeleteCity?id=${id}`
+    );
+    return response.data;
+  }
+);
+
+export const getAllStatus = createAsyncThunk("getAllStaus", async () => {
+  const response = await complianceApi.get(`/api/compliance/status/all`);
+  return response.data;
+});
+
+export const createStatus = createAsyncThunk("createStatus", async (data) => {
+  const response = await api.post(
+    `/api/compliance/status/create?status=${data?.status}`
+  );
   return response.data;
 });
 
@@ -94,6 +119,7 @@ const commonSlice = createSlice({
     loading: "",
     statesList: [],
     citiesList: [],
+    statusList: [],
   },
   extraReducers: (builder) => {
     builder.addCase(createEnquiry.pending, (state, action) => {
@@ -140,7 +166,6 @@ const commonSlice = createSlice({
       state.statesList = [];
     });
 
-
     builder.addCase(getCitiesByStateId.pending, (state, action) => {
       state.loading = "pending";
     });
@@ -153,6 +178,17 @@ const commonSlice = createSlice({
       state.citiesList = [];
     });
 
+    builder.addCase(getAllStatus.pending, (state, action) => {
+      state.loading = "pending";
+    });
+    builder.addCase(getAllStatus.fulfilled, (state, action) => {
+      state.loading = "success";
+      state.statusList = action?.payload;
+    });
+    builder.addCase(getAllStatus.rejected, (state, action) => {
+      state.loading = "rejected";
+      state.statusList = [];
+    });
   },
 });
 

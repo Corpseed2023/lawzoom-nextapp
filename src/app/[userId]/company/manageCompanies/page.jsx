@@ -1,11 +1,12 @@
 import React from "react";
 import store from "@/app/redux-toolkit/store";
 import { getAllCompanies } from "@/app/redux-toolkit/slices/companySlice";
-import { SUBSCRIPTION_ID } from "@/app/constants";
 import dynamic from "next/dynamic";
 import Loading from "@/app/loading";
+import { userSubscriberId } from "@/app/commonConstants";
+
 const ManageCompanies = dynamic(() => import("./ManageCompanies"), {
-  loading: () => <Loading/>,
+  loading: () => <Loading />,
 });
 
 const fetchAllCompanies = async (userId, subscriptionId) => {
@@ -14,7 +15,6 @@ const fetchAllCompanies = async (userId, subscriptionId) => {
     const result = await store.dispatch(
       getAllCompanies({ userId, subscriptionId })
     );
-    console.log("Fetch all companies error", result,userId,subscriptionId);
     data = result?.payload;
   } catch (err) {
     console.log("Fetch all companies error", err);
@@ -24,13 +24,12 @@ const fetchAllCompanies = async (userId, subscriptionId) => {
 
 const ManageCompaniesPage = async ({ params }) => {
   const { userId } = await params;
-  const data = await fetchAllCompanies(userId, SUBSCRIPTION_ID);
-
-  console.log('as;ldhclaksjhlkdjg',data,userId)
+  const subscriberId = await userSubscriberId();
+  const data = await fetchAllCompanies(userId, subscriberId);
 
   return (
     <>
-      <ManageCompanies userId={userId} data={data} />
+      <ManageCompanies userId={userId} data={data} subscriberId={subscriberId} />
     </>
   );
 };

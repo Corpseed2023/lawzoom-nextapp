@@ -65,6 +65,10 @@ const SettingMangements = ({ children, params }) => {
       label: <Link href={`/${userId}/company/settings/roles`}>Roles</Link>,
     },
     {
+      key: "status",
+      label: <Link href={`/${userId}/company/settings/status`}>Status</Link>,
+    },
+    {
       key: "subscription",
       label: <Link href={`/${userId}/company/settings/subscription`}>Subscription</Link>,
     },

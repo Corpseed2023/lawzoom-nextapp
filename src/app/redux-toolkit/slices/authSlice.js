@@ -20,10 +20,18 @@ const authSlice = createSlice({
   name: "auth",
   initialState: {
     userDetail: {},
+    userDetails: typeof window !== 'undefined' ? JSON.parse(localStorage.getItem('userDetails')) || null : null,
+    isAuthenticated: !!(typeof window !== 'undefined' && localStorage.getItem('userDetails')),
     userDetailLoading: "",
     otpResponse: {},
   },
-  reducers: {},
+  reducers: {
+    logout: (state) => {
+      state.userDetails = null;
+      state.isAuthenticated = false;
+      localStorage.removeItem('userDetails');
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(loginUser.pending, (state, action) => {
       state.userDetailLoading = "pending";
@@ -31,6 +39,9 @@ const authSlice = createSlice({
     builder.addCase(loginUser.fulfilled, (state, action) => {
       state.userDetail = action.payload;
       state.userDetailLoading = "success";
+      state.isAuthenticated = true;
+      localStorage.setItem('userDetails', JSON.stringify(action.payload?.body));
+      document.cookie = "userDetails=" + JSON.stringify(action.payload?.body);
     });
     builder.addCase(loginUser.rejected, (state, action) => {
       state.userDetail = {};
@@ -51,6 +62,6 @@ const authSlice = createSlice({
   },
 });
 
-export const {} = authSlice.actions;
+export const {logout} = authSlice.actions;
 
 export default authSlice.reducer;

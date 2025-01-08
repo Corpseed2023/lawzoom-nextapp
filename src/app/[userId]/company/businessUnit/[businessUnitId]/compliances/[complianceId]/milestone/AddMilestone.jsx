@@ -28,6 +28,7 @@ const AddMilestone = ({
   setOpenModal,
   userId,
   complianceData,
+  subscriberId
 }) => {
 
 
@@ -43,6 +44,7 @@ const AddMilestone = ({
           complianceId={complianceId}
           setOpenModal={setOpenModal}
           userId={userId}
+          subscriberId={subscriberId}
         />
       ),
     },

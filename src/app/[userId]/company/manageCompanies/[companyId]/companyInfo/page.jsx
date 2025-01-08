@@ -7,18 +7,20 @@ import {
 import { SUBSCRIPTION_ID } from "@/app/constants";
 import dynamic from "next/dynamic";
 import Loading from "@/app/loading";
+import { userSubscriberId } from "@/app/commonConstants";
 
 const CompanyInfo = dynamic(() => import("./CompanyInfo"), {
   loading: () => <Loading />,
 });
 
-const getAllGst = async (companyId, userId, subscriptionId) => {
+const getAllGst = async (companyId, userId, subscriberId ) => {
   let result = [];
   try {
     const response = await store.dispatch(
-      fetchAllGstDetails({ companyId, userId, subscriptionId })
+      fetchAllGstDetails({ companyId, userId, subscriberId  })
     );
     result = response.payload;
+    console.log('askjbsljkcblaskdj',response.payload)
   } catch (err) {
     console.log("All GST fetch error", err);
   }
@@ -39,16 +41,17 @@ const getSingleCompanyDetail = async (companyId, userId, subscriptionId) => {
 };
 
 const CompanyInfoPage = async ({ params }) => {
-  const { companyId, userId } = params;
-  const data = await getAllGst(companyId, userId, SUBSCRIPTION_ID);
+  const { companyId, userId } = await params;
+  const subscriberId= await userSubscriberId()
+  const data = await getAllGst(companyId, userId,subscriberId);
   const companyDetail = await getSingleCompanyDetail(
     companyId,
     userId,
-    SUBSCRIPTION_ID
+    subscriberId
   );
 
-  console.log("Somethngfgcuh", data);
-  console.log("unit counts", companyDetail);
+  console.log(data)
+
 
   return (
     <>
@@ -57,6 +60,7 @@ const CompanyInfoPage = async ({ params }) => {
         data={data}
         userId={userId}
         companyDetail={companyDetail}
+        subscriberId={subscriberId}
       />
     </>
   );

@@ -23,6 +23,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getAllRoles } from "@/app/redux-toolkit/slices/commonSlice";
 import { selectFilter } from "@/app/commons";
 import { useRouter } from "next/navigation";
+import { logout } from "@/app/redux-toolkit/slices/authSlice";
 const { Text, Title } = Typography;
 
 const fakeDataUrl = `https://randomuser.me/api/?results=${5}&inc=name,gender,email,nat,picture&noinfo`;
@@ -65,7 +66,13 @@ const AddUsers = () => {
           height={"10%"}
           width={"20%"}
         />{" "}
-        <Button type="link" href="/" size="large" className="text-xl">
+        <Button
+          type="link"
+          href="/"
+          size="large"
+          className="text-xl"
+          onClick={() => dispatch(logout())}
+        >
           Logout
         </Button>
       </Flex>
@@ -87,9 +94,9 @@ const AddUsers = () => {
           loading={initLoading}
           itemLayout="horizontal"
           dataSource={list}
-          renderItem={(item,idx) => (
+          renderItem={(item, idx) => (
             <List.Item
-            key={`${idx}users`}
+              key={`${idx}users`}
               actions={[
                 <Button type="link">
                   <Icon icon="fluent:add-24-regular" />

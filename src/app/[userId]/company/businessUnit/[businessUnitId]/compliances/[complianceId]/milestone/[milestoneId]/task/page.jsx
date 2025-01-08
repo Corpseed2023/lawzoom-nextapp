@@ -3,6 +3,7 @@ import dynamic from "next/dynamic";
 import Loading from "@/app/loading";
 import store from "@/app/redux-toolkit/store";
 import { getAllTask } from "@/app/redux-toolkit/slices/complianceSlice";
+import { userSubscriberId } from "@/app/commonConstants";
 const Task = dynamic(() => import("./Task"), { loading: () => <Loading /> });
 
 const fetchAllTask = async (id) => {
@@ -19,12 +20,12 @@ const fetchAllTask = async (id) => {
 
 const TaskPage = async ({ params }) => {
   const { milestoneId, userId } = await params;
-
+  const subscriberId= await userSubscriberId()
   const data = await fetchAllTask(milestoneId);
 
   return (
     <>
-      <Task data={data} milestoneId={milestoneId} userId={userId} />
+      <Task data={data} milestoneId={milestoneId} userId={userId} subscriberId={subscriberId} />
     </>
   );
 };

@@ -33,7 +33,7 @@ const AddGstForm = dynamic(() => import("./AddGstForm"), {
   ssr: false,
 });
 
-const CompanyInfo = ({ companyId, data, companyDetail, userId }) => {
+const CompanyInfo = ({ companyId, data, companyDetail, userId,subscriberId }) => {
   const router = useRouter();
   const dispatch = useDispatch();
   const [openDrawer, setOpenDrawer] = useState(false);
@@ -78,7 +78,7 @@ const CompanyInfo = ({ companyId, data, companyDetail, userId }) => {
           <Title level={5}>{companyDetail?.companyName}</Title>
         </Flex>
         <Flex gap={4}>
-          <AddGstForm companyId={companyId} userId={userId} />
+          <AddGstForm companyId={companyId} userId={userId} subscriberId={subscriberId} />
         </Flex>
       </Flex>
       <Divider style={{ margin: 8 }} />
@@ -223,7 +223,7 @@ const CompanyInfo = ({ companyId, data, companyDetail, userId }) => {
                     <Icon icon="fluent:delete-24-regular" />
                   </Button>
                 </Popconfirm>,
-                <AddGstForm edit={true} editData={item} />,
+                <AddGstForm edit={true} editData={item} subscriberId={subscriberId} />,
               ]}
             >
               <Skeleton avatar title={false} loading={item.loading} active>
@@ -264,6 +264,7 @@ const CompanyInfo = ({ companyId, data, companyDetail, userId }) => {
           data={gstData}
           userId={userId}
           refreshPage={refreshPage}
+          subscriberId={subscriberId}
         />
       </Drawer>
     </div>

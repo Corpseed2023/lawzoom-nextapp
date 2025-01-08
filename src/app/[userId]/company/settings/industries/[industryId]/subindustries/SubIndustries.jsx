@@ -147,7 +147,7 @@ const SubIndustries = ({ data, userId, industryId }) => {
         .then((resp) => {
           if (resp.meta.requestStatus === "fulfilled") {
             openNotification({
-              status: "error",
+              status: "success",
               message: "Industry created successfully !.",
             });
             setOpenModal(false);
@@ -170,6 +170,7 @@ const SubIndustries = ({ data, userId, industryId }) => {
   };
   return (
     <>
+      {contextHolder}
       <Flex justify="space-between" align="center" className="mb-2">
         <Title level={4}>Subindustries list</Title>
         <Button

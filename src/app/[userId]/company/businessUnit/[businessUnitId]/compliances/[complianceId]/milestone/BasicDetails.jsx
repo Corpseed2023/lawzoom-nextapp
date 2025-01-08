@@ -47,7 +47,7 @@ const BasicDetails = ({
         businessUnitId,
         complianceId,
         assignedBy: userId,
-        subscriberId: SUBSCRIPTION_ID,
+        subscriberId: subscriberId,
         userId,
       })
     )

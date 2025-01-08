@@ -23,7 +23,7 @@ const CommonTable = dynamic(() => import("@/app/common/CommonTable"), {
   loading: () => <Loading />,
 });
 
-const Task = ({ data,milestoneId, userId }) => {
+const Task = ({ data,milestoneId, userId,subscriberId }) => {
   const [form] = Form.useForm();
   const dispatch = useDispatch();
   const [openModal, setOpenModal] = useState(false);

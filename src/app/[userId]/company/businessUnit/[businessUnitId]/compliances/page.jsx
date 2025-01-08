@@ -4,6 +4,7 @@ import { getComplianceByUnitId } from "@/app/redux-toolkit/slices/complianceSlic
 import dynamic from "next/dynamic";
 import Loading from "@/app/loading";
 import { SUBSCRIPTION_ID } from "@/app/constants";
+import { userSubscriberId } from "@/app/commonConstants";
 const Compliances = dynamic(() => import("./Compliances"), {
   loading: () => <Loading />,
 });
@@ -29,10 +30,11 @@ const fetchComplianceByCompanyUnitId = async (
 
 const CompliancesPage = async ({ params }) => {
   const { businessUnitId, userId } = await params;
+  const subscriberId= await userSubscriberId()
   const data = await fetchComplianceByCompanyUnitId(
     businessUnitId,
     userId,
-    SUBSCRIPTION_ID
+    subscriberId
   );
 
   console.log("jsdghckjsdvckjsv =====================>", data, businessUnitId);
@@ -43,6 +45,7 @@ const CompliancesPage = async ({ params }) => {
         data={data}
         businessUnitId={businessUnitId}
         userId={userId}
+        subscriberId={subscriberId}
       />
     </>
   );

@@ -19,6 +19,7 @@ const Milestone = ({
   complianceId,
   userId,
   complianceData,
+  subscriberId
 }) => {
   const router = useRouter();
   const [form] = Form.useForm();
@@ -118,6 +119,7 @@ const Milestone = ({
           complianceId={complianceId}
           userId={userId}
           complianceData={complianceData}
+          subscriberId={subscriberId}
         />
       </Modal>
     </>

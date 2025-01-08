@@ -34,6 +34,7 @@ import {
   getCitiesByStateId,
   getStatesByCountryId,
 } from "@/app/redux-toolkit/slices/commonSlice";
+import { logout } from "@/app/redux-toolkit/slices/authSlice";
 const { Title, Text } = Typography;
 
 const CompanyOnboarding = ({ userId }) => {
@@ -490,7 +491,7 @@ const CompanyOnboarding = ({ userId }) => {
           height={"10%"}
           width={"20%"}
         />{" "}
-        <Button type="link" size="large" className="text-xl">
+        <Button type="link" size="large" className="text-xl" onClick={()=>dispatch(logout())}>
           Logout
         </Button>
       </Flex>

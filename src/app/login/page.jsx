@@ -46,7 +46,6 @@ const Login = () => {
             message: "User logged in successfully !.",
           });
           router.push(`/${resp?.payload?.body?.id}/company/dashboard`);
-          localStorage.setItem("loginUser", resp?.payload?.body);
           setLoading("success");
         } else {
           openNotification({

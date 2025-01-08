@@ -29,7 +29,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 const { Title, Text } = Typography;
 
-const BusinessUnits = ({ data, refreshPage, userId }) => {
+const BusinessUnits = ({ data, refreshPage, userId,subscriberId }) => {
   const [form] = Form.useForm();
   const dispatch = useDispatch();
   const router = useRouter();
@@ -44,6 +44,13 @@ const BusinessUnits = ({ data, refreshPage, userId }) => {
   const [editData, setEditData] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredData, setFilteredData] = useState([]);
+  const [api, contextHolder] = notification.useNotification();
+
+  const openNotification = (resp) => {
+    api[resp.status]({
+      message: resp.message,
+    });
+  };
 
   useEffect(() => {
     if (data && data?.businessUnitResponseList?.length > 0) {
@@ -70,8 +77,7 @@ const BusinessUnits = ({ data, refreshPage, userId }) => {
   }, [data, dispatch]);
 
   const handleEdit = (value) => {
-
-    console.log('sdivhaosidhvash',value)
+    console.log("sdivhaosidhvash", value);
     dispatch(getAllCountries());
     dispatch(getStatesByCountryId(value?.countryId));
     form.setFieldsValue({
@@ -91,46 +97,60 @@ const BusinessUnits = ({ data, refreshPage, userId }) => {
     if (editData) {
       dispatch(
         updateBusinessUnit({
-          data: { ...values, userId, subscriptionId: SUBSCRIPTION_ID },
+          data: { ...values, userId, subscriberID: subscriberId },
           businessUnitId: editData?.id,
         })
       )
         .then((resp) => {
           if (resp.meta.requestStatus === "fulfilled") {
-            notification.success({
-              message: "Business unit created successfully",
+            openNotification({
+              status: "success",
+              message: "Business unit created successfully !.",
             });
             setOpenModal(false);
             router.refresh();
             refreshPage();
           } else {
-            notification.error({ message: "Something went wrong !." });
+            openNotification({
+              status: "error",
+              message: "Something went wrong !.",
+            });
           }
         })
         .catch(() =>
-          notification.error({ message: "Something went wrong !." })
+          openNotification({
+            status: "error",
+            message: "Something went wrong !.",
+          })
         );
     } else {
       dispatch(
         createBusinessUnit({
-          data: { ...values, userId, subscriptionId: SUBSCRIPTION_ID },
+          data: { ...values, userId, subscriberID: subscriberId },
           gstDetailsId: data?.gstId,
         })
       )
         .then((resp) => {
           if (resp.meta.requestStatus === "fulfilled") {
-            notification.success({
+            openNotification({
+              status: "success",
               message: "Business unit created successfully",
             });
             setOpenModal(false);
             router.refresh();
             refreshPage();
           } else {
-            notification.error({ message: "Something went wrong !." });
+            openNotification({
+              status: "error",
+              message: "Something went wrong !.",
+            });
           }
         })
         .catch(() =>
-          notification.error({ message: "Something went wrong !." })
+          openNotification({
+            status: "error",
+            message: "Something went wrong !.",
+          })
         );
     }
   };
@@ -139,6 +159,7 @@ const BusinessUnits = ({ data, refreshPage, userId }) => {
 
   return (
     <>
+      {contextHolder}
       <Flex vertical>
         <Flex justify="space-between" align="center">
           <Title level={5}>Business units</Title>{" "}
@@ -157,7 +178,7 @@ const BusinessUnits = ({ data, refreshPage, userId }) => {
         <Flex vertical className="[max-height:80vh] overflow-auto">
           {data &&
             data?.businessUnitResponseList?.length > 0 &&
-            filteredData?.map((item,idx) => {
+            filteredData?.map((item, idx) => {
               return (
                 <Card
                   className="w-full my-2"

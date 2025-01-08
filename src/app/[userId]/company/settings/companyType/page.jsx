@@ -4,7 +4,7 @@ import { getAllCompanyType } from "@/app/redux-toolkit/slices/settingSlice";
 import dynamic from "next/dynamic";
 import Loading from "@/app/loading";
 const CompanyType = dynamic(() => import("./CompanyType"), {
-  loading: <Loading />,
+  loading:()=> <Loading />,
 });
 
 export async function fetchComapnyTypeData() {
@@ -20,7 +20,7 @@ export async function fetchComapnyTypeData() {
 }
 
 const CompanyTypePage = async ({ params }) => {
-  const { userId } = params;
+  const { userId } = await params;
   const data = await fetchComapnyTypeData();
   return (
     <>

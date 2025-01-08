@@ -7,6 +7,7 @@ import {
 import { SUBSCRIPTION_ID } from "@/app/constants";
 import dynamic from "next/dynamic";
 import Loading from "@/app/loading";
+import { userSubscriberId } from "@/app/commonConstants";
 const Milestone = dynamic(() => import("./Milestone"), {
   loading: () => <Loading />,
 });
@@ -44,10 +45,10 @@ const getComplianceDataById = async (id) => {
 
 const MilestonePage = async ({ params }) => {
   const { businessUnitId, complianceId, userId } = await params;
-
+  const subscriberId= await userSubscriberId()
   const data = await getMileStoneByComplianceId(
     businessUnitId,
-    SUBSCRIPTION_ID,
+    subscriberId,
     complianceId,
     userId
   );
@@ -64,6 +65,7 @@ const MilestonePage = async ({ params }) => {
         complianceId={complianceId}
         userId={userId}
         complianceData={complianceData}
+        subscriberId={subscriberId}
       />
     </>
   );

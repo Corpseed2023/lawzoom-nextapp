@@ -14,10 +14,13 @@ import person from "../../../assets/edit-person.png";
 import copy from "../../../assets/copy.png";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { logout } from "@/app/redux-toolkit/slices/authSlice";
+import { useDispatch } from "react-redux";
 const { Title, Text } = Typography;
 
 const BusinessSetup = ({ params }) => {
   const router = useRouter();
+  const dispatch=useDispatch()
   const { userId } = params;
   const handleCardClick = (type) => {
     if (type === "one") {
@@ -34,7 +37,7 @@ const BusinessSetup = ({ params }) => {
           height={"10%"}
           width={"20%"}
         />{" "}
-        <Button type="link" size="large" className="text-xl">
+        <Button type="link" size="large" className="text-xl" onClick={()=>dispatch(logout())}>
           Logout
         </Button>
       </Flex>

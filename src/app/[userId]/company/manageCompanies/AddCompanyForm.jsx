@@ -19,6 +19,7 @@ import {
   DatePicker,
   Form,
   Input,
+  InputNumber,
   Modal,
   notification,
   Row,
@@ -29,7 +30,7 @@ import { useRouter } from "next/navigation";
 import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-const AddNEditCompanyForm = ({ edit, userId, editData }) => {
+const AddNEditCompanyForm = ({ edit, userId, editData, subscriberId }) => {
   const dispatch = useDispatch();
   const router = useRouter();
   const [form] = Form.useForm();
@@ -51,6 +52,13 @@ const AddNEditCompanyForm = ({ edit, userId, editData }) => {
   );
   const [openModal, setOpenModal] = useState(false);
   const [editCompanyId, setEditCompanyId] = useState(null);
+  const [api, contextHolder] = notification.useNotification();
+
+  const openNotification = (resp) => {
+    api[resp.status]({
+      message: resp.message,
+    });
+  };
 
   const handleEdit = useCallback(() => {
     if (editData) {
@@ -98,7 +106,8 @@ const AddNEditCompanyForm = ({ edit, userId, editData }) => {
         )
           .then((resp) => {
             if (resp.meta.requestStatus === "fulfilled") {
-              notification.success({
+              openNotification({
+                status: "success",
                 message: "Company updated successfully !.",
               });
               router.refresh();
@@ -106,36 +115,56 @@ const AddNEditCompanyForm = ({ edit, userId, editData }) => {
               setEditCompanyId(null);
               form.resetFields();
             } else {
-              notification.error({ message: "Something went wrong !." });
+              openNotification({
+                status: "error",
+                message: "Something went wrong !.",
+              });
             }
           })
           .catch(() =>
-            notification.error({ message: "Something went wrong !." })
+            openNotification({
+              status: "error",
+              message: "Something went wrong !.",
+            })
           );
       } else {
-        dispatch(createCompany({ ...values, userId, subscriptionId: 1 }))
+        dispatch(
+          createCompany({
+            ...values,
+            userId,
+            subscriberId: subscriberId,
+          })
+        )
           .then((resp) => {
             if (resp.meta.requestStatus === "fulfilled") {
-              notification.success({
+              openNotification({
+                status: "success",
                 message: "Company added successfully !.",
               });
               router.refresh();
               setOpenModal(false);
               form.resetFields();
             } else {
-              notification.error({ message: "Something went wrong !." });
+              openNotification({
+                status: "error",
+                message: "Something went wrong !.",
+              });
             }
           })
           .catch(() =>
-            notification.error({ message: "Something went wrong !." })
+            openNotification({
+              status: "error",
+              message: "Something went wrong !.",
+            })
           );
       }
     },
-    [dispatch, form,editCompanyId,router,userId]
+    [dispatch, form, editCompanyId, router, userId]
   );
 
   return (
     <>
+      {contextHolder}
       {edit ? (
         <Button
           type="text"
@@ -238,7 +267,7 @@ const AddNEditCompanyForm = ({ edit, userId, editData }) => {
             <Col span={11}>
               <Form.Item
                 label="Company CIN "
-                name="companyCINNumber"
+                name="cinNumber"
                 // rules={[
                 //   { required: true, message: "please enter company CIN number" },
                 // ]}
@@ -251,7 +280,7 @@ const AddNEditCompanyForm = ({ edit, userId, editData }) => {
             <Col span={11}>
               <Form.Item
                 label="Company pan number"
-                name="companyPanNumber"
+                name="panNumber"
                 // rules={[
                 //   { required: true, message: "please enter company pan number" },
                 // ]}
@@ -263,7 +292,7 @@ const AddNEditCompanyForm = ({ edit, userId, editData }) => {
             <Col span={11}>
               <Form.Item
                 label="Company registration date"
-                name="companyRegistrationDate"
+                name="registrationDate"
                 // rules={[
                 //   { required: true, message: "please enter registration date" },
                 // ]}
@@ -276,7 +305,7 @@ const AddNEditCompanyForm = ({ edit, userId, editData }) => {
             <Col span={11}>
               <Form.Item
                 label="Company registration number"
-                name="companyRegistrationNumber"
+                name="registrationNumber"
                 // rules={[
                 //   { required: true, message: "please enter registration" },
                 // ]}
@@ -288,12 +317,12 @@ const AddNEditCompanyForm = ({ edit, userId, editData }) => {
             <Col span={11}>
               <Form.Item
                 label="Company turn over"
-                name="companyTurnover"
+                name="turnover"
                 // rules={[
                 //   { required: true, message: "please enter company turnover" },
                 // ]}
               >
-                <Input />
+                <InputNumber className="w-full" />
               </Form.Item>
             </Col>
           </Row>
@@ -362,7 +391,7 @@ const AddNEditCompanyForm = ({ edit, userId, editData }) => {
           <Row>
             <Col span={11}>
               <Form.Item
-                label="please select subindustry"
+                label="Select subindustry"
                 name="industrySubCategoryId"
                 // rules={[
                 //   { required: true, message: "please select subindustry" },
@@ -461,7 +490,7 @@ const AddNEditCompanyForm = ({ edit, userId, editData }) => {
             <Col span={11}>
               <Form.Item
                 label="State"
-                name="companyStateId"
+                name="stateId"
                 // rules={[
                 //   { required: true, message: "please select state" },
                 // ]}
@@ -485,7 +514,7 @@ const AddNEditCompanyForm = ({ edit, userId, editData }) => {
             <Col span={11}>
               <Form.Item
                 label="City"
-                name="companyCityId"
+                name="cityId"
                 // rules={[
                 //   { required: true, message: "please select city" },
                 // ]}
@@ -521,7 +550,7 @@ const AddNEditCompanyForm = ({ edit, userId, editData }) => {
             <Col span={11}>
               <Form.Item
                 label="Company address"
-                name="companyAddress"
+                name="operationUnitAddress"
                 // rules={[
                 //   { required: true, message: "please enter company address" },
                 // ]}
@@ -531,19 +560,7 @@ const AddNEditCompanyForm = ({ edit, userId, editData }) => {
             </Col>
           </Row>
           <Row>
-            <Col span={11}>
-              <Form.Item
-                label="Operating unit address"
-                name="operationUnitAddress"
-                // rules={[
-                //   { required: true, message: "please enter operating unit address" },
-                // ]}
-              >
-                <Input.TextArea />
-              </Form.Item>
-            </Col>
-            <Col span={2} />
-            <Col span={11}>
+            <Col span={24}>
               <Form.Item
                 label="Company remarks"
                 name="companyRemarks"

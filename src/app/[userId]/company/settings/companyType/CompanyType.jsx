@@ -22,7 +22,7 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 const { Text, Title } = Typography;
 const CommonTable = dynamic(() => import("@/app/common/CommonTable"), {
-  loading: <Loading />,
+  loading: () => <Loading />,
 });
 
 const CompanyType = ({ data, userId }) => {
@@ -31,20 +31,36 @@ const CompanyType = ({ data, userId }) => {
   const [form] = Form.useForm();
   const [openModal, setOpenModal] = useState(false);
   const [editData, setEditData] = useState(null);
+  const [api, contextHolder] = notification.useNotification();
+
+  const openNotification = (resp) => {
+    api[resp.status]({
+      message: resp.message,
+    });
+  };
 
   const handleDelete = (id) => {
     dispatch(deleteCompanyType(id))
       .then((resp) => {
         if (resp.meta.requestStatus === "fulfilled") {
-          notification.success({
+          openNotification({
+            status: "success",
             message: "Company type deleted successfully !.",
           });
           router.refresh();
         } else {
-          notification.error({ message: "Something went wrong !." });
+          openNotification({
+            status: "error",
+            message: "Something went wrong !.",
+          });
         }
       })
-      .catch(() => notification.error({ message: "Something went wrong !." }));
+      .catch(() =>
+        openNotification({
+          status: "error",
+          message: "Something went wrong !.",
+        })
+      );
   };
 
   const handleEdit = (data) => {
@@ -100,37 +116,56 @@ const CompanyType = ({ data, userId }) => {
       )
         .then((resp) => {
           if (resp.meta.requestStatus === "fulfilled") {
-            notification.success({
+            openNotification({
+              status: "success",
               message: "Company type updated successfully!",
             });
             setOpenModal(false);
             form.resetFields();
             router.refresh();
           } else {
-            notification.error({ message: "Something went wrong!" });
+            openNotification({
+              status: "error",
+              message: "Something went wrong !.",
+            });
           }
         })
-        .catch(() => notification.error({ message: "Something went wrong!" }));
+        .catch(() =>
+          openNotification({
+            status: "error",
+            message: "Something went wrong !.",
+          })
+        );
     } else {
       dispatch(createCompanyType({ ...values, userId }))
         .then((resp) => {
           if (resp.meta.requestStatus === "fulfilled") {
-            notification.success({
-              message: "Company type added successfully!",
+            openNotification({
+              status: "success",
+              message: "Company type added successfully !.",
             });
             setOpenModal(false);
             form.resetFields();
             router.refresh();
           } else {
-            notification.error({ message: "Something went wrong!" });
+            openNotification({
+              status: "error",
+              message: "Something went wrong !.",
+            });
           }
         })
-        .catch(() => notification.error({ message: "Something went wrong!" }));
+        .catch(() =>
+          openNotification({
+            status: "error",
+            message: "Something went wrong !.",
+          })
+        );
     }
   };
 
   return (
     <>
+      {contextHolder}
       <Flex justify="space-between" align="center" className="mb-2">
         <Title level={4}>Company type list</Title>
         <Button

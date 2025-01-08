@@ -27,6 +27,13 @@ const BusinessActivity = ({ data, industryId, subIndustryId, userId }) => {
   const [form] = Form.useForm();
   const [openModal, setOpenModal] = useState(false);
   const [editData, setEditData] = useState(null);
+  const [api, contextHolder] = notification.useNotification();
+
+  const openNotification = (resp) => {
+    api[resp.status]({
+      message: resp.message,
+    });
+  };
 
   const handleEdit = (data) => {
     form.setFieldsValue({
@@ -40,15 +47,24 @@ const BusinessActivity = ({ data, industryId, subIndustryId, userId }) => {
     dispatch(deleteBusinessActivity(data?.id))
       .then((resp) => {
         if (resp.meta.requestStatus === "fulfilled") {
-          notification.success({
+          openNotification({
+            status: "success",
             message: "Business activity deleted successfully !.",
           });
           router.refresh();
         } else {
-          notification.error({ message: "Something went wrong !." });
+          openNotification({
+            status: "error",
+            message: "Something went wrong !.",
+          });
         }
       })
-      .catch(() => notification.error({ message: "Something went wrong !." }));
+      .catch(() =>
+        openNotification({
+          status: "error",
+          message: "Something went wrong !.",
+        })
+      );
   };
 
   const columns = [
@@ -95,18 +111,27 @@ const BusinessActivity = ({ data, industryId, subIndustryId, userId }) => {
       )
         .then((resp) => {
           if (resp.meta.requestStatus === "fulfilled") {
-            notification.success({
-              message: "Industry updated successfully !",
+            openNotification({
+              status: "success",
+              message: "Industry updated successfully !.",
             });
             setOpenModal(false);
             form.resetFields();
             router.refresh();
             setEditData(null);
           } else {
-            notification.error({ message: "Something went wrong !" });
+            openNotification({
+              status: "error",
+              message: "Something went wrong !.",
+            });
           }
         })
-        .catch(() => notification.error({ message: "Something went wrong !" }));
+        .catch(() =>
+          openNotification({
+            status: "error",
+            message: "Something went wrong !.",
+          })
+        );
     } else {
       dispatch(
         createBusinessActivity({
@@ -117,21 +142,31 @@ const BusinessActivity = ({ data, industryId, subIndustryId, userId }) => {
       )
         .then((resp) => {
           if (resp.meta.requestStatus === "fulfilled") {
-            notification.success({
-              message: "Industry created successfully !",
+            openNotification({
+              status: "success",
+              message: "Industry created successfully !.",
             });
             setOpenModal(false);
             form.resetFields();
             router.refresh();
           } else {
-            notification.error({ message: "Something went wrong !" });
+            openNotification({
+              status: "error",
+              message: "Something went wrong !.",
+            });
           }
         })
-        .catch(() => notification.error({ message: "Something went wrong !" }));
+        .catch(() =>
+          openNotification({
+            status: "error",
+            message: "Something went wrong !.",
+          })
+        );
     }
   };
   return (
     <>
+      {contextHolder}
       <Flex justify="space-between" align="center" className="mb-2">
         <Title level={4}>Business activity list</Title>
         <Button

@@ -13,7 +13,7 @@ export const getAllCompanies = createAsyncThunk(
   "getAllCompanies",
   async ({ userId, subscriptionId }) => {
     const response = await complianceApi.get(
-      `/api/compliance/company/fetch-all-companies?userId=${userId}&subscriptionId=${subscriptionId}`
+      `/api/compliance/company/fetch-all-companies?userId=${userId}&subscriberId=${subscriptionId}`
     );
     return response.data;
   }
@@ -36,9 +36,9 @@ export const deleteCompanyById = createAsyncThunk(
 
 export const fetchAllGstDetails = createAsyncThunk(
   "fetchAllGstDetails",
-  async ({ companyId, userId, subscriptionId }) => {
+  async ({ companyId, userId, subscriberId  }) => {
     const response = await complianceApi.get(
-      `/api/compliance/gst-details/fetch-company-gstDetails?companyId=${companyId}&userId=${userId}&subscriptionId=${subscriptionId}`
+      `/api/compliance/gst-details/fetch-company-gstDetails?companyId=${companyId}&userId=${userId}&subscriberId=${subscriberId}`
     );
     return response.data;
   }
