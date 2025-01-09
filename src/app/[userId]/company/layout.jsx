@@ -1,6 +1,15 @@
 "use client";
-import React from "react";
-import { Breadcrumb, Button, Flex, Layout, Menu, theme } from "antd";
+import React, { useEffect, useState } from "react";
+import {
+  Avatar,
+  Breadcrumb,
+  Button,
+  Flex,
+  Layout,
+  Menu,
+  Popover,
+  theme,
+} from "antd";
 import Image from "next/image";
 import logo from "../../../assets/lowzoom.png";
 import Link from "next/link";
@@ -17,9 +26,16 @@ const CompanyLayout = ({ children }) => {
   } = theme.useToken();
 
   const params = useParams();
-  const dispatch=useDispatch()
-  const userId = params.userId; 
-  
+  const dispatch = useDispatch();
+  const userId = params.userId;
+  const [userDetail, setUserDetail] = useState({});
+
+  useEffect(() => {
+    const userDetail = localStorage?.getItem("userDetails");
+    const value = JSON?.parse(userDetail);
+    setUserDetail(value);
+  }, []);
+
   const items = [
     {
       key: "dashboard",
@@ -56,7 +72,9 @@ const CompanyLayout = ({ children }) => {
           width={ICON_WIDTH}
         />
       ),
-      label: <Link href={`/${userId}/company/businessUnit`}>Set Compliance map</Link>,
+      label: (
+        <Link href={`/${userId}/company/businessUnit`}>Set Compliance map</Link>
+      ),
     },
     {
       key: "manageCompliances",
@@ -220,10 +238,32 @@ const CompanyLayout = ({ children }) => {
                 margin: "16px 0",
               }}
             />
-            <Button type="text" size="large" onClick={()=>dispatch(logout())}>
-              <Icon icon="fluent:sign-out-24-regular" width="22" height="22" />{" "}
-              Logout
-            </Button>
+            <Popover
+              placement='bottomRight'
+              trigger={"click"}
+              content={
+                <Flex>
+                  <Button type="text" onClick={() => dispatch(logout())}>
+                    <Icon
+                      icon="fluent:sign-out-24-regular"
+                      width="22"
+                      height="22"
+                    />{" "}
+                    Logout
+                  </Button>
+                </Flex>
+              }
+            >
+              <Button
+                type="text"
+                size="large"
+                variant="filled"
+                className="text-lg [font-weight:500]"
+              >
+                <Avatar>{userDetail?.username?.charAt(0)}</Avatar>{" "}
+                {userDetail?.username}
+              </Button>
+            </Popover>
           </Flex>
           <Content
             style={{

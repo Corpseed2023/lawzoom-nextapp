@@ -3,7 +3,6 @@ import store from "@/app/redux-toolkit/store";
 import { getComplianceByUnitId } from "@/app/redux-toolkit/slices/complianceSlice";
 import dynamic from "next/dynamic";
 import Loading from "@/app/loading";
-import { SUBSCRIPTION_ID } from "@/app/constants";
 import { userSubscriberId } from "@/app/commonConstants";
 const Compliances = dynamic(() => import("./Compliances"), {
   loading: () => <Loading />,
@@ -19,7 +18,6 @@ const fetchComplianceByCompanyUnitId = async (
     const response = await store.dispatch(
       getComplianceByUnitId({ businessUnitId, userId, subscriberId })
     );
-    console.log('kasjdhcjkasbhckjascjskjdsh============================>>>>>>>>>>',response,businessUnitId,subscriberId,userId)
     data = response.payload;
   } catch (err) {
     console.log("compliande unit erroir", err);
@@ -36,8 +34,6 @@ const CompliancesPage = async ({ params }) => {
     userId,
     subscriberId
   );
-
-  console.log("jsdghckjsdvckjsv =====================>", data, businessUnitId);
 
   return (
     <>

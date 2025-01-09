@@ -154,14 +154,14 @@ const Employees = ({ data, userId,subscriberId }) => {
             router.refresh();
           } else {
             openNotification({
-              status: "success",
+              status: "error",
               message: "Something went wrong !.",
             });
           }
         })
         .catch(() =>
           openNotification({
-            status: "success",
+            status: "error",
             message: "Something went wrong !.",
           })
         );
@@ -191,14 +191,14 @@ const Employees = ({ data, userId,subscriberId }) => {
                   router.refresh();
                 } else {
                   openNotification({
-                    status: "success",
+                    status: "error",
                     message: "Something went wrong in compliance !.",
                   });
                 }
               })
               .catch(() =>
                 openNotification({
-                  status: "success",
+                  status: "error",
                   message: "Something went wrong in compliance !.",
                 })
               );
@@ -207,14 +207,14 @@ const Employees = ({ data, userId,subscriberId }) => {
             router.refresh();
           } else {
             openNotification({
-              status: "success",
+              status: "error",
               message: "Something went wrong !.",
             });
           }
         })
         .catch(() =>
           openNotification({
-            status: "success",
+            status: "error",
             message: "Something went wrong !.",
           })
         );
