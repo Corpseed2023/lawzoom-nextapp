@@ -1,6 +1,5 @@
 "use client";
 import { selectFilter } from "@/app/commons";
-import { SUBSCRIPTION_ID } from "@/app/constants";
 import Loading from "@/app/loading";
 import { getAllRoles } from "@/app/redux-toolkit/slices/commonSlice";
 import {
@@ -32,9 +31,10 @@ import { useDispatch, useSelector } from "react-redux";
 const { Title } = Typography;
 const CommonTable = dynamic(() => import("@/app/common/CommonTable"), {
   loading: () => <Loading />,
+  ssr:false
 });
 
-const Employees = ({ data, userId }) => {
+const Employees = ({ data, userId,subscriberId }) => {
   const [form] = Form.useForm();
   const router = useRouter();
   const dispatch = useDispatch();
@@ -102,10 +102,12 @@ const Employees = ({ data, userId }) => {
       dataIndex: "id",
       title: "Id",
       width: 80,
+      fixed:'left'
     },
     {
       dataIndex: "name",
       title: "Employee name",
+      fixed:'left'
     },
     {
       dataIndex: "memberMail",
@@ -165,7 +167,7 @@ const Employees = ({ data, userId }) => {
         );
     } else {
       dispatch(
-        addEmployee({ ...values, userId, subscribedId: SUBSCRIPTION_ID })
+        addEmployee({ ...values, userId, subscribedId: subscriberId })
       )
         .then((resp) => {
           if (resp.meta.requestStatus === "fulfilled") {

@@ -7,23 +7,34 @@ import {
   Flex,
   Form,
   Input,
-  Layout,
   notification,
   Row,
   Typography,
 } from "antd";
 import logo from "../assets/lowZoom.png";
-import Link from "next/link";
-import CommonPopOver from "./common/CommonPopOver";
-import ServiceContent from "./common/ServiceContent";
-import PartnersContent from "./common/PartnersContent";
-import CompanyContent from "./common/CompanyContent";
 import { Icon } from "@iconify/react";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { createEnquiry } from "./redux-toolkit/slices/commonSlice";
-import Card from "antd/es/card/Card";
+import dynamic from "next/dynamic";
+import Loading from "./loading";
 const { Text } = Typography;
+const CommonPopOver = dynamic(() => import("./common/CommonPopOver"), {
+  loading: () => <Loading />,
+  ssr: false,
+});
+const ServiceContent = dynamic(() => import("./common/ServiceContent"), {
+  loading: () => <Loading />,
+  ssr: false,
+});
+const PartnersContent = dynamic(() => import("./common/PartnersContent"), {
+  loading: () => <Loading />,
+  ssr: false,
+});
+const CompanyContent = dynamic(() => import("./common/CompanyContent"), {
+  loading: () => <Loading />,
+  ssr: false,
+});
 
 const Home = () => {
   const router = useRouter();
@@ -32,6 +43,41 @@ const Home = () => {
   const [serviceOpenChange, setServiceOpenChange] = useState(false);
   const [partnerOpenChange, setPartnerOpenChange] = useState(false);
   const [companyOpenChange, setCompanyOpenChange] = useState(false);
+
+  const logos = [
+    "https://www.designrush.com/uploads/users/customer-12/image_1532370547_K2BS8iYkjQHBA8JhHKuArTd5ptOTR3DzNlFvIaft.png",
+    "https://www.designrush.com/uploads/users/customer-12/image_1532370530_PUupRl8PHyZvMCs2KRMuskJdYeyqW3IeacT72WYE.png",
+    "https://www.designrush.com/uploads/users/customer-12/image_1532370578_0mRzJtSfsuLaBrBZZwcyUdSRtyvmHmndLQ2iFIZO.png",
+    "https://www.designrush.com/uploads/users/customer-12/image_1532370597_fxvyDE7rRXPffHwfK04VsV3Fxr8YGOlSNmmfQ7mH.png ",
+    "https://www.designrush.com/uploads/users/customer-12/image_1532370621_l2SsCMBQ7M5SXBm7KabSIx0u1ZTcMU9tDCRyEtpW.jpeg",
+    "https://www.designrush.com/uploads/users/customer-2/image_1505931862_e2896044118462ae451d87076f16ce6d.jpeg",
+    "https://www.designrush.com/uploads/users/customer-2/image_1505931872_4231f9d8068ec8e9188a926eb42885e3.png",
+    "https://www.designrush.com/uploads/users/customer-2/image_1505931969_932f312aeb5789608e890a8a5ba07c7f.jpeg",
+    "https://www.designrush.com/uploads/users/customer-12/image_1532370547_K2BS8iYkjQHBA8JhHKuArTd5ptOTR3DzNlFvIaft.png",
+    "https://www.designrush.com/uploads/users/customer-12/image_1532370530_PUupRl8PHyZvMCs2KRMuskJdYeyqW3IeacT72WYE.png",
+    "https://www.designrush.com/uploads/users/customer-12/image_1532370578_0mRzJtSfsuLaBrBZZwcyUdSRtyvmHmndLQ2iFIZO.png",
+    "https://www.designrush.com/uploads/users/customer-12/image_1532370597_fxvyDE7rRXPffHwfK04VsV3Fxr8YGOlSNmmfQ7mH.png ",
+    "https://www.designrush.com/uploads/users/customer-12/image_1532370621_l2SsCMBQ7M5SXBm7KabSIx0u1ZTcMU9tDCRyEtpW.jpeg",
+    "https://www.designrush.com/uploads/users/customer-2/image_1505931862_e2896044118462ae451d87076f16ce6d.jpeg",
+    "https://www.designrush.com/uploads/users/customer-2/image_1505931872_4231f9d8068ec8e9188a926eb42885e3.png",
+    "https://www.designrush.com/uploads/users/customer-2/image_1505931969_932f312aeb5789608e890a8a5ba07c7f.jpeg",
+    "https://www.designrush.com/uploads/users/customer-12/image_1532370547_K2BS8iYkjQHBA8JhHKuArTd5ptOTR3DzNlFvIaft.png",
+    "https://www.designrush.com/uploads/users/customer-12/image_1532370530_PUupRl8PHyZvMCs2KRMuskJdYeyqW3IeacT72WYE.png",
+    "https://www.designrush.com/uploads/users/customer-12/image_1532370578_0mRzJtSfsuLaBrBZZwcyUdSRtyvmHmndLQ2iFIZO.png",
+    "https://www.designrush.com/uploads/users/customer-12/image_1532370597_fxvyDE7rRXPffHwfK04VsV3Fxr8YGOlSNmmfQ7mH.png ",
+    "https://www.designrush.com/uploads/users/customer-12/image_1532370621_l2SsCMBQ7M5SXBm7KabSIx0u1ZTcMU9tDCRyEtpW.jpeg",
+    "https://www.designrush.com/uploads/users/customer-2/image_1505931862_e2896044118462ae451d87076f16ce6d.jpeg",
+    "https://www.designrush.com/uploads/users/customer-2/image_1505931872_4231f9d8068ec8e9188a926eb42885e3.png",
+    "https://www.designrush.com/uploads/users/customer-2/image_1505931969_932f312aeb5789608e890a8a5ba07c7f.jpeg",
+    "https://www.designrush.com/uploads/users/customer-12/image_1532370547_K2BS8iYkjQHBA8JhHKuArTd5ptOTR3DzNlFvIaft.png",
+    "https://www.designrush.com/uploads/users/customer-12/image_1532370530_PUupRl8PHyZvMCs2KRMuskJdYeyqW3IeacT72WYE.png",
+    "https://www.designrush.com/uploads/users/customer-12/image_1532370578_0mRzJtSfsuLaBrBZZwcyUdSRtyvmHmndLQ2iFIZO.png",
+    "https://www.designrush.com/uploads/users/customer-12/image_1532370597_fxvyDE7rRXPffHwfK04VsV3Fxr8YGOlSNmmfQ7mH.png ",
+    "https://www.designrush.com/uploads/users/customer-12/image_1532370621_l2SsCMBQ7M5SXBm7KabSIx0u1ZTcMU9tDCRyEtpW.jpeg",
+    "https://www.designrush.com/uploads/users/customer-2/image_1505931862_e2896044118462ae451d87076f16ce6d.jpeg",
+    "https://www.designrush.com/uploads/users/customer-2/image_1505931872_4231f9d8068ec8e9188a926eb42885e3.png",
+    "https://www.designrush.com/uploads/users/customer-2/image_1505931969_932f312aeb5789608e890a8a5ba07c7f.jpeg",
+  ];
 
   const handleFinish = (values) => {
     dispatch(createEnquiry(values))
@@ -48,7 +94,7 @@ const Home = () => {
 
   return (
     <>
-      <div className="!sticky top-0 z-[1] w-full flex items-center bg-white px-28 py-6">
+      <div className="!sticky !inset-0 top-0 z-[100] w-full flex items-center bg-white px-28 py-6">
         <Flex justify="space-between" className="w-full">
           <Image
             src={logo}
@@ -119,22 +165,18 @@ const Home = () => {
         </Flex>
       </div>
       <div>
-        <Flex
-          vertical
-          gap={48}
-          className="my-1 bg-white h-full overflow-auto"
-        >
+        <Flex vertical gap={48} className="my-1 bg-white h-full overflow-auto">
           <Row className="p-4">
             <Col span={1} />
-            <Col span={10}>
+            <Col span={13}>
               <Flex vertical gap={24}>
                 <Flex vertical gap={8}>
-                  <h1 className="!text-6xl !font-bold">Trade Finance & </h1>
-                  <h1 className="!text-6xl !font-bold">Working Capital</h1>
-                  <h1 className="!text-6xl !font-bold">Solutions</h1>
+                  <h1 className="!text-8xl !font-bold ">Trade Finance & </h1>
+                  <h1 className="!text-8xl !font-bold ">Working Capital</h1>
+                  <h1 className="!text-8xl !font-bold ">Solutions</h1>
                 </Flex>
                 <Flex>
-                  <p className="!text-lg">
+                  <p className="!text-3xl tracking-normal font-gilroy ">
                     Empower trade and enhance working capital needs offering
                     instant cash without the need for collateral. We go beyond
                     financial services – we embody your company's enduring
@@ -143,9 +185,8 @@ const Home = () => {
                 </Flex>
               </Flex>
             </Col>
-            <Col span={2} />
             <Col
-              span={10}
+              span={9}
               style={{ display: "flex", justifyContent: "flex-end" }}
             >
               <Flex className="enquiry-form-container" vertical align="center">
@@ -220,6 +261,22 @@ const Home = () => {
               </Flex>
             </Col>
             <Col span={1} />
+          </Row>
+          <Row className="w-full">
+            <div className="scroller-container">
+              {/* Scrolling Content */}
+              <div className="scroller">
+                {/* Render Logos Twice for Seamless Loop */}
+                {logos.concat(logos).map((logo, index) => (
+                  <img
+                    key={index}
+                    src={logo}
+                    alt={`Logo ${index}`}
+                    className="logo"
+                  />
+                ))}
+              </div>
+            </div>
           </Row>
           <Row className="w-full bg-custom-blue p-8 flex flex-col items-center h-auto gap-24">
             <h1 className="text-7xl text-white">Key Offerings</h1>

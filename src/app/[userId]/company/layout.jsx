@@ -77,46 +77,46 @@ const CompanyLayout = ({ children }) => {
             </Link>
           ),
         },
-        {
-          key: "progress",
-          label: (
-            <Link href={`/${userId}/company/compliances/progress`}>
-              Progress
-            </Link>
-          ),
-        },
-        {
-          key: "overDue",
-          label: (
-            <Link href={`/${userId}/company/compliances/overDue`}>
-              Over due
-            </Link>
-          ),
-        },
-        {
-          key: "notStarted",
-          label: (
-            <Link href={`/${userId}/company/compliances/notStarted`}>
-              Not started
-            </Link>
-          ),
-        },
-        {
-          key: "critical",
-          label: (
-            <Link href={`/${userId}/company/compliances/critical`}>
-              Critical
-            </Link>
-          ),
-        },
-        {
-          key: "completed",
-          label: (
-            <Link href={`/${userId}/company/compliances/completed`}>
-              Completed
-            </Link>
-          ),
-        },
+        // {
+        //   key: "progress",
+        //   label: (
+        //     <Link href={`/${userId}/company/compliances/progress`}>
+        //       Progress
+        //     </Link>
+        //   ),
+        // },
+        // {
+        //   key: "overDue",
+        //   label: (
+        //     <Link href={`/${userId}/company/compliances/overDue`}>
+        //       Over due
+        //     </Link>
+        //   ),
+        // },
+        // {
+        //   key: "notStarted",
+        //   label: (
+        //     <Link href={`/${userId}/company/compliances/notStarted`}>
+        //       Not started
+        //     </Link>
+        //   ),
+        // },
+        // {
+        //   key: "critical",
+        //   label: (
+        //     <Link href={`/${userId}/company/compliances/critical`}>
+        //       Critical
+        //     </Link>
+        //   ),
+        // },
+        // {
+        //   key: "completed",
+        //   label: (
+        //     <Link href={`/${userId}/company/compliances/completed`}>
+        //       Completed
+        //     </Link>
+        //   ),
+        // },
       ],
     },
     {

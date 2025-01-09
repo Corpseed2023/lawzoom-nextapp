@@ -4,7 +4,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 export const getAllDesiginations = createAsyncThunk(
   "getAllDesiginations",
   async (id) => {
-    const response = await api.get(
+    const response = await complianceApi.get(
       `/api/compliance/designation/list?departmentId=${id}`
     );
     return response.data;
@@ -258,7 +258,7 @@ export const createDepartment = createAsyncThunk(
 export const getAllDepartmentList = createAsyncThunk(
   "getAllDepartment",
   async () => {
-    const response = await api.get(`/api/compliance/department/list`);
+    const response = await complianceApi.get(`/api/compliance/department/list`);
     return response.data;
   }
 );

@@ -57,6 +57,7 @@ export const getComplianceById=createAsyncThunk('getComplianceById',async(id)=>{
 })
 
 export const getAllTask=createAsyncThunk('getAllTask',async(id)=>{
+  console.log('MILESTONEID=============================>,id',id)
   const response=await complianceApi.get(`/api/compliance/tasks/fetch?milestoneId=${id}`)
   return response.data
 })

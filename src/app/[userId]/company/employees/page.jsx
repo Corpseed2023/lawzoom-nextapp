@@ -1,9 +1,9 @@
 import React from "react";
 import store from "@/app/redux-toolkit/store";
 import { getAllEmployeesByUserId } from "@/app/redux-toolkit/slices/employeesSlice";
-import { SUBSCRIPTION_ID } from "@/app/constants";
 import dynamic from "next/dynamic";
 import Loading from "@/app/loading";
+import { userSubscriberId } from "@/app/commonConstants";
 const Employees = dynamic(() => import("./Employees"), {
   loading: () => <Loading />,
 });
@@ -23,11 +23,12 @@ const fetchAllEmployees = async (userId, subscriberId) => {
 
 const EmployeesPage = async ({ params }) => {
   const { userId } = await params;
-  const data = await fetchAllEmployees(userId, SUBSCRIPTION_ID);
+  const subscriberId=await userSubscriberId()
+  const data = await fetchAllEmployees(userId,subscriberId);
   console.log('sajdkfbaskjbj',data)
   return (
     <>
-      <Employees data={data} userId={userId} />
+      <Employees data={data} userId={userId} subscriberId={subscriberId} />
     </>
   );
 };

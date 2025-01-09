@@ -21,14 +21,13 @@ const { Text, Title } = Typography;
 const BasicDetails=dynamic(()=>import('./BasicDetails'),{loading:()=><Loading/>})
 
 const AddMilestone = ({
-  formData,
-  setFormData,
   businessUnitId,
   complianceId,
   setOpenModal,
   userId,
   complianceData,
-  subscriberId
+  subscriberId,
+  userList
 }) => {
 
 
@@ -38,13 +37,12 @@ const AddMilestone = ({
       label: "Basic details",
       children: (
         <BasicDetails
-          formData={formData}
-          setFormData={setFormData}
           businessUnitId={businessUnitId}
           complianceId={complianceId}
           setOpenModal={setOpenModal}
           userId={userId}
           subscriberId={subscriberId}
+          userList={userList}
         />
       ),
     },

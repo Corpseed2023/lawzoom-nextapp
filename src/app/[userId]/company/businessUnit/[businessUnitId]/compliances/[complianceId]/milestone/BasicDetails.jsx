@@ -1,5 +1,7 @@
 "use client";
+import { selectFilter } from "@/app/commons";
 import { SUBSCRIPTION_ID } from "@/app/constants";
+import { getAllStatus } from "@/app/redux-toolkit/slices/commonSlice";
 import { createMileStone } from "@/app/redux-toolkit/slices/complianceSlice";
 import { Icon } from "@iconify/react";
 import {
@@ -17,21 +19,22 @@ import {
   Typography,
 } from "antd";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 const { Title, Text } = Typography;
 
 const BasicDetails = ({
-  setFormData,
-  formData,
   businessUnitId,
   complianceId,
   setOpenModal,
   userId,
+  subscriberId,
+  userList
 }) => {
   const dispatch = useDispatch();
   const router = useRouter();
   const [form] = Form.useForm();
+  const statusList = useSelector((state) => state.common.statusList);
   const [api, contextHolder] = notification.useNotification();
 
   const openNotification = (resp) => {
@@ -39,6 +42,10 @@ const BasicDetails = ({
       message: resp.message,
     });
   };
+
+  useEffect(() => {
+    dispatch(getAllStatus());
+  }, [dispatch]);
 
   const handleFinish = (value) => {
     dispatch(
@@ -107,12 +114,34 @@ const BasicDetails = ({
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item label="Reporter" name="reporterId">
-                <Input />
+                <Select
+                  showSearch
+                  options={
+                    userList?.length > 0
+                      ? userList?.map((item) => ({
+                          label: item?.name,
+                          value: item?.id,
+                        }))
+                      : []
+                  }
+                  filterOption={selectFilter}
+                />
               </Form.Item>
             </Col>
             <Col span={12}>
               <Form.Item label="Assigned to" name="assignedTo">
-                <Input />
+                <Select
+                  showSearch
+                  options={
+                    userList?.length > 0
+                      ? userList?.map((item) => ({
+                          label: item?.name,
+                          value: item?.id,
+                        }))
+                      : []
+                  }
+                  filterOption={selectFilter}
+                />
               </Form.Item>
             </Col>
           </Row>
@@ -126,9 +155,9 @@ const BasicDetails = ({
               <Form.Item label="Criticality" name="criticality">
                 <Select
                   options={[
-                    { label: "Low", value: "Low" },
-                    { label: "Medium", value: "Medium" },
-                    { label: "High", value: "High" },
+                    { label: "Low", value: 1 },
+                    { label: "Medium", value: 2 },
+                    { label: "High", value: 3 },
                   ]}
                 />
               </Form.Item>
@@ -144,13 +173,15 @@ const BasicDetails = ({
               <Form.Item label="Status" name="status">
                 <Select
                   showSearch
-                  options={[
-                    { label: "Initiated", value: "Initiated" },
-                    { label: "Hold", value: "Hold" },
-                    { label: "Progress", value: "Progress" },
-                    { label: "Rejected", value: "Rejected" },
-                    { label: "Completed", value: "Completed" },
-                  ]}
+                  options={
+                    statusList?.length > 0
+                      ? statusList?.map((item) => ({
+                          label: item?.name,
+                          value: item?.id,
+                        }))
+                      : []
+                  }
+                  filterOption={selectFilter}
                 />
               </Form.Item>
             </Col>

@@ -8,6 +8,7 @@ import { SUBSCRIPTION_ID } from "@/app/constants";
 import dynamic from "next/dynamic";
 import Loading from "@/app/loading";
 import { userSubscriberId } from "@/app/commonConstants";
+import { getAllEmployeesByUserId } from "@/app/redux-toolkit/slices/employeesSlice";
 const Milestone = dynamic(() => import("./Milestone"), {
   loading: () => <Loading />,
 });
@@ -43,6 +44,20 @@ const getComplianceDataById = async (id) => {
   return data;
 };
 
+const getTeamMemberList = async (userId, subscriberId) => {
+  let data = [];
+  try {
+    const response = await store.dispatch(
+      getAllEmployeesByUserId({ userId, subscriberId })
+    );
+    data = response.payload;
+  } catch (err) {
+    console.log("TEAM MEMBER ERROR", err);
+    data = [];
+  }
+  return data;
+};
+
 const MilestonePage = async ({ params }) => {
   const { businessUnitId, complianceId, userId } = await params;
   const subscriberId= await userSubscriberId()
@@ -52,7 +67,7 @@ const MilestonePage = async ({ params }) => {
     complianceId,
     userId
   );
-
+  const userList = await getTeamMemberList(userId, subscriberId);
   const complianceData = await getComplianceDataById(complianceId);
 
   console.log("Milestone data", complianceData);
@@ -66,6 +81,7 @@ const MilestonePage = async ({ params }) => {
         userId={userId}
         complianceData={complianceData}
         subscriberId={subscriberId}
+        userList={userList}
       />
     </>
   );

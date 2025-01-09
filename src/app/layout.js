@@ -5,7 +5,6 @@ import dynamic from "next/dynamic";
 import Loading from "./loading";
 const Providers = dynamic(() => import("./Providers"), {
   loading: () => <Loading />,
-  // ssr: false,
 });
 
 export const metadata = {

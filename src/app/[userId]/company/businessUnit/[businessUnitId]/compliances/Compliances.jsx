@@ -11,11 +11,12 @@ import {
   notification,
   Radio,
   Row,
+  Select,
   Typography,
 } from "antd";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Icon } from "@iconify/react";
 import Link from "next/link";
 import {
@@ -25,24 +26,50 @@ import {
 import { SUBSCRIPTION_ID } from "@/app/constants";
 import dynamic from "next/dynamic";
 import Loading from "@/app/loading";
+import { getAllStatus } from "@/app/redux-toolkit/slices/commonSlice";
+import { selectFilter } from "@/app/commons";
 const { Text, Title } = Typography;
 const CommonTable = dynamic(() => import("@/app/common/CommonTable"), {
   loading: () => <Loading />,
 });
 
-const Compliances = ({ data, businessUnitId, userId,subscriberId }) => {
+const Compliances = ({ data, businessUnitId, userId, subscriberId }) => {
   const router = useRouter();
   const [form] = Form.useForm();
   const dispatch = useDispatch();
+  const statusList = useSelector((state) => state.common.statusList);
   const [openModal, setOpenModal] = useState(false);
   const [editData, setEditData] = useState(null);
   const [api, contextHolder] = notification.useNotification();
+    const [searchTerm, setSearchTerm] = useState("");
+    const [filteredData, setFilteredData] = useState([]);
+  
+    useEffect(() => {
+      if (data && data?.length > 0) {
+        setFilteredData(data);
+      }
+    }, [data]);
+  
+    const handleSearch = (e) => {
+      const query = e.target.value.toLowerCase()?.trim();
+      setSearchTerm(query);
+      const filtered = data.filter((item) =>
+        Object.values(item).some((value) =>
+          String(value).toLowerCase().includes(query)
+        )
+      );
+      setFilteredData(filtered);
+    };
 
   const openNotification = (resp) => {
     api[resp.status]({
       message: resp.message,
     });
   };
+
+  useEffect(() => {
+    dispatch(getAllStatus());
+  }, [dispatch]);
 
   const columns = [
     {
@@ -68,11 +95,16 @@ const Compliances = ({ data, businessUnitId, userId,subscriberId }) => {
     {
       dataIndex: "certificateType",
       title: "Certificate type",
-      width: 250,
+      width: 200,
     },
     {
-      dataIndex: "duration",
-      title: "Duration",
+      dataIndex: "durationYear",
+      title: "Duration (in year)",
+      width: 150,
+    },
+    {
+      dataIndex: "durationMonth",
+      title: "Duration (in month)",
       width: 150,
     },
     {
@@ -132,6 +164,8 @@ const Compliances = ({ data, businessUnitId, userId,subscriberId }) => {
         <Input
           className="w-1/4"
           placeholder="Search"
+          value={searchTerm}
+          onChange={handleSearch}
           prefix={
             <Icon icon="fluent:search-16-regular" width="16" height="16" />
           }
@@ -143,21 +177,27 @@ const Compliances = ({ data, businessUnitId, userId,subscriberId }) => {
         </Flex>
       </Flex>
       <CommonTable
-        data={data}
+        data={filteredData}
         columns={columns}
         rowKey={(row) => row?.id}
-        scroll={{ y: "65vh", x: 1500 }}
+        scroll={{ y: "65vh", x: 1700 }}
       />
       <Modal
         title={editData ? "Edit compliance" : "Add compliance"}
         open={openModal}
+        centered
         onCancel={() => setOpenModal(false)}
         onClose={() => setOpenModal(false)}
         okText="Submit"
         width={"60%"}
         onOk={() => form.submit()}
       >
-        <Form layout="vertical" form={form} onFinish={handleFinish}>
+        <Form
+          layout="vertical"
+          form={form}
+          onFinish={handleFinish}
+          className="[max-height:80vh] overflow-auto"
+        >
           <Row>
             <Col span={11}>
               <Form.Item
@@ -189,16 +229,19 @@ const Compliances = ({ data, businessUnitId, userId,subscriberId }) => {
           <Row>
             <Col span={11}>
               <Form.Item
-                label="Duration (in months)"
-                name="duration"
+                label="Priority"
+                name="priority"
                 rules={[
-                  {
-                    required: true,
-                    message: "please enter duration in numbers",
-                  },
+                  { required: true, message: "please select the priority" },
                 ]}
               >
-                <InputNumber className="w-full" controls={false} />
+                <Select
+                  options={[
+                    { label: "Low", value: 1 },
+                    { label: "Medium", value: 2 },
+                    { label: "High", value: 3 },
+                  ]}
+                />
               </Form.Item>
             </Col>
             <Col span={2} />
@@ -257,6 +300,84 @@ const Compliances = ({ data, businessUnitId, userId,subscriberId }) => {
                 rules={[{ required: true, message: "please enter due date" }]}
               >
                 <DatePicker className="w-full" />
+              </Form.Item>
+            </Col>
+          </Row>
+          <Row>
+            <Col span={11}>
+              <Form.Item
+                label="Status"
+                name="statusId"
+                rules={[
+                  { required: true, message: "please select the status" },
+                ]}
+              >
+                <Select
+                  showSearch
+                  options={
+                    statusList?.length > 0
+                      ? statusList?.map((item) => ({
+                          label: item?.name,
+                          value: item?.id,
+                        }))
+                      : []
+                  }
+                  filterOption={selectFilter}
+                />
+              </Form.Item>
+            </Col>
+            <Col span={2} />
+            <Col span={11}>
+              <Form.Item
+                label="Work status"
+                name="workStatus"
+                rules={[
+                  { required: true, message: "please select the work status" },
+                ]}
+              >
+                <Select
+                  showSearch
+                  options={
+                    statusList?.length > 0
+                      ? statusList?.map((item) => ({
+                          label: item?.name,
+                          value: item?.id,
+                        }))
+                      : []
+                  }
+                  filterOption={selectFilter}
+                />
+              </Form.Item>
+            </Col>
+          </Row>
+          <Row>
+            <Col span={11}>
+              <Form.Item
+                label="Duration (years)"
+                name="durationYear"
+                rules={[
+                  {
+                    required: true,
+                    message: "please enter duration in numbers",
+                  },
+                ]}
+              >
+                <InputNumber className="w-full" controls={false} />
+              </Form.Item>
+            </Col>
+            <Col span={2} />
+            <Col span={11}>
+              <Form.Item
+                label="Duration (months)"
+                name="durationMonth"
+                rules={[
+                  {
+                    required: true,
+                    message: "please enter duration in numbers",
+                  },
+                ]}
+              >
+                <InputNumber className="w-full" controls={false} />
               </Form.Item>
             </Col>
           </Row>

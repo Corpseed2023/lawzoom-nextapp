@@ -1,10 +1,5 @@
 "use client";
 import Loading from "@/app/loading";
-import {
-  createCountry,
-  updateCountry,
-} from "@/app/redux-toolkit/slices/commonSlice";
-import { getAllCompliances } from "@/app/redux-toolkit/slices/complianceSlice";
 import { Icon } from "@iconify/react";
 import {
   Button,
@@ -13,37 +8,39 @@ import {
   Flex,
   Form,
   Input,
-  notification,
   Popover,
   Row,
   Select,
-  Tag,
   Typography,
 } from "antd";
 import dynamic from "next/dynamic";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
 const { Text, Title } = Typography;
-const CommonTable=dynamic(()=>import('@/app/common/CommonTable'),{loading:()=><Loading/>})
+const CommonTable = dynamic(() => import("@/app/common/CommonTable"), {
+  loading: () => <Loading />,
+});
 
 const BusinessUnit = ({ userId, data }) => {
-  const router = useRouter();
-  const [form] = Form.useForm();
-  const dispatch = useDispatch();
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredData, setFilteredData] = useState([]);
 
-  const [editData, setEditData] = useState(null);
+  useEffect(() => {
+    if (data && data?.length > 0) {
+      setFilteredData(data);
+    }
+  }, [data]);
 
-  const handleUpdateCountries = (data) => {
-    form.setFieldsValue({
-      countryCode: data?.countryCode,
-      countryName: data?.countryName,
-    });
-    setEditData(data);
-    setOpenModal(true);
+  const handleSearch = (e) => {
+    const query = e.target.value.toLowerCase()?.trim();
+    setSearchTerm(query);
+    const filtered = data.filter((item) =>
+      Object.values(item).some((value) =>
+        String(value).toLowerCase().includes(query)
+      )
+    );
+    setFilteredData(filtered);
   };
-
 
   const searchFilters = () => {
     return (
@@ -108,7 +105,7 @@ const BusinessUnit = ({ userId, data }) => {
   };
 
   const columns = [
-    { dataIndex: "companyId", title: "Id", width: 80 },
+    { dataIndex: "businessUnitId", title: "Id", width: 80 },
     {
       dataIndex: "companyName",
       title: "Company",
@@ -136,44 +133,6 @@ const BusinessUnit = ({ userId, data }) => {
 
   const onRowSelection = () => {};
 
-  const handleFinish = (values) => {
-    if (editData) {
-      dispatch(updateCountry({ ...values, id: editData?.id }))
-        .then((resp) => {
-          if (resp.meta.requestStatus === "fulfilled") {
-            notification.success({
-              message: "Country updated successfully !.",
-            });
-            setOpenModal(false);
-            form.resetFields();
-            router.refresh();
-          } else {
-            notification.error({ message: "Something went wrong !." });
-          }
-        })
-        .catch(() =>
-          notification.error({ message: "Something went wrong !." })
-        );
-    } else {
-      dispatch(createCountry(values))
-        .then((resp) => {
-          if (resp.meta.requestStatus === "fulfilled") {
-            notification.success({
-              message: "Country created successfully !.",
-            });
-            setOpenModal(false);
-            form.resetFields();
-            router.refresh();
-          } else {
-            notification.error({ message: "Something went wrong !." });
-          }
-        })
-        .catch(() =>
-          notification.error({ message: "Something went wrong !." })
-        );
-    }
-  };
-
   return (
     <>
       <Flex justify="space-between" align="center" className="mb-2">
@@ -183,6 +142,8 @@ const BusinessUnit = ({ userId, data }) => {
         <Input
           className="w-1/4"
           placeholder="Search"
+          value={searchTerm}
+          onChange={handleSearch}
           prefix={
             <Icon icon="fluent:search-16-regular" width="16" height="16" />
           }
@@ -219,7 +180,7 @@ const BusinessUnit = ({ userId, data }) => {
         </Flex>
       </Flex>
       <CommonTable
-        data={data}
+        data={filteredData}
         columns={columns}
         rowKey={(row) => row?.businessUnitId}
         scroll={{ y: 600 }}

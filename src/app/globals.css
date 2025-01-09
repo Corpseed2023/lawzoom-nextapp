@@ -117,3 +117,37 @@ h5,
 h6 {
   margin: 0 !important;
 }
+
+
+
+/* Container to hide overflow */
+.scroller-container {
+  position: relative;
+  overflow: hidden;
+  white-space: nowrap; /* Ensure content stays horizontal */
+  width: 100%; /* Full width */
+  height: 100px; /* Adjust height for logos */
+}
+
+/* Scrolling content */
+.scroller {
+  display: flex;
+  animation: scroll 20s linear infinite; /* Infinite horizontal scrolling */
+}
+
+/* Logo styling */
+.logo {
+  height: 80px; /* Adjust as needed */
+  margin: 0 10px; /* Spacing between logos */
+  object-fit: contain; /* Keep logo aspect ratio */
+}
+
+/* Keyframes for scrolling */
+@keyframes scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%); /* Move left by half the total width */
+  }
+}

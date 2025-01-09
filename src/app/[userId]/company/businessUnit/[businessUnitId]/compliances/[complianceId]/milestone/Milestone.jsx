@@ -3,7 +3,7 @@ import CommonTable from "@/app/common/CommonTable";
 import { Icon } from "@iconify/react";
 import { Button, Flex, Form, Input, Modal, Progress, Typography } from "antd";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import Link from "next/link";
 import dynamic from "next/dynamic";
@@ -19,26 +19,32 @@ const Milestone = ({
   complianceId,
   userId,
   complianceData,
-  subscriberId
+  subscriberId,
+  userList,
 }) => {
   const router = useRouter();
   const [form] = Form.useForm();
   const dispatch = useDispatch();
   const [openModal, setOpenModal] = useState(false);
-  const [formData, setFormData] = useState({
-    mileStoneName:
-      "Register and other records to be maintained by the contractor",
-    description: "ghhghg",
-    complianceId: 1,
-    businessUnitId: 1,
-    reporterId: 1,
-    assignedTo: 1,
-    assignedBy: 1,
-    assigneeMail: "vbnvbn@jfjkf.com",
-    issuedDate: "2025-01-04",
-    criticality: "fdsfd",
-    status: "dffdfd",
-  });
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredData, setFilteredData] = useState([]);
+
+  useEffect(() => {
+    if (data && data?.length > 0) {
+      setFilteredData(data);
+    }
+  }, [data]);
+
+  const handleSearch = (e) => {
+    const query = e.target.value.toLowerCase()?.trim();
+    setSearchTerm(query);
+    const filtered = data.filter((item) =>
+      Object.values(item).some((value) =>
+        String(value).toLowerCase().includes(query)
+      )
+    );
+    setFilteredData(filtered);
+  };
 
   const columns = [
     { dataIndex: "id", title: "Id", width: 80, fixed: "left" },
@@ -84,6 +90,8 @@ const Milestone = ({
         <Input
           className="w-1/4"
           placeholder="Search"
+          value={searchTerm}
+          onChange={handleSearch}
           prefix={
             <Icon icon="fluent:search-16-regular" width="16" height="16" />
           }
@@ -95,10 +103,10 @@ const Milestone = ({
         </Flex>
       </Flex>
       <CommonTable
-        data={data}
+        data={filteredData}
         columns={columns}
         rowKey={(row) => row?.id}
-        scroll={{ y: "65vh", x: 1500 }}
+        scroll={{ y: "65vh", x: 1800 }}
       />
       <Modal
         title="Add milestone"
@@ -112,14 +120,13 @@ const Milestone = ({
         footer={null}
       >
         <AddMilestone
-          setFormData={setFormData}
           setOpenModal={setOpenModal}
-          formData={formData}
           businessUnitId={businessUnitId}
           complianceId={complianceId}
           userId={userId}
           complianceData={complianceData}
           subscriberId={subscriberId}
+          userList={userList}
         />
       </Modal>
     </>

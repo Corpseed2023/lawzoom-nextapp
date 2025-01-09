@@ -99,7 +99,7 @@ export const deleteCitiesById = createAsyncThunk(
 );
 
 export const getAllStatus = createAsyncThunk("getAllStaus", async () => {
-  const response = await complianceApi.get(`/api/compliance/status/all`);
+  const response = await api.get(`/api/compliance/status/all`);
   return response.data;
 });
 

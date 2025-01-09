@@ -1,5 +1,7 @@
 "use client";
+import { selectFilter } from "@/app/commons";
 import Loading from "@/app/loading";
+import { getAllStatus } from "@/app/redux-toolkit/slices/commonSlice";
 import { createTask } from "@/app/redux-toolkit/slices/complianceSlice";
 import { Icon } from "@iconify/react";
 import {
@@ -16,19 +18,22 @@ import {
   Typography,
 } from "antd";
 import dynamic from "next/dynamic";
-import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 const { Title, Text } = Typography;
 const CommonTable = dynamic(() => import("@/app/common/CommonTable"), {
   loading: () => <Loading />,
 });
 
-const Task = ({ data,milestoneId, userId,subscriberId }) => {
+const Task = ({ data, milestoneId, userId, subscriberId, userList }) => {
   const [form] = Form.useForm();
   const dispatch = useDispatch();
+  const statusList = useSelector((state) => state.common.statusList);
   const [openModal, setOpenModal] = useState(false);
   const [editData, setEditData] = useState(null);
   const [api, contextHolder] = notification.useNotification();
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredData, setFilteredData] = useState([]);
 
   const openNotification = (resp) => {
     api[resp.status]({
@@ -36,19 +41,40 @@ const Task = ({ data,milestoneId, userId,subscriberId }) => {
     });
   };
 
+  useEffect(() => {
+    dispatch(getAllStatus());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (data && data?.length > 0) {
+      setFilteredData(data);
+    }
+  }, [data]);
+
+  const handleSearch = (e) => {
+    const query = e.target.value.toLowerCase()?.trim();
+    setSearchTerm(query);
+    const filtered = data.filter((item) =>
+      Object.values(item).some((value) =>
+        String(value).toLowerCase().includes(query)
+      )
+    );
+    setFilteredData(filtered);
+  };
+
   const columns = [
-    { dataIndex: "id", title: "Id" },
-    { dataIndex: "task", title: "Task" },
-    { dataIndex: "description", title: "Description" },
-    { dataIndex: "complianceFrequency", title: "Compliance frequency" },
-    { dataIndex: "renewalDate", title: "Renewal date" },
+    { dataIndex: "id", title: "Id", fixed: "left", width: 80 },
+    { dataIndex: "name", title: "Task", fixed: "left" },
+    { dataIndex: "status", title: "Status" },
+    { dataIndex: "dueDate", title: "Due date" },
     { dataIndex: "criticality", title: "Criticality" },
-    { dataIndex: "document", title: "Document copy" },
-    { dataIndex: "remark", title: "Remark" },
+    { dataIndex: "startDate", title: "Start date" },
+    { dataIndex: "completedDate", title: "Completed date" },
+    { dataIndex: "description", title: "Description" },
   ];
 
   const handleFinish = (values) => {
-    dispatch(createTask({...values,milestoneId}))
+    dispatch(createTask({ ...values, milestoneId, assigneeUserId: userId }))
       .then((resp) => {
         if (resp.meta.requestStatus === "fulfilled") {
           openNotification({
@@ -72,8 +98,6 @@ const Task = ({ data,milestoneId, userId,subscriberId }) => {
       );
   };
 
-
-
   return (
     <>
       {contextHolder}
@@ -84,6 +108,8 @@ const Task = ({ data,milestoneId, userId,subscriberId }) => {
         <Input
           className="w-1/4"
           placeholder="Search"
+          value={searchTerm}
+          onChange={handleSearch}
           prefix={
             <Icon icon="fluent:search-16-regular" width="16" height="16" />
           }
@@ -95,7 +121,7 @@ const Task = ({ data,milestoneId, userId,subscriberId }) => {
         </Flex>
       </Flex>
       <CommonTable
-        data={data}
+        data={filteredData}
         columns={columns}
         rowKey={(row) => row?.id}
         scroll={{ y: "65vh", x: 1500 }}
@@ -134,7 +160,18 @@ const Task = ({ data,milestoneId, userId,subscriberId }) => {
                   { required: true, message: "Please select assigned person" },
                 ]}
               >
-                <Input />
+                <Select
+                  showSearch
+                  options={
+                    userList?.length > 0
+                      ? userList?.map((item) => ({
+                          label: item?.name,
+                          value: item?.id,
+                        }))
+                      : []
+                  }
+                  filterOption={selectFilter}
+                />
               </Form.Item>
             </Col>
           </Row>
@@ -152,16 +189,18 @@ const Task = ({ data,milestoneId, userId,subscriberId }) => {
             </Col>
             <Col span={2} />
             <Col span={11}>
-              <Form.Item label="Status" name="status">
+              <Form.Item label="Status" name="statusId">
                 <Select
                   showSearch
-                  options={[
-                    { label: "Initiated", value: "Initiated" },
-                    { label: "Hold", value: "Hold" },
-                    { label: "Progress", value: "Progress" },
-                    { label: "Rejected", value: "Rejected" },
-                    { label: "Completed", value: "Completed" },
-                  ]}
+                  options={
+                    statusList?.length > 0
+                      ? statusList?.map((item) => ({
+                          label: item?.name,
+                          value: item?.id,
+                        }))
+                      : []
+                  }
+                  filterOption={selectFilter}
                 />
               </Form.Item>
             </Col>
